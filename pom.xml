@@ -21,6 +21,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
+        <util.version>20180131</util.version>
     </properties>
 
     <dependencies>
@@ -113,6 +114,12 @@
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>2.2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ks</groupId>
+            <artifactId>dict-util</artifactId>
+            <version>${util.version}</version>
         </dependency>
     </dependencies>
 

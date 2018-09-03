@@ -1,4 +1,4 @@
-package ks;
+package com.ks;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;

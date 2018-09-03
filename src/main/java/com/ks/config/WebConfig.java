@@ -1,4 +1,4 @@
-package ks.config;
+package com.ks.config;
 
 import org.apache.catalina.filters.RemoteIpFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

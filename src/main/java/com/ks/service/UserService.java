@@ -1,4 +1,4 @@
-package ks.service;
+package com.ks.service;
 
 /**
  * Title: ${type_name} <br/>

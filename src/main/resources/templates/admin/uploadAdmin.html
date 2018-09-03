@@ -1,0 +1,31 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="top :: copy" th:with="title='Hello'"></head>
+
+<body>
+<div class="bs-docs-header" id="content" tabindex="-1">
+    <div class="container">
+        <h1>上传管理</h1>
+        <p>1：基本上传公功能；2：公共上传Excel模块（上传excel，下载上传模板，下载上传失败信息）。</p>
+    </div>
+</div>
+<div class="container bs-docs-container">
+    <form action="" enctype="multipart/form-data" method="post">
+        上传用户：<input type="text" name="username"/>
+        <br/>
+        上传文件1：<input type="file" name="file1"/><br/>
+        <!-- 上传文件2：<input type="file" name="file2"><br />  -->
+        <input type="submit" value="提交"/>
+    </form>
+</div>
+<script>
+$(function(){
+
+    var form = $("form");
+    form.attr('action',ctx+'/admin/upload/parseXls2Dto');
+    console.log(ctx);
+});
+
+
+</script>
+</body>
+</html>
