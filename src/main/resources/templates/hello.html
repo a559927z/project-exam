@@ -1,0 +1,33 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="top :: copy" th:with="title='Hello'"></head>
+
+<body>
+<div th:replace="layout :: navbar">(navbar)</div>
+
+<div class="container">
+    <div class="starter-template">
+        <h1>Spring MVC / Thymeleaf / Bootstrap</h1>
+        <!--页面通过Model取值-->
+        <p class="lead" th:text="${greeting}">(greeting)</p>
+        <p>The current time is <span th:text="${currentTime}">(time)</span></p>
+    </div>
+    <div id="jqueryTest">
+        12313
+    </div>
+</div>
+
+<div th:include="layout :: footer" id="footer">(footer)</div>
+
+<script th:inline="javascript">
+    //    js通过model取值
+    var currentTime = [[${currentTime}]];
+    console.log(currentTime);
+
+    $(function () {
+        var text = $("#jqueryTest").text('abc');
+        console.log(text);
+    });
+</script>
+
+</body>
+</html>
