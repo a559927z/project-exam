@@ -9,7 +9,7 @@
     </div>
 </div>
 <div class="container bs-docs-container">
-    <form action="" enctype="multipart/form-data" method="post">
+    <form action="" th:action="@{/admin/upload/parseXls2Dto}" enctype="multipart/form-data" method="post">
         上传用户：<input type="text" name="username"/>
         <br/>
         上传文件1：<input type="file" name="file1"/><br/>
@@ -17,15 +17,8 @@
         <input type="submit" value="提交"/>
     </form>
 </div>
-<script>
-$(function(){
-
-    var form = $("form");
-    form.attr('action',ctx+'/admin/upload/parseXls2Dto');
-    console.log(ctx);
-});
 
 
-</script>
+
 </body>
 </html>
