@@ -50,13 +50,14 @@ public class UploadController extends BaseController {
 
     /**
      * 解析xls
+     * http://localhost:8080/exam/admin/upload/parseXls2Dto
      *
      * @param request
      * @param response
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "parseXls2Dto", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/parseXls2Dto", method = {RequestMethod.GET, RequestMethod.POST})
     public String parseXls2Dto(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException, InvalidFormatException {
         // jar包的路径
         String filePath = "";
