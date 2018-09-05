@@ -1,19 +1,31 @@
 package com.ks.controller;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/admin")
-@RestController
+@Controller
 public class AdminController {
 
+
     /**
-     *
+     * 重定向列表页
+     */
+    private final String REDIRECT_LOGIN = "redirect:login";
+
+    @RequestMapping("/")
+    public String index() {
+//        login()
+        return REDIRECT_LOGIN;
+    }
+
+
+    /**
      * @return
      */
-    @RequestMapping("/home")
-    public String home() {
-        return "Hello World";
+    @RequestMapping("/login")
+    public String login() {
+        return "admin/login";
     }
 
 

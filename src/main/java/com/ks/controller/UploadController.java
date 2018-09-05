@@ -2,9 +2,9 @@ package com.ks.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.ks.dto.Data2DTO;
 import com.ks.utils.StringUtil;
 import groovy.util.logging.Slf4j;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -244,53 +244,4 @@ public class UploadController extends BaseController {
     }
 }
 
-
-@NoArgsConstructor
-class Data2DTO {
-    private String title;
-    private String answer;
-    private String jieXi;
-    private String note;
-    private String trueAnswer;
-
-    public String getTrueAnswer() {
-        return trueAnswer;
-    }
-
-    public void setTrueAnswer(String trueAnswer) {
-        this.trueAnswer = trueAnswer;
-    }
-
-    public String getJieXi() {
-        return jieXi;
-    }
-
-    public void setJieXi(String jieXi) {
-        this.jieXi = jieXi;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-}
 
