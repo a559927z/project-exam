@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
  * ${tags}
  */
 @NoArgsConstructor
-public class Data2DTO {
+public class Data2Dto {
     private String title;
     private String answer;
     private String jieXi;

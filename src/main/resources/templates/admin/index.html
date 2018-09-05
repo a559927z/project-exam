@@ -1,0 +1,30 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="top :: copy" th:with="title='Login'"></head>
+
+<body>
+<div>
+    <link th:href="@{/sbAdmin/dist/css/sb-admin-2.css}" rel="stylesheet"></link>
+    <link th:href="@{/sbAdmin/vendor/metisMenu/metisMenu.min.css}" rel="stylesheet"></link>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+
+            <p>The current time is <span th:text="${access}">(time)</span></p>
+            <p>The current time is <span th:text="${password}">(time)</span></p>
+        </div>
+    </div>
+</div>
+
+
+<!-- Metis Menu Plugin JavaScript -->
+<script th:src="@{/sbAdmin/vendor/metisMenu/metisMenu.min.js}"></script>
+
+<!-- Custom Theme JavaScript -->
+<script th:src="@{/sbAdmin/dist/js/sb-admin-2.js}"></script>
+
+</body>
+
+</html>
+

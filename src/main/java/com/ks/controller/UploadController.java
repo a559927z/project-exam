@@ -2,7 +2,7 @@ package com.ks.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import com.ks.dto.Data2DTO;
+import com.ks.dto.Data2Dto;
 import com.ks.utils.StringUtil;
 import groovy.util.logging.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -68,6 +68,7 @@ public class UploadController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/parseXls2Dto", method = {RequestMethod.GET, RequestMethod.POST})
     public String parseXls2Dto(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException, InvalidFormatException {
+        String username = request.getParameter("username");
         // jar包的路径
         String filePath = "";
         if (!file.isEmpty()) {
@@ -88,7 +89,7 @@ public class UploadController extends BaseController {
                 System.out.println("上传失败");
             }
         }
-        List<Data2DTO> list = Lists.newArrayList();
+        List<Data2Dto> list = Lists.newArrayList();
         String title = "";
         String answer = "";
         String jieXi = "";
@@ -138,7 +139,7 @@ public class UploadController extends BaseController {
                     System.out.println("answer==>" + answer);
                     System.out.println("jieXi===>" + jieXi);
                     System.out.println("note====>" + note);
-                    Data2DTO dto = new Data2DTO();
+                    Data2Dto dto = new Data2Dto();
                     dto.setTitle(title);
                     dto.setAnswer(answer);
                     dto.setTrueAnswer(trueAnswer(answer));
@@ -160,7 +161,7 @@ public class UploadController extends BaseController {
                     System.out.println("jieXi===>" + jieXi);
                     System.out.println("note====>" + note);
                     System.out.println("================================================================================================================================");
-                    Data2DTO dto = new Data2DTO();
+                    Data2Dto dto = new Data2Dto();
                     dto.setTitle(title);
                     dto.setAnswer(answer);
                     dto.setTrueAnswer(trueAnswer(answer));
