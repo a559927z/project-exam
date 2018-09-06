@@ -6,11 +6,6 @@
 <head th:include="top :: copy" th:with="title='Login'"></head>
 
 <body>
-<div>
-    <link th:href="@{/sbAdmin/dist/css/sb-admin-2.css}" rel="stylesheet"></link>
-    <link th:href="@{/sbAdmin/vendor/metisMenu/metisMenu.min.css}" rel="stylesheet"></link>
-</div>
-
 <div class="container">
     <div class="row">
         <div class="col-md-4 col-md-offset-4">
@@ -24,18 +19,14 @@
                             <div class="form-group">
                                 <input class="form-control" placeholder="用户名" name="accessId" type="text"
                                        autofocus="autofocus"/>
-
-                                <!--<input type="text" id="u" name="u"  placeholder="请输入用户名" tabindex="1" autocomplete="off"/>-->
-
                             </div>
                             <div class="form-group">
                                 <input class="form-control" placeholder="密码" name="password" type="password"
                                        value=""/>
-                                <!--<input type="password" id="p" name="p" value="" placeholder="请输入密码" tabindex="2" autocomplete="off"/>-->
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="remember" type="checkbox" value="记住"/>Remember Me
+                                    <input name="remember" type="checkbox" value=""/>记住
                                 </label>
                             </div>
                             <input type="submit" value="提交" class="btn btn-lg btn-success btn-block"/>
@@ -47,12 +38,14 @@
     </div>
 </div>
 
-
 <!-- Metis Menu Plugin JavaScript -->
 <script th:src="@{/sbAdmin/vendor/metisMenu/metisMenu.min.js}"></script>
-
 <!-- Custom Theme JavaScript -->
 <script th:src="@{/sbAdmin/dist/js/sb-admin-2.js}"></script>
+
+<link th:href="@{/sbAdmin/dist/css/sb-admin-2.css}" rel="stylesheet"></link>
+<link th:href="@{/sbAdmin/vendor/metisMenu/metisMenu.min.css}" rel="stylesheet"></link>
+
 
 </body>
 
