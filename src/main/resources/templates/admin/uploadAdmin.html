@@ -1,23 +1,80 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:include="top :: copy" th:with="title='Hello'"></head>
+<head th:include="top :: copy" th:with="title='上传管理'"></head>
 
 <body>
-<div class="bs-docs-header" id="content" tabindex="-1">
-    <div class="container">
-        <h1>上传管理</h1>
-        <p>1：基本上传公功能；2：公共上传Excel模块（上传excel，下载上传模板，下载上传失败信息）。</p>
+
+<div id="wrapper">
+    <div th:replace="nav::copy"></div>
+
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>题库管理</h1>
+                <p>1：基本上传公功能；2：维护题库数据源。</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <form action="" th:action="@{/admin/upload/parseXls2Dto}" enctype="multipart/form-data" method="post">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <!--<input type="text" name="username"/>-->
+                            <label>类别：</label>
+                            <select class="form-control">
+                                <option>银行从业</option>
+                                <option>基金从业</option>
+                                <option>证券从业</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <!--<input type="text" name="username"/>-->
+                            <label>科目名称：</label>
+                            <select class="form-control">
+                                <option>银行业法律法规与综合能力</option>
+                                <option>个人理财</option>
+                                <option>个人贷款</option>
+                                <option>公司信贷</option>
+                                <option>风险管理</option>
+                                <option>银行管理</option>
+                                <option>基金法律法规、职业道德与业务规范</option>
+                                <option>证券投资基金基础知识</option>
+                                <option>私募股权投资基金基础知识</option>
+                                <option>证券市场基本法律法规</option>
+                                <option>金融市场基础知识</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>上传文件：</label>
+                            <input type="file" name="file"/>
+                        </div>
+                        <br/>
+                        <input type="submit" value="提交"/>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
-<div class="container bs-docs-container">
-    <form action="" th:action="@{/admin/upload/parseXls2Dto}" enctype="multipart/form-data" method="post">
-        上传用户：<input type="text" name="username"/>
-        <br/>
-        上传文件1：<input type="file" name="file"/><br/>
-        <!-- 上传文件2：<input type="file" name="file2"><br />  -->
-        <input type="submit" value="提交"/>
-    </form>
-</div>
 
+<!-- jQuery -->
+<script th:src="@{/webjars/jquery/2.0.3/jquery.min.js}"></script>
 
+<!-- Bootstrap Core JavaScript -->
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<!-- Metis Menu Plugin JavaScript -->
+<script th:src="@{/sbAdmin/vendor/metisMenu/metisMenu.min.js}"></script>
+
+<!-- Morris Charts JavaScript -->
+<script th:src="@{/sbAdmin/vendor/raphael/raphael.min.js}"></script>
+<script th:src="@{/sbAdmin/vendor/morrisjs/morris.min.js}"></script>
+<script th:src="@{/sbAdmin/data/morris-data.js}"></script>
+
+<!-- Custom Theme JavaScript -->
+<script th:src="@{/sbAdmin/dist/js/sb-admin-2.js}"></script>
 </body>
 </html>
