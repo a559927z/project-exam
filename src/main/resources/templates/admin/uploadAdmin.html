@@ -18,31 +18,19 @@
                 <form action="" th:action="@{/admin/upload/parseXls2Dto}" enctype="multipart/form-data" method="post">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <!--<input type="text" name="username"/>-->
                             <label>类别：</label>
-                            <select class="form-control">
-                                <option>银行从业</option>
-                                <option>基金从业</option>
-                                <option>证券从业</option>
+                            <select id="categorySelect" class="form-control">
+                                <option value="1">银行从业</option>
+                                <option value="2">基金从业</option>
+                                <option value="3">证券从业</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <!--<input type="text" name="username"/>-->
                             <label>科目名称：</label>
-                            <select class="form-control">
-                                <option>银行业法律法规与综合能力</option>
-                                <option>个人理财</option>
-                                <option>个人贷款</option>
-                                <option>公司信贷</option>
-                                <option>风险管理</option>
-                                <option>银行管理</option>
-                                <option>基金法律法规、职业道德与业务规范</option>
-                                <option>证券投资基金基础知识</option>
-                                <option>私募股权投资基金基础知识</option>
-                                <option>证券市场基本法律法规</option>
-                                <option>金融市场基础知识</option>
+                            <select id="courseSelect" class="form-control">
+                                <option value="0">请选择</option>
                             </select>
                         </div>
                     </div>
@@ -52,6 +40,8 @@
                             <input type="file" name="file"/>
                         </div>
                         <br/>
+                        <input id="categoryVal" type="text" name="categoryVal" value=""/>
+                        <input id="courseVal" type="text" name="courseVal" value=""/>
                         <input type="submit" value="提交"/>
                     </div>
                 </form>
@@ -70,11 +60,15 @@
 <script th:src="@{/sbAdmin/vendor/metisMenu/metisMenu.min.js}"></script>
 
 <!-- Morris Charts JavaScript -->
-<script th:src="@{/sbAdmin/vendor/raphael/raphael.min.js}"></script>
-<script th:src="@{/sbAdmin/vendor/morrisjs/morris.min.js}"></script>
-<script th:src="@{/sbAdmin/data/morris-data.js}"></script>
+<!--<script th:src="@{/sbAdmin/vendor/raphael/raphael.min.js}"></script>-->
+<!--<script th:src="@{/sbAdmin/vendor/morrisjs/morris.min.js}"></script>-->
+<!--<script th:src="@{/sbAdmin/data/morris-data.js}"></script>-->
 
 <!-- Custom Theme JavaScript -->
 <script th:src="@{/sbAdmin/dist/js/sb-admin-2.js}"></script>
+
+
+<script th:src="@{/js/biz/uploadAdmin.js}"></script>
+
 </body>
 </html>
