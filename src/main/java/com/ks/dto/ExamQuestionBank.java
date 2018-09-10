@@ -1,6 +1,7 @@
 package com.ks.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class ExamQuestionBank extends BaseDto implements Serializable {
     private Integer id;
@@ -23,7 +24,9 @@ public class ExamQuestionBank extends BaseDto implements Serializable {
 
     private String courseId;
 
-    private Integer isLock = 0;
+    private String type;
+
+    private Integer isLock;
 
 
     private static final long serialVersionUID = 1L;
@@ -106,6 +109,14 @@ public class ExamQuestionBank extends BaseDto implements Serializable {
 
     public void setCourseId(String courseId) {
         this.courseId = courseId == null ? null : courseId.trim();
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type == null ? null : type.trim();
     }
 
     public Integer getIsLock() {

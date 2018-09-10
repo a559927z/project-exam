@@ -68,6 +68,10 @@ public class ExamQuestionBankSqlProvider {
             sql.VALUES("course_id", "#{courseId,jdbcType=VARCHAR}");
         }
         
+        if (record.getType() != null) {
+            sql.VALUES("type", "#{type,jdbcType=VARCHAR}");
+        }
+        
         if (record.getIsLock() != null) {
             sql.VALUES("is_lock", "#{isLock,jdbcType=INTEGER}");
         }
@@ -107,6 +111,7 @@ public class ExamQuestionBankSqlProvider {
         sql.SELECT("question_bank_name");
         sql.SELECT("category_id");
         sql.SELECT("course_id");
+        sql.SELECT("type");
         sql.SELECT("is_lock");
         sql.SELECT("created_by");
         sql.SELECT("created_date");
@@ -169,6 +174,10 @@ public class ExamQuestionBankSqlProvider {
             sql.SET("course_id = #{record.courseId,jdbcType=VARCHAR}");
         }
         
+        if (record.getType() != null) {
+            sql.SET("type = #{record.type,jdbcType=VARCHAR}");
+        }
+        
         if (record.getIsLock() != null) {
             sql.SET("is_lock = #{record.isLock,jdbcType=INTEGER}");
         }
@@ -207,6 +216,7 @@ public class ExamQuestionBankSqlProvider {
         sql.SET("question_bank_name = #{record.questionBankName,jdbcType=VARCHAR}");
         sql.SET("category_id = #{record.categoryId,jdbcType=VARCHAR}");
         sql.SET("course_id = #{record.courseId,jdbcType=VARCHAR}");
+        sql.SET("type = #{record.type,jdbcType=VARCHAR}");
         sql.SET("is_lock = #{record.isLock,jdbcType=INTEGER}");
         sql.SET("created_by = #{record.createdBy,jdbcType=VARCHAR}");
         sql.SET("created_date = #{record.createdDate,jdbcType=TIMESTAMP}");
@@ -256,6 +266,10 @@ public class ExamQuestionBankSqlProvider {
         
         if (record.getCourseId() != null) {
             sql.SET("course_id = #{courseId,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getType() != null) {
+            sql.SET("type = #{type,jdbcType=VARCHAR}");
         }
         
         if (record.getIsLock() != null) {

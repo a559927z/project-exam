@@ -4,13 +4,26 @@ import org.apache.catalina.filters.RemoteIpFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @Configuration
-public class WebConfig {
+public class WebConfig extends WebMvcConfigurerAdapter {
+
+    /**
+     * 配置静态访问资源
+     * @param registry
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**").addResourceLocations("classpath:/assets/");
+        super.addResourceHandlers(registry);
+    }
+
     @Bean
     public RemoteIpFilter remoteIpFilter() {
         return new RemoteIpFilter();

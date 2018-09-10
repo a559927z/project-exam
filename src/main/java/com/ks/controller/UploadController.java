@@ -78,6 +78,9 @@ public class UploadController extends BaseController {
         String questionBankName = request.getParameter("questionBankName");
         String categoryId = request.getParameter("categoryVal");
         String courseId = request.getParameter("courseVal");
+        String optionsRadiosInline = request.getParameter("optionsRadiosInline");
+
+
         if (null == file) {
             throw new RuntimeException("为空");
         }
@@ -149,10 +152,6 @@ public class UploadController extends BaseController {
                 note += stringCellValue;
                 Row nextRow = sheet.getRow(i + 1);
                 if (nextRow == null) {
-                    System.out.println("title===>" + title);
-                    System.out.println("answer==>" + answer);
-                    System.out.println("jieXi===>" + jieXi);
-                    System.out.println("note====>" + note);
                     ExamQuestionBank dto = new ExamQuestionBank();
                     dto.setQuestionBankId(Identities.uuid2());
                     dto.setQuestionBankName(questionBankName);
@@ -163,6 +162,8 @@ public class UploadController extends BaseController {
                     dto.setNote(note);
                     dto.setCategoryId(categoryId);
                     dto.setCourseId(courseId);
+                    dto.setType(optionsRadiosInline);
+                    dto.setIsLock(0);
                     list.add(dto);
                     break;
                 }
@@ -174,11 +175,6 @@ public class UploadController extends BaseController {
                 if (!endTitle) {
                     flag = 3;
                 } else {
-                    System.out.println("title===>" + title);
-                    System.out.println("answer==>" + answer);
-                    System.out.println("jieXi===>" + jieXi);
-                    System.out.println("note====>" + note);
-                    System.out.println("================================================================================================================================");
                     ExamQuestionBank dto = new ExamQuestionBank();
                     dto.setQuestionBankId(Identities.uuid2());
                     dto.setQuestionBankName(questionBankName);
@@ -189,6 +185,8 @@ public class UploadController extends BaseController {
                     dto.setNote(note);
                     dto.setCategoryId(categoryId);
                     dto.setCourseId(courseId);
+                    dto.setType(optionsRadiosInline);
+                    dto.setIsLock(0);
                     list.add(dto);
                     title = "";
                     answer = "";

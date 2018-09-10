@@ -2,10 +2,10 @@ package com.ks.dao;
 
 import com.ks.dto.ExamQuestionBank;
 import com.ks.dto.ExamQuestionBankExample;
-import java.util.List;
-
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
+
+import java.util.List;
 
 @Mapper
 public interface ExamQuestionBankMapper {
@@ -26,16 +26,18 @@ public interface ExamQuestionBankMapper {
         "answer, true_answer, ",
         "jie_xi, note, question_bank_id, ",
         "question_bank_name, category_id, ",
-        "course_id, is_lock, ",
-        "created_by, created_date, ",
-        "updated_by, updated_date)",
+        "course_id, type, ",
+        "is_lock, created_by, ",
+        "created_date, updated_by, ",
+        "updated_date)",
         "values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, ",
         "#{answer,jdbcType=VARCHAR}, #{trueAnswer,jdbcType=VARCHAR}, ",
         "#{jieXi,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{questionBankId,jdbcType=VARCHAR}, ",
         "#{questionBankName,jdbcType=VARCHAR}, #{categoryId,jdbcType=VARCHAR}, ",
-        "#{courseId,jdbcType=VARCHAR}, #{isLock,jdbcType=INTEGER}, ",
-        "#{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, ",
-        "#{updatedBy,jdbcType=VARCHAR}, #{updatedDate,jdbcType=TIMESTAMP})"
+        "#{courseId,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, ",
+        "#{isLock,jdbcType=INTEGER}, #{createdBy,jdbcType=VARCHAR}, ",
+        "#{createdDate,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR}, ",
+        "#{updatedDate,jdbcType=TIMESTAMP})"
     })
     int insert(ExamQuestionBank record);
 
@@ -54,6 +56,7 @@ public interface ExamQuestionBankMapper {
         @Result(column="question_bank_name", property="questionBankName", jdbcType=JdbcType.VARCHAR),
         @Result(column="category_id", property="categoryId", jdbcType=JdbcType.VARCHAR),
         @Result(column="course_id", property="courseId", jdbcType=JdbcType.VARCHAR),
+        @Result(column="type", property="type", jdbcType=JdbcType.VARCHAR),
         @Result(column="is_lock", property="isLock", jdbcType=JdbcType.INTEGER),
         @Result(column="created_by", property="createdBy", jdbcType=JdbcType.VARCHAR),
         @Result(column="created_date", property="createdDate", jdbcType=JdbcType.TIMESTAMP),
@@ -65,7 +68,8 @@ public interface ExamQuestionBankMapper {
     @Select({
         "select",
         "id, title, answer, true_answer, jie_xi, note, question_bank_id, question_bank_name, ",
-        "category_id, course_id, is_lock, created_by, created_date, updated_by, updated_date",
+        "category_id, course_id, type, is_lock, created_by, created_date, updated_by, ",
+        "updated_date",
         "from exam_question_bank",
         "where id = #{id,jdbcType=INTEGER}"
     })
@@ -80,6 +84,7 @@ public interface ExamQuestionBankMapper {
         @Result(column="question_bank_name", property="questionBankName", jdbcType=JdbcType.VARCHAR),
         @Result(column="category_id", property="categoryId", jdbcType=JdbcType.VARCHAR),
         @Result(column="course_id", property="courseId", jdbcType=JdbcType.VARCHAR),
+        @Result(column="type", property="type", jdbcType=JdbcType.VARCHAR),
         @Result(column="is_lock", property="isLock", jdbcType=JdbcType.INTEGER),
         @Result(column="created_by", property="createdBy", jdbcType=JdbcType.VARCHAR),
         @Result(column="created_date", property="createdDate", jdbcType=JdbcType.TIMESTAMP),
@@ -108,6 +113,7 @@ public interface ExamQuestionBankMapper {
           "question_bank_name = #{questionBankName,jdbcType=VARCHAR},",
           "category_id = #{categoryId,jdbcType=VARCHAR},",
           "course_id = #{courseId,jdbcType=VARCHAR},",
+          "type = #{type,jdbcType=VARCHAR},",
           "is_lock = #{isLock,jdbcType=INTEGER},",
           "created_by = #{createdBy,jdbcType=VARCHAR},",
           "created_date = #{createdDate,jdbcType=TIMESTAMP},",
