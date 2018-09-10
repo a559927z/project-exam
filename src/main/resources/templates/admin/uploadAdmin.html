@@ -16,10 +16,16 @@
         <div class="row">
             <div class="col-lg-12">
                 <form action="" th:action="@{/admin/upload/parseXls2Dto}" enctype="multipart/form-data" method="post">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input type="text" name="questionBankName" value=""/>
+                        </div>
+                    </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>类别：</label>
                             <select id="categorySelect" class="form-control">
+                                <option value="0">请选择</option>
                                 <option value="1">银行从业</option>
                                 <option value="2">基金从业</option>
                                 <option value="3">证券从业</option>
@@ -40,14 +46,15 @@
                             <input type="file" name="file"/>
                         </div>
                         <br/>
-                        <input id="categoryVal" type="text" name="categoryVal" value=""/>
-                        <input id="courseVal" type="text" name="courseVal" value=""/>
+                        <input id="categoryVal" type="hidden" name="categoryVal" value=""/>
+                        <input id="courseVal" type="hidden" name="courseVal" value=""/>
                         <input type="submit" value="提交"/>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+    <input id="successTotalId" type="hidden" name="successTotal" th:value="${successTotal}"/>
 </div>
 
 <!-- jQuery -->

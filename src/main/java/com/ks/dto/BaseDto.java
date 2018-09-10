@@ -1,5 +1,6 @@
 package com.ks.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -16,33 +17,16 @@ public class BaseDto implements Serializable {
 
     private static final long serialVersionUID = 104793415528352911L;
 
-    /**
-     * 键
-     */
-    private String k;
-    /**
-     * 值
-     */
-    private String v;
+    private String createdBy = "SYSTEM";
 
-    /**
-     * 创建人
-     */
-    private String createBy;
-    /**
-     * 创建时间
-     */
-    private Date createDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Date createdDate = new Date();
 
-    public BaseDto() {
-        super();
-    }
 
-    public BaseDto(String k, String v) {
-        super();
-        this.k = k;
-        this.v = v;
-    }
+    private String updatedBy = "SYSTEM";
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Date updatedDate = new Date();
 
 
 }

@@ -1,13 +1,15 @@
 package com.ks.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import com.ks.dto.Data2Dto;
+import com.ks.dto.ExamQuestionBank;
+import com.ks.service.UploadService;
 import com.ks.utils.StringUtil;
 import groovy.util.logging.Slf4j;
+import net.chinahrd.utils.Identities;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +40,9 @@ import java.util.regex.Pattern;
 @RequestMapping("/admin/upload")
 public class UploadController extends BaseController {
 
+    @Autowired
+    private UploadService uploadService;
+
     private String TITLE_PATTERN = "^\\d+\\.\\S+";
     private String ANSWER_PATTERN = "☐";
     private String ANSWER_TRUE_PATTERN = "☑";
@@ -65,10 +70,18 @@ public class UploadController extends BaseController {
      * @param response
      * @return
      */
-    @ResponseBody
+//    @ResponseBody
     @RequestMapping(value = "/parseXls2Dto", method = {RequestMethod.GET, RequestMethod.POST})
-    public String parseXls2Dto(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException, InvalidFormatException {
-        String username = request.getParameter("username");
+    public String parseXls2Dto(Model model,
+                               MultipartFile file,
+                               HttpServletRequest request, HttpServletResponse response) throws IOException, InvalidFormatException {
+        String questionBankName = request.getParameter("questionBankName");
+        String categoryId = request.getParameter("categoryVal");
+        String courseId = request.getParameter("courseVal");
+        if (null == file) {
+            throw new RuntimeException("为空");
+        }
+
         // jar包的路径
         String filePath = "";
         if (!file.isEmpty()) {
@@ -89,12 +102,13 @@ public class UploadController extends BaseController {
                 System.out.println("上传失败");
             }
         }
-        List<Data2Dto> list = Lists.newArrayList();
+        List<ExamQuestionBank> list = Lists.newArrayList();
         String title = "";
         String answer = "";
         String jieXi = "";
         String note = "";
         Integer flag = 0;
+
         Workbook sheets = WorkbookFactory.create(file.getInputStream());
         Sheet sheet = sheets.getSheetAt(0);
         for (int i = 0; i <= sheet.getLastRowNum(); i++) {
@@ -139,12 +153,16 @@ public class UploadController extends BaseController {
                     System.out.println("answer==>" + answer);
                     System.out.println("jieXi===>" + jieXi);
                     System.out.println("note====>" + note);
-                    Data2Dto dto = new Data2Dto();
+                    ExamQuestionBank dto = new ExamQuestionBank();
+                    dto.setQuestionBankId(Identities.uuid2());
+                    dto.setQuestionBankName(questionBankName);
                     dto.setTitle(title);
                     dto.setAnswer(answer);
                     dto.setTrueAnswer(trueAnswer(answer));
                     dto.setJieXi(jieXi);
                     dto.setNote(note);
+                    dto.setCategoryId(categoryId);
+                    dto.setCourseId(courseId);
                     list.add(dto);
                     break;
                 }
@@ -161,12 +179,16 @@ public class UploadController extends BaseController {
                     System.out.println("jieXi===>" + jieXi);
                     System.out.println("note====>" + note);
                     System.out.println("================================================================================================================================");
-                    Data2Dto dto = new Data2Dto();
+                    ExamQuestionBank dto = new ExamQuestionBank();
+                    dto.setQuestionBankId(Identities.uuid2());
+                    dto.setQuestionBankName(questionBankName);
                     dto.setTitle(title);
                     dto.setAnswer(answer);
                     dto.setTrueAnswer(trueAnswer(answer));
                     dto.setJieXi(jieXi);
                     dto.setNote(note);
+                    dto.setCategoryId(categoryId);
+                    dto.setCourseId(courseId);
                     list.add(dto);
                     title = "";
                     answer = "";
@@ -185,7 +207,24 @@ public class UploadController extends BaseController {
                 note += stringCellValue;
             }
         }
-        return JSON.toJSONString(list);
+
+        int successTotal = putStorage(list);
+        model.addAttribute("successTotal" + successTotal);
+        return "redirect:index";
+    }
+
+    /**
+     * 入库
+     *
+     * @param list
+     * @return 入库条数
+     */
+    private int putStorage(List<ExamQuestionBank> list) {
+        int rs = 0;
+        for (ExamQuestionBank dto : list) {
+            rs += uploadService.insertSelective(dto);
+        }
+        return rs;
     }
 
     /**

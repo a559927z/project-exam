@@ -129,9 +129,9 @@
             <!-- 参考 javaModelGenerator 的 rootClass 属性
             <property name="rootClass" value=""/>
             -->
-            <!--<property name="baseDto" value="net.chinahrd.dto.BaseDto"/>-->
+            <!--<property name="rootClass" value="net.chinahrd.dto.BaseDto"/>-->
             <!-- 参考javaClientGenerator 的  rootInterface 属性
-            <property name="rootInterface" value=""/>
+            <property name="rootClass" value="com.ks.dto.BaseDto"/>
             -->
             <!-- 如果设置了runtimeCatalog，那么在生成的SQL中，使用该指定的catalog，而不是table元素上的catalog
             <property name="runtimeCatalog" value=""/>
@@ -209,5 +209,7 @@
             <ignoreColumn column="deptId" delimitedColumnName=""/>
             -->
         </table>
+        <table tableName="exam_question_bank" domainObjectName="ExamQuestionBank"><property name="useActualColumnNames" value="false"/><property name="rootClass" value="com.ks.dto.BaseDto"/></table>
+        <table tableName="exam_roll" domainObjectName="ExamRoll"><property name="useActualColumnNames" value="false"/><property name="rootClass" value="com.ks.dto.BaseDto"/></table>
     </context>
 </generatorConfiguration>
