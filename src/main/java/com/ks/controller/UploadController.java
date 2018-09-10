@@ -2,10 +2,13 @@ package com.ks.controller;
 
 import com.google.common.collect.Lists;
 import com.ks.dto.ExamQuestionBank;
+import com.ks.dto.ExamQuestionBankDto;
+import com.ks.dto.ExamTrueAnswer;
 import com.ks.service.UploadService;
 import com.ks.utils.StringUtil;
 import groovy.util.logging.Slf4j;
 import net.chinahrd.utils.Identities;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -20,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -74,7 +78,8 @@ public class UploadController extends BaseController {
     @RequestMapping(value = "/parseXls2Dto", method = {RequestMethod.GET, RequestMethod.POST})
     public String parseXls2Dto(Model model,
                                MultipartFile file,
-                               HttpServletRequest request, HttpServletResponse response) throws IOException, InvalidFormatException {
+                               HttpServletRequest request, HttpServletResponse response)
+            throws IOException, InvalidFormatException {
         String questionBankName = request.getParameter("questionBankName");
         String categoryId = request.getParameter("categoryVal");
         String courseId = request.getParameter("courseVal");
@@ -105,7 +110,7 @@ public class UploadController extends BaseController {
                 System.out.println("上传失败");
             }
         }
-        List<ExamQuestionBank> list = Lists.newArrayList();
+        List<ExamQuestionBankDto> list = Lists.newArrayList();
         String title = "";
         String answer = "";
         String jieXi = "";
@@ -118,10 +123,7 @@ public class UploadController extends BaseController {
             Row row = sheet.getRow(i);
             Cell cell = row.getCell(0);
 
-            String stringCellValue = cell.getStringCellValue()
-                    .replaceAll(" ", "")
-                    .replaceAll("   ", "")
-                    .trim();
+            String stringCellValue = trim(cell.getStringCellValue());
 
             boolean matches = Pattern.matches(TITLE_PATTERN, stringCellValue);
             if (matches) {
@@ -152,12 +154,14 @@ public class UploadController extends BaseController {
                 note += stringCellValue;
                 Row nextRow = sheet.getRow(i + 1);
                 if (nextRow == null) {
-                    ExamQuestionBank dto = new ExamQuestionBank();
+                    ExamQuestionBankDto dto = new ExamQuestionBankDto();
                     dto.setQuestionBankId(Identities.uuid2());
                     dto.setQuestionBankName(questionBankName);
                     dto.setTitle(prossTitle(title));
                     dto.setAnswer(answer);
                     dto.setTrueAnswer(trueAnswer(answer));
+                    List<ExamTrueAnswer> examTrueAnswerList = prossTrueAnswer(dto.getQuestionBankId(), dto.getTrueAnswer());
+                    dto.setExamTrueAnswerList(examTrueAnswerList);
                     dto.setJieXi(jieXi);
                     dto.setNote(note);
                     dto.setCategoryId(categoryId);
@@ -167,20 +171,19 @@ public class UploadController extends BaseController {
                     list.add(dto);
                     break;
                 }
-                String nextVal = nextRow.getCell(0).getStringCellValue()
-                        .replaceAll(" ", "")
-                        .replaceAll("   ", "")
-                        .trim();
+                String nextVal = trim(nextRow.getCell(0).getStringCellValue());
                 boolean endTitle = Pattern.matches(TITLE_PATTERN, nextVal);
                 if (!endTitle) {
                     flag = 3;
                 } else {
-                    ExamQuestionBank dto = new ExamQuestionBank();
+                    ExamQuestionBankDto dto = new ExamQuestionBankDto();
                     dto.setQuestionBankId(Identities.uuid2());
                     dto.setQuestionBankName(questionBankName);
                     dto.setTitle(prossTitle(title));
                     dto.setAnswer(answer);
                     dto.setTrueAnswer(trueAnswer(answer));
+                    List<ExamTrueAnswer> examTrueAnswerList = prossTrueAnswer(dto.getQuestionBankId(), dto.getTrueAnswer());
+                    dto.setExamTrueAnswerList(examTrueAnswerList);
                     dto.setJieXi(jieXi);
                     dto.setNote(note);
                     dto.setCategoryId(categoryId);
@@ -217,9 +220,9 @@ public class UploadController extends BaseController {
      * @param list
      * @return 入库条数
      */
-    private int putStorage(List<ExamQuestionBank> list) {
+    private int putStorage(List<ExamQuestionBankDto> list) {
         int rs = 0;
-        for (ExamQuestionBank dto : list) {
+        for (ExamQuestionBankDto dto : list) {
             rs += uploadService.insertSelective(dto);
         }
         return rs;
@@ -233,18 +236,29 @@ public class UploadController extends BaseController {
      * @return
      */
     private String getNextVal(Sheet sheet, int i) {
-
-
         Row nextRow = sheet.getRow(i + 1);
         if (nextRow.getCell(0) != null) {
             // 把纯数字作为String类型读进来了
             nextRow.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
         }
-        return nextRow.getCell(0).getStringCellValue().replaceAll(" ", "")
-                .replaceAll("   ", "")
-                .trim();
+        return trim(nextRow.getCell(0).getStringCellValue());
     }
 
+
+    private List<ExamTrueAnswer> prossTrueAnswer(String qbId, String trueAnswerStr) {
+        List<ExamTrueAnswer> rs = Lists.newArrayList();
+        if (StringUtil.containsAny(trueAnswerStr, ANSWER_TRUE_PATTERN)) {
+            String[] split = StringUtils.split(trueAnswerStr, ANSWER_TRUE_PATTERN);
+            for (int i = 0; i < split.length - 1; i++) {
+                ExamTrueAnswer dto = new ExamTrueAnswer();
+                dto.setQuestionBankId(qbId);
+                dto.setTrueAnswerId(Identities.uuid2());
+                dto.setTrueAnswer(split[i]);
+                rs.add(dto);
+            }
+        }
+        return rs;
+    }
 
     /**
      * 正确答案
@@ -256,9 +270,7 @@ public class UploadController extends BaseController {
         if (StringUtil.containsAny(stringCellValue, ANSWER_PATTERN)) {
 //            System.out.println("答案=====>" + stringCellValue);
             if (StringUtil.containsAny(stringCellValue, ANSWER_TRUE_PATTERN)) {
-                String ss = stringCellValue
-                        .replaceAll(" ", "")
-                        .replaceAll("   ", "");
+                String ss = trim(stringCellValue);
                 ss = StringUtil.substringAfter(ss, ANSWER_TRUE_PATTERN);
                 ss = StringUtil.substringBefore(ss, ANSWER_PATTERN);
                 ss = StringUtil.deleteWhitespace(ss).trim();
@@ -267,6 +279,13 @@ public class UploadController extends BaseController {
             }
         }
         return "";
+    }
+
+    private String trim(String val) {
+        return val.replaceAll("  ", "")
+                .replaceAll(" ", "")
+                .replaceAll("   ", "")
+                .trim();
     }
 
 

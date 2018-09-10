@@ -1,6 +1,7 @@
 package com.ks.service;
 
 import com.ks.dto.ExamQuestionBank;
+import com.ks.dto.ExamQuestionBankDto;
 
 /**
  * Title: ${type_name} <br/>
@@ -21,5 +22,5 @@ public interface UploadService {
      * @param dto
      * @return
      */
-    int insertSelective(ExamQuestionBank dto);
+    int insertSelective(ExamQuestionBankDto dto);
 }
