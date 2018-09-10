@@ -155,7 +155,7 @@ public class UploadController extends BaseController {
                     ExamQuestionBank dto = new ExamQuestionBank();
                     dto.setQuestionBankId(Identities.uuid2());
                     dto.setQuestionBankName(questionBankName);
-                    dto.setTitle(title);
+                    dto.setTitle(prossTitle(title));
                     dto.setAnswer(answer);
                     dto.setTrueAnswer(trueAnswer(answer));
                     dto.setJieXi(jieXi);
@@ -178,7 +178,7 @@ public class UploadController extends BaseController {
                     ExamQuestionBank dto = new ExamQuestionBank();
                     dto.setQuestionBankId(Identities.uuid2());
                     dto.setQuestionBankName(questionBankName);
-                    dto.setTitle(title);
+                    dto.setTitle(prossTitle(title));
                     dto.setAnswer(answer);
                     dto.setTrueAnswer(trueAnswer(answer));
                     dto.setJieXi(jieXi);
@@ -233,7 +233,13 @@ public class UploadController extends BaseController {
      * @return
      */
     private String getNextVal(Sheet sheet, int i) {
+
+
         Row nextRow = sheet.getRow(i + 1);
+        if (nextRow.getCell(0) != null) {
+            // 把纯数字作为String类型读进来了
+            nextRow.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
+        }
         return nextRow.getCell(0).getStringCellValue().replaceAll(" ", "")
                 .replaceAll("   ", "")
                 .trim();
@@ -247,9 +253,9 @@ public class UploadController extends BaseController {
      * @return
      */
     private String trueAnswer(String stringCellValue) {
-        if (StringUtil.containsAny(stringCellValue, "☐")) {
+        if (StringUtil.containsAny(stringCellValue, ANSWER_PATTERN)) {
 //            System.out.println("答案=====>" + stringCellValue);
-            if (StringUtil.containsAny(stringCellValue, "☑")) {
+            if (StringUtil.containsAny(stringCellValue, ANSWER_TRUE_PATTERN)) {
                 String ss = stringCellValue
                         .replaceAll(" ", "")
                         .replaceAll("   ", "");
@@ -257,7 +263,7 @@ public class UploadController extends BaseController {
                 ss = StringUtil.substringBefore(ss, ANSWER_PATTERN);
                 ss = StringUtil.deleteWhitespace(ss).trim();
 //                System.out.println("正确答案=====>" + ss);
-                return ss;
+                return ANSWER_TRUE_PATTERN + ss;
             }
         }
         return "";
@@ -275,10 +281,19 @@ public class UploadController extends BaseController {
 //
 //        System.out.println(ss);
 
-        String stringCellValue = "563.xxxx";
+//        String stringCellValue = "563.xxxx";
+//        boolean matches = Pattern.matches("^\\d+\\.\\S+", stringCellValue);
+//        System.out.println(matches);
 
-        boolean matches = Pattern.matches("^\\d+\\.\\S+", stringCellValue);
-        System.out.println(matches);
+        String stringCellValue = "5.63.xx.xx";
+        int i = stringCellValue.indexOf(".");
+        stringCellValue = stringCellValue.substring(i + 1, stringCellValue.length());
+        System.out.println(stringCellValue);
+    }
+
+    private String prossTitle(String title) {
+        int i = title.indexOf(".");
+        return title.substring(i + 1, title.length());
     }
 }
 
