@@ -100,6 +100,6 @@ public class PaginationPlugin extends PluginAdapter {
     }
 
     public static void main(String[] args) {
-        generate();
+//        generate();
     }
 }

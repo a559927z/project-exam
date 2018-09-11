@@ -28,6 +28,13 @@ public class ExamQuestionBank extends BaseDto implements Serializable {
 
     private Integer isLock;
 
+    private String createdBy;
+
+    private Date createdDate;
+
+    private String updatedBy;
+
+    private Date updatedDate;
 
     private static final long serialVersionUID = 1L;
 
@@ -127,4 +134,35 @@ public class ExamQuestionBank extends BaseDto implements Serializable {
         this.isLock = isLock;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy == null ? null : createdBy.trim();
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy == null ? null : updatedBy.trim();
+    }
+
+    public Date getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
+    }
 }

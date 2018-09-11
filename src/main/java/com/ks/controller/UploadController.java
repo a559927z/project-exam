@@ -31,6 +31,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
@@ -213,7 +214,7 @@ public class UploadController extends BaseController {
 
     private String processType(String trueAnswer) {
 
-        int i = StringUtil.appearNumber(trueAnswer, QuestionBankConstants.ANSWER_TRUE_PATTERN);
+        int i = appearNumber(trueAnswer, QuestionBankConstants.ANSWER_TRUE_PATTERN);
         if (i > 1) {
             // 多选题
             return "3";
@@ -228,6 +229,16 @@ public class UploadController extends BaseController {
             return "1";
         }
 
+    }
+
+    public int appearNumber(String srcText, String findText) {
+        int count = 0;
+        Pattern p = Pattern.compile(findText);
+        Matcher m = p.matcher(srcText);
+        while (m.find()) {
+            count++;
+        }
+        return count;
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.ks.service;
 
-import com.ks.dto.ExamQuestionBank;
 import com.ks.dto.ExamQuestionBankDto;
 
 /**
@@ -23,4 +22,5 @@ public interface UploadService {
      * @return
      */
     int insertSelective(ExamQuestionBankDto dto);
+
 }

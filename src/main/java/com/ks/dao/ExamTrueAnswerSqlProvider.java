@@ -40,10 +40,6 @@ public class ExamTrueAnswerSqlProvider {
             sql.VALUES("true_answer", "#{trueAnswer,jdbcType=VARCHAR}");
         }
         
-        if (record.getSort() != null) {
-            sql.VALUES("sort", "#{sort,jdbcType=INTEGER}");
-        }
-        
         return sql.toString();
     }
 
@@ -56,7 +52,6 @@ public class ExamTrueAnswerSqlProvider {
         }
         sql.SELECT("true_answer_id");
         sql.SELECT("true_answer");
-        sql.SELECT("sort");
         sql.FROM("exam_true_answer");
         applyWhere(sql, example, false);
         
@@ -86,10 +81,6 @@ public class ExamTrueAnswerSqlProvider {
             sql.SET("true_answer = #{record.trueAnswer,jdbcType=VARCHAR}");
         }
         
-        if (record.getSort() != null) {
-            sql.SET("sort = #{record.sort,jdbcType=INTEGER}");
-        }
-        
         applyWhere(sql, example, true);
         return sql.toString();
     }
@@ -101,7 +92,6 @@ public class ExamTrueAnswerSqlProvider {
         sql.SET("question_bank_id = #{record.questionBankId,jdbcType=VARCHAR}");
         sql.SET("true_answer_id = #{record.trueAnswerId,jdbcType=VARCHAR}");
         sql.SET("true_answer = #{record.trueAnswer,jdbcType=VARCHAR}");
-        sql.SET("sort = #{record.sort,jdbcType=INTEGER}");
         
         ExamTrueAnswerExample example = (ExamTrueAnswerExample) parameter.get("example");
         applyWhere(sql, example, true);
@@ -114,10 +104,6 @@ public class ExamTrueAnswerSqlProvider {
         
         if (record.getTrueAnswer() != null) {
             sql.SET("true_answer = #{trueAnswer,jdbcType=VARCHAR}");
-        }
-        
-        if (record.getSort() != null) {
-            sql.SET("sort = #{sort,jdbcType=INTEGER}");
         }
         
         sql.WHERE("question_bank_id = #{questionBankId,jdbcType=VARCHAR}");

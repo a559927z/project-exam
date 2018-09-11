@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ks.dao.ExamTrueAnswerMapper">
+    <resultMap id="BaseResultMapExt" type="com.ks.dto.ExamTrueAnswer">
+        <id column="question_bank_id" jdbcType="VARCHAR" property="questionBankId"/>
+        <id column="true_answer_id" jdbcType="VARCHAR" property="trueAnswerId"/>
+        <result column="true_answer" jdbcType="VARCHAR" property="trueAnswer"/>
+        <result column="sort" jdbcType="INTEGER" property="sort"/>
+    </resultMap>
+
+    <select id="findByPage" resultMap="BaseResultMapExt">
+        select
+        <include refid="Base_Column_List"/>
+        from exam_true_answer
+        order by question_bank_id
+    </select>
+</mapper>

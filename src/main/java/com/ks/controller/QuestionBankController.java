@@ -1,5 +1,6 @@
 package com.ks.controller;
 
+import com.github.pagehelper.Page;
 import com.google.common.collect.Lists;
 import com.ks.constants.QuestionBankCategoryEnum;
 import com.ks.constants.QuestionBankCourseEnum;
@@ -7,7 +8,9 @@ import com.ks.dao.ExamQuestionBankMapper;
 import com.ks.dto.ExamQuestionBank;
 import com.ks.dto.ExamQuestionBankDto;
 import com.ks.dto.ExamQuestionBankExample;
+import com.ks.dto.ExamTrueAnswer;
 import com.ks.service.UploadService;
+import com.ks.service.impl.ExamQuestionBankService;
 import groovy.util.logging.Slf4j;
 import net.chinahrd.utils.CollectionKit;
 import org.springframework.beans.BeanUtils;
@@ -41,7 +44,7 @@ import java.util.Map;
 public class QuestionBankController extends BaseController {
 
     @Autowired
-    private UploadService uploadService;
+    private ExamQuestionBankService examQuestionBankService;
 
 
     @Autowired
@@ -92,10 +95,12 @@ public class QuestionBankController extends BaseController {
         example.createCriteria().andQuestionBankNameEqualTo(search);
 
 
+        Page<ExamQuestionBank> examQuestionBankList =
+                examQuestionBankService.findByPage(startIndex, pageSize);
 
-
-        List<ExamQuestionBank> examQuestionBankList = examQuestionBankMapper.selectByExample(null);
+//        List<ExamQuestionBank> examQuestionBankList = examQuestionBankMapper.selectByExample(null);
         List<ExamQuestionBankDto> rs = Lists.newArrayList();
+
 
         examQuestionBankList.forEach(n -> {
             ExamQuestionBankDto dto = new ExamQuestionBankDto();
@@ -107,7 +112,7 @@ public class QuestionBankController extends BaseController {
 
         Map<String, Object> rsMap = CollectionKit.newMap();
         rsMap.put("data", rs);
-        rsMap.put("total", examQuestionBankList.size());
+        rsMap.put("total", examQuestionBankList.getTotal());
         rsMap.put("draw", draw);
 
         return rsMap;

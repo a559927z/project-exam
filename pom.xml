@@ -121,11 +121,21 @@
             <version>2.2.1</version>
         </dependency>
 
+
+        <!--pagehelper -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+
         <dependency>
             <groupId>com.ks</groupId>
             <artifactId>dict-util</artifactId>
             <version>${util.version}</version>
         </dependency>
+
 
         <dependency>
             <groupId>org.mybatis.generator</groupId>
@@ -147,6 +157,29 @@
                 </configuration>
             </plugin>
             <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.ks.plugin.PaginationPlugin</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.mybatis.generator</groupId>
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
                 <version>1.3.5</version>
@@ -158,13 +191,14 @@
                     <overwrite>true</overwrite>
                 </configuration>
                 <!--把对应的插件类打包成jar，然后再把打包好的jar添加到插件的依赖中-->
-                <dependencies>
-                    <dependency>
-                        <groupId>com.ks</groupId>
-                        <artifactId>exam</artifactId>
-                        <version>20180904</version>
-                    </dependency>
-                </dependencies>
+                <!--<dependencies>-->
+                    <!--<dependency>-->
+                        <!--<groupId>com.ks</groupId>-->
+                        <!--<artifactId>exam</artifactId>-->
+                        <!--<version>20180904</version>-->
+                        <!--<systemPath>C:/MyXFiles/git/project-exam/exam-20180904.jar</systemPath>-->
+                    <!--</dependency>-->
+                <!--</dependencies>-->
             </plugin>
         </plugins>
     </build>
