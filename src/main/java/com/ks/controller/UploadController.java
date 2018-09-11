@@ -1,6 +1,7 @@
 package com.ks.controller;
 
 import com.google.common.collect.Lists;
+import com.ks.constants.QuestionBankConstants;
 import com.ks.dto.ExamQuestionBank;
 import com.ks.dto.ExamQuestionBankDto;
 import com.ks.dto.ExamTrueAnswer;
@@ -17,13 +18,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -46,12 +51,6 @@ public class UploadController extends BaseController {
 
     @Autowired
     private UploadService uploadService;
-
-    private String TITLE_PATTERN = "^\\d+\\.\\S+";
-    private String ANSWER_PATTERN = "☐";
-    private String ANSWER_TRUE_PATTERN = "☑";
-    private String JIE_XI_PATTERN = "解析:";
-    private String NOTE_PATTERN = "押题说明:";
 
     /**
      * http://localhost:8080/exam/admin/upload/index
@@ -80,6 +79,7 @@ public class UploadController extends BaseController {
                                MultipartFile file,
                                HttpServletRequest request, HttpServletResponse response)
             throws IOException, InvalidFormatException {
+
         String questionBankName = request.getParameter("questionBankName");
         String categoryId = request.getParameter("categoryVal");
         String courseId = request.getParameter("courseVal");
@@ -125,32 +125,32 @@ public class UploadController extends BaseController {
 
             String stringCellValue = trim(cell.getStringCellValue());
 
-            boolean matches = Pattern.matches(TITLE_PATTERN, stringCellValue);
+            boolean matches = Pattern.matches(QuestionBankConstants.TITLE_PATTERN, stringCellValue);
             if (matches) {
                 title += stringCellValue;
                 String nextVal = getNextVal(sheet, i);
-                if (!(StringUtils.containsAny(nextVal, ANSWER_TRUE_PATTERN)
-                        || StringUtils.containsAny(nextVal, ANSWER_PATTERN))) {
+                if (!(StringUtils.containsAny(nextVal, QuestionBankConstants.ANSWER_TRUE_PATTERN)
+                        || StringUtils.containsAny(nextVal, QuestionBankConstants.ANSWER_PATTERN))) {
                     flag = 0;
                 }
                 continue;
-            } else if (StringUtils.containsAny(stringCellValue, ANSWER_TRUE_PATTERN)
-                    || StringUtils.containsAny(stringCellValue, ANSWER_PATTERN)) {
+            } else if (StringUtils.containsAny(stringCellValue, QuestionBankConstants.ANSWER_TRUE_PATTERN)
+                    || StringUtils.containsAny(stringCellValue, QuestionBankConstants.ANSWER_PATTERN)) {
 
                 answer += stringCellValue;
                 String nextVal = getNextVal(sheet, i);
-                if (!(StringUtils.startsWith(nextVal, JIE_XI_PATTERN))) {
+                if (!(StringUtils.startsWith(nextVal, QuestionBankConstants.JIE_XI_PATTERN))) {
                     flag = 1;
                 }
                 continue;
-            } else if (StringUtils.startsWith(stringCellValue, JIE_XI_PATTERN)) {
+            } else if (StringUtils.startsWith(stringCellValue, QuestionBankConstants.JIE_XI_PATTERN)) {
                 jieXi += stringCellValue;
                 String nextVal = getNextVal(sheet, i);
-                if (!(StringUtils.startsWith(nextVal, NOTE_PATTERN))) {
+                if (!(StringUtils.startsWith(nextVal, QuestionBankConstants.NOTE_PATTERN))) {
                     flag = 2;
                 }
                 continue;
-            } else if (StringUtils.startsWith(stringCellValue, NOTE_PATTERN)) {
+            } else if (StringUtils.startsWith(stringCellValue, QuestionBankConstants.NOTE_PATTERN)) {
                 note += stringCellValue;
                 Row nextRow = sheet.getRow(i + 1);
                 if (nextRow == null) {
@@ -160,19 +160,17 @@ public class UploadController extends BaseController {
                     dto.setTitle(prossTitle(title));
                     dto.setAnswer(answer);
                     dto.setTrueAnswer(trueAnswer(answer));
-                    List<ExamTrueAnswer> examTrueAnswerList = prossTrueAnswer(dto.getQuestionBankId(), dto.getTrueAnswer());
-                    dto.setExamTrueAnswerList(examTrueAnswerList);
                     dto.setJieXi(jieXi);
                     dto.setNote(note);
                     dto.setCategoryId(categoryId);
                     dto.setCourseId(courseId);
-                    dto.setType(optionsRadiosInline);
+                    dto.setType(processType(dto.getTrueAnswer()));
                     dto.setIsLock(0);
                     list.add(dto);
                     break;
                 }
                 String nextVal = trim(nextRow.getCell(0).getStringCellValue());
-                boolean endTitle = Pattern.matches(TITLE_PATTERN, nextVal);
+                boolean endTitle = Pattern.matches(QuestionBankConstants.TITLE_PATTERN, nextVal);
                 if (!endTitle) {
                     flag = 3;
                 } else {
@@ -182,13 +180,11 @@ public class UploadController extends BaseController {
                     dto.setTitle(prossTitle(title));
                     dto.setAnswer(answer);
                     dto.setTrueAnswer(trueAnswer(answer));
-                    List<ExamTrueAnswer> examTrueAnswerList = prossTrueAnswer(dto.getQuestionBankId(), dto.getTrueAnswer());
-                    dto.setExamTrueAnswerList(examTrueAnswerList);
                     dto.setJieXi(jieXi);
                     dto.setNote(note);
                     dto.setCategoryId(categoryId);
                     dto.setCourseId(courseId);
-                    dto.setType(optionsRadiosInline);
+                    dto.setType(processType(dto.getTrueAnswer()));
                     dto.setIsLock(0);
                     list.add(dto);
                     title = "";
@@ -208,10 +204,41 @@ public class UploadController extends BaseController {
                 note += stringCellValue;
             }
         }
-
         int successTotal = putStorage(list);
-        model.addAttribute("successTotal" + successTotal);
-        return "redirect:index";
+        System.out.println(successTotal);
+        model.addAttribute("successTotal", successTotal);
+        return "forward:success";
+    }
+
+
+    private String processType(String trueAnswer) {
+
+        int i = StringUtil.appearNumber(trueAnswer, QuestionBankConstants.ANSWER_TRUE_PATTERN);
+        if (i > 1) {
+            // 多选题
+            return "3";
+        } else if (
+                StringUtils.equals(trueAnswer, QuestionBankConstants.SHI_FEI_PATTERN1)
+                        || StringUtils.equals(trueAnswer, QuestionBankConstants.SHI_FEI_PATTERN2)
+                ) {
+            // 是非选题
+            return "2";
+        } else {
+            // 单选题
+            return "1";
+        }
+
+    }
+
+    /**
+     * http://localhost:8080/exam/admin/upload/success
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping("/success")
+    public String success(Model model, HttpServletRequest request) {
+        return "admin/successAdmin";
     }
 
     /**
@@ -245,21 +272,6 @@ public class UploadController extends BaseController {
     }
 
 
-    private List<ExamTrueAnswer> prossTrueAnswer(String qbId, String trueAnswerStr) {
-        List<ExamTrueAnswer> rs = Lists.newArrayList();
-        if (StringUtil.containsAny(trueAnswerStr, ANSWER_TRUE_PATTERN)) {
-            String[] split = StringUtils.split(trueAnswerStr, ANSWER_TRUE_PATTERN);
-            for (int i = 0; i < split.length - 1; i++) {
-                ExamTrueAnswer dto = new ExamTrueAnswer();
-                dto.setQuestionBankId(qbId);
-                dto.setTrueAnswerId(Identities.uuid2());
-                dto.setTrueAnswer(split[i]);
-                rs.add(dto);
-            }
-        }
-        return rs;
-    }
-
     /**
      * 正确答案
      *
@@ -267,16 +279,13 @@ public class UploadController extends BaseController {
      * @return
      */
     private String trueAnswer(String stringCellValue) {
-        if (StringUtil.containsAny(stringCellValue, ANSWER_PATTERN)) {
-//            System.out.println("答案=====>" + stringCellValue);
-            if (StringUtil.containsAny(stringCellValue, ANSWER_TRUE_PATTERN)) {
-                String ss = trim(stringCellValue);
-                ss = StringUtil.substringAfter(ss, ANSWER_TRUE_PATTERN);
-                ss = StringUtil.substringBefore(ss, ANSWER_PATTERN);
-                ss = StringUtil.deleteWhitespace(ss).trim();
-//                System.out.println("正确答案=====>" + ss);
-                return ANSWER_TRUE_PATTERN + ss;
-            }
+        if (StringUtil.containsAny(stringCellValue, QuestionBankConstants.ANSWER_PATTERN) ||
+                StringUtil.containsAny(stringCellValue, QuestionBankConstants.ANSWER_TRUE_PATTERN)) {
+            String ss = trim(stringCellValue);
+            ss = StringUtil.substringAfter(ss, QuestionBankConstants.ANSWER_TRUE_PATTERN);
+            ss = StringUtil.substringBefore(ss, QuestionBankConstants.ANSWER_PATTERN);
+            ss = StringUtil.deleteWhitespace(ss).trim();
+            return QuestionBankConstants.ANSWER_TRUE_PATTERN + ss;
         }
         return "";
     }
@@ -285,6 +294,7 @@ public class UploadController extends BaseController {
         return val.replaceAll("  ", "")
                 .replaceAll(" ", "")
                 .replaceAll("   ", "")
+                .replaceAll(" ", "")
                 .trim();
     }
 

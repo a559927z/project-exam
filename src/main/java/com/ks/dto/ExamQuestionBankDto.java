@@ -31,9 +31,6 @@ public class ExamQuestionBankDto extends BaseDto implements Serializable {
 
     private Integer isLock;
 
-    private List<ExamTrueAnswer> examTrueAnswerList;
-
-
     private static final long serialVersionUID = 1L;
 
 

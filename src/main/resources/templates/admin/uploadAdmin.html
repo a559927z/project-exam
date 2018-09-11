@@ -15,7 +15,8 @@
         </div>
         <div class="row">
             <div class="col-lg-12">
-                <form action="" th:action="@{/admin/upload/parseXls2Dto}" enctype="multipart/form-data" method="post">
+                <form th:action="@{/admin/upload/parseXls2Dto}"
+                      enctype="multipart/form-data" method="post">
                     <div class="col-md-12">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -74,7 +75,7 @@
             </div>
         </div>
     </div>
-    <input id="successTotalId" type="hidden" name="successTotal" th:value="${successTotal}"/>
+    <!--<input id="successTotalId"  th:value="${ccc}"/>-->
 </div>
 
 <!-- jQuery -->
@@ -86,14 +87,8 @@
 <!-- Metis Menu Plugin JavaScript -->
 <script th:src="@{/sbAdmin/vendor/metisMenu/metisMenu.min.js}"></script>
 
-<!-- Morris Charts JavaScript -->
-<!--<script th:src="@{/sbAdmin/vendor/raphael/raphael.min.js}"></script>-->
-<!--<script th:src="@{/sbAdmin/vendor/morrisjs/morris.min.js}"></script>-->
-<!--<script th:src="@{/sbAdmin/data/morris-data.js}"></script>-->
-
 <!-- Custom Theme JavaScript -->
 <script th:src="@{/sbAdmin/dist/js/sb-admin-2.js}"></script>
-
 
 <script th:src="@{/js/biz/uploadAdmin.js}"></script>
 

@@ -1,15 +1,18 @@
 package com.ks.service.impl;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+import com.ks.constants.QuestionBankConstants;
 import com.ks.dao.ExamQuestionBankMapper;
 import com.ks.dao.ExamTrueAnswerMapper;
 import com.ks.dto.ExamQuestionBank;
 import com.ks.dto.ExamQuestionBankDto;
 import com.ks.dto.ExamTrueAnswer;
 import com.ks.service.UploadService;
+import net.chinahrd.utils.Identities;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,19 +37,40 @@ public class UploadServiceImpl implements UploadService {
     private ExamTrueAnswerMapper examTrueAnswerMapper;
 
 
-    @Transactional
+    //    @Transactional
     @Override
     public int insertSelective(ExamQuestionBankDto dto) {
         int rs = 0;
-        ExamQuestionBank o = new ExamQuestionBank();
-        BeanUtils.copyProperties(dto, o);
+        try {
+            ExamQuestionBank o = new ExamQuestionBank();
+            BeanUtils.copyProperties(dto, o);
 
-        List<ExamTrueAnswer> examTrueAnswerList = dto.getExamTrueAnswerList();
-        // 答案
-        examTrueAnswerList.forEach(n -> examTrueAnswerMapper.insertSelective(n));
-        // 题目
-        rs += examQuestionBankMapper.insertSelective(o);
+            // 题目
+            rs += examQuestionBankMapper.insertSelective(o);
 
+            // 答案
+            List<ExamTrueAnswer> examTrueAnswerList = processTrueAnswer(o);
+            examTrueAnswerList.forEach(n -> examTrueAnswerMapper.insertSelective(n));
+
+        } catch (Exception e) {
+            throw e;
+        }
+        return rs;
+    }
+
+    private List<ExamTrueAnswer> processTrueAnswer(ExamQuestionBank entry) {
+        List<ExamTrueAnswer> rs = Lists.newArrayList();
+        List<String> trueAnswerList =
+                Lists.newArrayList(Splitter.on(QuestionBankConstants.ANSWER_TRUE_PATTERN).omitEmptyStrings().trimResults().split(entry.getTrueAnswer()));
+
+        for (int i = 0; i < trueAnswerList.size(); i++) {
+            ExamTrueAnswer dto = new ExamTrueAnswer();
+            dto.setQuestionBankId(entry.getQuestionBankId());
+            dto.setTrueAnswerId(Identities.uuid2());
+            dto.setTrueAnswer(trueAnswerList.get(i));
+            dto.setSort(i);
+            rs.add(dto);
+        }
         return rs;
     }
 }

@@ -2,7 +2,7 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
 
     var webRoot = G_WEB_ROOT;
     var urls = {
-        list: webRoot + '/admin/questionBank/list.do',
+        list: webRoot + '/admin/questionBank/list',
     }
     layer.config({
         path: webRoot + '/layer-v3.0.3/layer/' // layer.js所在的目录，可以是绝对目录，也可以是相对目录
@@ -28,9 +28,6 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
                         break;
                     case 3:
                         param.orderColumn = "courseId";
-                        break;
-                    default:
-                        param.orderColumn = "isLock";
                         break;
                 }
                 param.orderDir = data.order[0].dir;
@@ -109,15 +106,15 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
             CONSTANT.DATA_TABLES.COLUMN.CHECKBOX, {
                 className: "ellipsis",
                 data: "questionBankName",
-                width: "100px"
+                width: "200px"
             }, {
                 className: "ellipsis",
                 data: "categoryId",
-                width: "100px"
+                width: "200px"
             }, {
                 className: "ellipsis",
                 data: "courseId",
-                width: "100px"
+                width: "280px"
             }, {
                 className: "ellipsis",
                 data: "title",
@@ -125,10 +122,11 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
             }, {
                 className: "ellipsis",
                 data: "answer",
-                width: "100px"
+                width: "200px"
             }, {
                 className: "ellipsis",
-                data: "trueAnswer"
+                data: "trueAnswer",
+                width: "200px"
             }, {
                 className: "ellipsis",
                 data: "jieXi",
@@ -136,19 +134,19 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
             }, {
                 className: "ellipsis",
                 data: "note",
-                width: "220px"
-            }, {
+                width: "200px"
+            }/*, {
                 data: "isLock",
                 "createdCell": function (td, cellData, rowData, row, col) {
                 }
-            }/*, {
+            }*//*, {
                 className: "td-operation",
                 data: null,
                 defaultContent: "",
                 orderable: false,
                 width: "220px"
             }*/],
-        "createdRow": function (row, data, index) {
+        createdRow: function (row, data, index) {
             //行渲染回调,在这里可以对该行dom元素进行任何操作
             //给当前行加样式
             if (data.role) {
@@ -167,7 +165,7 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
             // var $btnLock = $('<button type="button" class="btn btn-default btn-small btn-lock">' + textLock);
             // $('td', row).eq(5).append($btnLock);
         },
-        "drawCallback": function (settings) {
+        drawCallback: function (settings) {
             //渲染完毕后的回调
             //清空全选状态
             $(":checkbox[name='cb-check-all']", $wrapper).prop('checked', false);
@@ -190,8 +188,8 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
             });
 
         },
-        "dom": "<'row'<'col-xs-2'l><'#bar.col-xs-3'><'#searchRs.col-xs-2'><'col-xs-5'f>r>" + "t" + "<'row'<'col-xs-6'i><'col-xs-6'p>>",
-        "initComplete": function () {
+        dom: "<'row'<'col-xs-2'l><'#bar.col-xs-3'><'#searchRs.col-xs-2'><'col-xs-5'f>r>" + "t" + "<'row'<'col-xs-6'i><'col-xs-6'p>>",
+        initComplete: function () {
             $("#bar").append('<button id="batch-btn-del" type="button" class="btn ' + style.btnColor + ' btn-sm">批量删除   <span class="glyphicon glyphicon-remove ' + style.iconColor + '"></span></button>&nbsp');
             $("#searchRs").append('<div style="background-color: orangered; text-align: center; font-weight: bold;" ><span>没有查询结果</span></div>');
             $("#searchRs div").hide();
