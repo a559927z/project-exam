@@ -2,6 +2,7 @@ package com.ks.service.impl;
 
 import com.github.pagehelper.Page;
 import com.ks.dto.ExamQuestionBank;
+import com.ks.dto.ExamQuestionBankExample;
 import com.ks.dto.ExamQuestionBankTotal;
 import com.ks.dto.ExamTrueAnswer;
 
@@ -33,5 +34,9 @@ public interface ExamQuestionBankService {
      * @return
      */
     List<ExamQuestionBankTotal> queryTotal();
+
+
+    int deleteByExample(String questionBankId);
+
 
 }

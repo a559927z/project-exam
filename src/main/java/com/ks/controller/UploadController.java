@@ -86,7 +86,6 @@ public class UploadController extends BaseController {
         String courseId = request.getParameter("courseVal");
         String optionsRadiosInline = request.getParameter("optionsRadiosInline");
 
-
         if (null == file) {
             throw new RuntimeException("为空");
         }
@@ -117,7 +116,7 @@ public class UploadController extends BaseController {
         String jieXi = "";
         String note = "";
         Integer flag = 0;
-
+        String questionBankId = Identities.uuid2();
         Workbook sheets = WorkbookFactory.create(file.getInputStream());
         Sheet sheet = sheets.getSheetAt(0);
         for (int i = 0; i <= sheet.getLastRowNum(); i++) {
@@ -156,7 +155,7 @@ public class UploadController extends BaseController {
                 Row nextRow = sheet.getRow(i + 1);
                 if (nextRow == null) {
                     ExamQuestionBankDto dto = new ExamQuestionBankDto();
-                    dto.setQuestionBankId(Identities.uuid2());
+                    dto.setQuestionBankId(questionBankId);
                     dto.setQuestionBankName(questionBankName);
                     dto.setTitle(prossTitle(title));
                     dto.setAnswer(answer);
@@ -176,7 +175,7 @@ public class UploadController extends BaseController {
                     flag = 3;
                 } else {
                     ExamQuestionBankDto dto = new ExamQuestionBankDto();
-                    dto.setQuestionBankId(Identities.uuid2());
+                    dto.setQuestionBankId(questionBankId);
                     dto.setQuestionBankName(questionBankName);
                     dto.setTitle(prossTitle(title));
                     dto.setAnswer(answer);
@@ -206,7 +205,6 @@ public class UploadController extends BaseController {
             }
         }
         int successTotal = putStorage(list);
-        System.out.println(successTotal);
         model.addAttribute("successTotal", successTotal);
         return "forward:success";
     }

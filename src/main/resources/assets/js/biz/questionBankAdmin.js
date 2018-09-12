@@ -3,7 +3,9 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
     var webRoot = G_WEB_ROOT;
     var urls = {
         list: webRoot + '/admin/questionBank/list',
-        queryTotal: webRoot + '/admin/questionBank/queryTotal'
+        queryTotal: webRoot + '/admin/questionBank/queryTotal',
+        deleteQuestionBank: webRoot + '/admin/questionBank/deleteQuestionBank',
+        index: webRoot + '/admin/questionBank/index',
     }
     layer.config({
         path: webRoot + '/layer-v3.0.3/layer/' // layer.js所在的目录，可以是绝对目录，也可以是相对目录
@@ -55,6 +57,19 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
         },
         deleteItem: function (selectedItems) {
         },
+        deleteQuestionBank: function (questionBankId) {
+            console.log(questionBankId)
+            var setting = {
+                url: urls.deleteQuestionBank,
+                data: {"questionBankId": questionBankId},
+                success: function (rs, status) {
+                    if (rs.success) {
+                        layer.msg("成功删除", {icon: 1});
+                    }
+                }
+            }
+            Tc.ajax(setting);
+        },
         lockItem: function (selectedItems) {
         }
     };
@@ -66,7 +81,6 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
     var _table;
 
     function showDetails(questionBankId) {
-        // $("#tbodyZoneId").empty();
         if (typeof(_table) == "undefined") {
             _table = $table.dataTable($.extend(true, {}, defaultoption, {
                 //ajax配置为function,手动调用异步查询
@@ -210,11 +224,10 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
 
                 }
                 //此处需调用api()方法,否则返回的是JQuery对象而不是DataTables的API对象
-            })).api();
+            }));
         } else {
-            _table.fnDestroy();
-            dttable.fnClearTable(); //清空一下table
-            dttable.fnDestroy(); //还原初始化了的datatable
+            _table.fnClearTable(); //清空一下table
+            _table.fnDestroy(); //还原初始化了的datatable
             _table = $table.dataTable($.extend(true, {}, defaultoption, {
                 //ajax配置为function,手动调用异步查询
                 ajax: function (data, callback, settings) {
@@ -357,9 +370,24 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
 
                 }
                 //此处需调用api()方法,否则返回的是JQuery对象而不是DataTables的API对象
-            })).api();
+            }));
         }
+        _table.api();
+    }
 
+
+    function deleteQuestionBank(questionBankId) {
+        var setting = {
+            url: urls.deleteQuestionBank,
+            data: {"questionBankId": questionBankId},
+            success: function (rs, status) {
+                if (rs.success) {
+                    layer.msg("成功删除", {icon: 1});
+                    window.location.href = urls.index;
+                }
+            }
+        }
+        Tc.ajax(setting);
     }
 
     function initTotal() {
@@ -378,19 +406,19 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
                         '                    <i class="fa fa-tasks fa-5x"></i>' +
                         '                </div>' +
                         '                <div class="col-xs-9 text-right">' +
-                        '                    <div class="huge">' + item.total + '</div>' +
-                        '                    <div>' + item.questionBankName + '</div>' +
+                        '                    <div class="huge">题目数：' + item.total + '</div>' +
+                        '                    <div>题库名称：' + item.questionBankName + '</div>' +
                         '                </div>' +
                         '            </div>' +
                         '        </div>' +
-                        '        <a href="javascript:void(0)" class="questionBankBtn" data-questionBankId="' + item.questionBankId + '">' +
+                        '        <a href="javascript:void(0)" class="showDetails-btn" data-questionBankId="' + item.questionBankId + '">' +
                         '            <div class="panel-footer">' +
                         '                <span class="pull-left">查看明细</span>' +
                         '                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>' +
                         '                <div class="clearfix"></div>' +
                         '            </div>' +
                         '        </a>' +
-                        '        <a href="javascript:void(0)" class="questionBankBtn" data-questionBankId="' + item.questionBankId + '">' +
+                        '        <a href="javascript:void(0)" class="del-btn" data-questionBankId="' + item.questionBankId + '">' +
                         '            <div class="panel-footer">' +
                         '                <span class="pull-left">删除</span>' +
                         '                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>' +
@@ -409,9 +437,13 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
     }
 
     function initEvent() {
-        $("#totalZoneId").on("click", ".questionBankBtn", function () {
+        $("#totalZoneId").on("click", ".showDetails-btn", function () {
             var questionBankId = this.getAttribute("data-questionBankId");
             showDetails(questionBankId);
+        });
+        $("#totalZoneId").on("click", ".del-btn", function () {
+            var questionBankId = this.getAttribute("data-questionBankId");
+            deleteQuestionBank(questionBankId);
         });
     }
 

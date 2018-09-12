@@ -4,8 +4,8 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.ks.dao.ExamQuestionBankMapper;
 import com.ks.dto.ExamQuestionBank;
+import com.ks.dto.ExamQuestionBankExample;
 import com.ks.dto.ExamQuestionBankTotal;
-import com.ks.dto.ExamTrueAnswer;
 import com.ks.service.impl.ExamQuestionBankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,5 +37,12 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
     @Override
     public List<ExamQuestionBankTotal> queryTotal() {
         return examQuestionBankMapper.queryTotal();
+    }
+
+    @Override
+    public int deleteByExample(String questionBankId) {
+        ExamQuestionBankExample example = new ExamQuestionBankExample();
+        example.createCriteria().andQuestionBankIdEqualTo(questionBankId);
+        return examQuestionBankMapper.deleteByExample(example);
     }
 }

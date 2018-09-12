@@ -44,10 +44,6 @@ public class QuestionBankController extends BaseController {
     private ExamQuestionBankService examQuestionBankService;
 
 
-    @Autowired
-    private ExamQuestionBankMapper examQuestionBankMapper;
-
-
     /**
      * http://localhost:8080/exam/admin/questionBank/queryTotal
      *
@@ -66,7 +62,22 @@ public class QuestionBankController extends BaseController {
         Map<String, Object> rsMap = CollectionKit.newMap();
         rsMap.put("data", examQuestionBankTotalList);
         rsMap.put("total", examQuestionBankTotalList.size());
+        return rsMap;
+    }
 
+    /**
+     * http://localhost:8080/exam/admin/questionBank/deleteQuestionBank
+     *
+     * @param questionBankId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/deleteQuestionBank")
+    public Map<String, Object> deleteQuestionBank(String questionBankId) {
+        int i = examQuestionBankService.deleteByExample(questionBankId);
+        Map<String, Object> rsMap = CollectionKit.newMap();
+        rsMap.put("success", true);
+        rsMap.put("msg", i);
         return rsMap;
     }
 
