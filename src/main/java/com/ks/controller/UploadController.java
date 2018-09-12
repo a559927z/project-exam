@@ -86,6 +86,10 @@ public class UploadController extends BaseController {
         String courseId = request.getParameter("courseVal");
         String optionsRadiosInline = request.getParameter("optionsRadiosInline");
 
+        if (StringUtils.isBlank(questionBankName)) {
+            throw new RuntimeException("为空");
+        }
+
         if (null == file) {
             throw new RuntimeException("为空");
         }
