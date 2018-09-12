@@ -4,10 +4,13 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.ks.dao.ExamQuestionBankMapper;
 import com.ks.dto.ExamQuestionBank;
+import com.ks.dto.ExamQuestionBankTotal;
 import com.ks.dto.ExamTrueAnswer;
 import com.ks.service.impl.ExamQuestionBankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Title: ${type_name} <br/>
@@ -26,8 +29,13 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
     private ExamQuestionBankMapper examQuestionBankMapper;
 
     @Override
-    public Page<ExamQuestionBank> findByPage(int pageNo, int pageSize) {
+    public Page<ExamQuestionBank> findByPage(int pageNo, int pageSize, String questionBankId) {
         PageHelper.startPage(pageNo, pageSize);
-        return examQuestionBankMapper.findByPage();
+        return examQuestionBankMapper.findByPage(questionBankId);
+    }
+
+    @Override
+    public List<ExamQuestionBankTotal> queryTotal() {
+        return examQuestionBankMapper.queryTotal();
     }
 }

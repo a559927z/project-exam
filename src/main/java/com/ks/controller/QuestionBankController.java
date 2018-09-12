@@ -5,10 +5,7 @@ import com.google.common.collect.Lists;
 import com.ks.constants.QuestionBankCategoryEnum;
 import com.ks.constants.QuestionBankCourseEnum;
 import com.ks.dao.ExamQuestionBankMapper;
-import com.ks.dto.ExamQuestionBank;
-import com.ks.dto.ExamQuestionBankDto;
-import com.ks.dto.ExamQuestionBankExample;
-import com.ks.dto.ExamTrueAnswer;
+import com.ks.dto.*;
 import com.ks.service.UploadService;
 import com.ks.service.impl.ExamQuestionBankService;
 import groovy.util.logging.Slf4j;
@@ -52,6 +49,29 @@ public class QuestionBankController extends BaseController {
 
 
     /**
+     * http://localhost:8080/exam/admin/questionBank/queryTotal
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    @ResponseBody
+    @RequestMapping(value = "/queryTotal")
+    public Map<String, Object> queryTotal(
+            HttpServletRequest request,
+            HttpServletResponse response) throws UnsupportedEncodingException {
+        request.setCharacterEncoding("UTF-8");
+        List<ExamQuestionBankTotal> examQuestionBankTotalList = examQuestionBankService.queryTotal();
+        Map<String, Object> rsMap = CollectionKit.newMap();
+        rsMap.put("data", examQuestionBankTotalList);
+        rsMap.put("total", examQuestionBankTotalList.size());
+
+        return rsMap;
+    }
+
+
+    /**
      * http://localhost:8080/exam/admin/questionBank/index
      *
      * @param locale
@@ -64,6 +84,8 @@ public class QuestionBankController extends BaseController {
     }
 
     /**
+     * 题库
+     *
      * @param request
      */
     @ResponseBody
@@ -80,6 +102,8 @@ public class QuestionBankController extends BaseController {
         Integer pageSize = Integer.parseInt(request.getParameter("pageSize"));
         //原生搜索
         String search = request.getParameter("search");
+        // 自定参数
+        String questionBankId = request.getParameter("questionBankId");
         //获取客户端需要那一列排序
         String orderColumn = request.getParameter("orderColumn");
         if (orderColumn == null) {
@@ -94,13 +118,10 @@ public class QuestionBankController extends BaseController {
         ExamQuestionBankExample example = new ExamQuestionBankExample();
         example.createCriteria().andQuestionBankNameEqualTo(search);
 
-
         Page<ExamQuestionBank> examQuestionBankList =
-                examQuestionBankService.findByPage(startIndex, pageSize);
+                examQuestionBankService.findByPage(startIndex, pageSize, questionBankId);
 
-//        List<ExamQuestionBank> examQuestionBankList = examQuestionBankMapper.selectByExample(null);
         List<ExamQuestionBankDto> rs = Lists.newArrayList();
-
 
         examQuestionBankList.forEach(n -> {
             ExamQuestionBankDto dto = new ExamQuestionBankDto();

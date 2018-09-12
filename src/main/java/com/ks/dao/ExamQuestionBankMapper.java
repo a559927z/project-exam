@@ -6,6 +6,7 @@ import com.ks.dto.ExamQuestionBankExample;
 
 import java.util.List;
 
+import com.ks.dto.ExamQuestionBankTotal;
 import com.ks.dto.ExamTrueAnswer;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -41,5 +42,14 @@ public interface ExamQuestionBankMapper {
      *
      * @return
      */
-    Page<ExamQuestionBank> findByPage();
+    Page<ExamQuestionBank> findByPage(String questionBankId);
+
+    /**
+     * 题库的总题数
+     *
+     * @return
+     */
+    List<ExamQuestionBankTotal> queryTotal();
+
+
 }

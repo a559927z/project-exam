@@ -2,7 +2,10 @@ package com.ks.service.impl;
 
 import com.github.pagehelper.Page;
 import com.ks.dto.ExamQuestionBank;
+import com.ks.dto.ExamQuestionBankTotal;
 import com.ks.dto.ExamTrueAnswer;
+
+import java.util.List;
 
 /**
  * Title: ${type_name} <br/>
@@ -21,5 +24,14 @@ public interface ExamQuestionBankService {
      * @param pageSize
      * @return
      */
-    Page<ExamQuestionBank> findByPage(int pageNo, int pageSize);
+    Page<ExamQuestionBank> findByPage(int pageNo, int pageSize, String questionBankId);
+
+
+    /**
+     * 题库的总题数
+     *
+     * @return
+     */
+    List<ExamQuestionBankTotal> queryTotal();
+
 }

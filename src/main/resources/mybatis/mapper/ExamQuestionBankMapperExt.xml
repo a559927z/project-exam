@@ -24,5 +24,17 @@
         select
         <include refid="Base_Column_List"/>
         from exam_question_bank
+        where question_bank_id = #{questionBankId}
     </select>
+
+    <select id="queryTotal" resultType="com.ks.dto.ExamQuestionBankTotal">
+          select
+            t.question_bank_id questionBankId,
+            t.question_bank_name questionBankName,
+            count(1) total
+        from exam_question_bank t
+        group by t.question_bank_name
+    </select>
+
+
 </mapper>
