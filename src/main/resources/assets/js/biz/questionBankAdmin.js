@@ -37,9 +37,10 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
             // //组装查询参数
             param.search = data.search.value;
             //组装分页参数
-            param.startIndex = data.start;
-            param.pageSize = data.length;
-            param.draw = data.draw;
+            param.startIndex = data.start;//起始位置
+            param.pageSize = data.length;//一页大小
+            param.page = (data.start / data.length) + 1;//当前页码
+            param.draw = data.draw; // 点了多少次分页
             param.questionBankId = questionBankId;
             return param;
         },
@@ -76,12 +77,11 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
     var $table = $('#table-user');
     var $wrapper = $('#div-table-container');
     var defaultoption = CONSTANT.DATA_TABLES.DEFAULT_OPTION;
-    // 原生搜索
-    defaultoption.searching = true;
     var _table;
 
     function showDetails(questionBankId) {
-
+        // 原生搜索
+        defaultoption.searching = true;
         var tableOption = $.extend(true, {}, defaultoption, {
             //ajax配置为function,手动调用异步查询
             ajax: function (data, callback, settings) {
@@ -106,10 +106,10 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
                             }
                             //封装返回数据，这里仅演示了修改属性名
                             var returnData = {};
-                            // returnData.draw = data.draw;//这里直接自行返回了draw计数器,应该由后台返回
-                            returnData.recordsTotal = result.total;
-                            returnData.recordsFiltered = result.total;//后台不实现过滤功能，每次查询均视作全部结果
-                            returnData.data = result.data;
+                            returnData.draw = data.draw;//点了几次分页,这里直接自行返回了draw计数器,应该由后台返回"
+                            returnData.recordsTotal = result.total;//返回数据全部记录"
+                            returnData.recordsFiltered = result.total;//;//不加这个“下一页”不好使,后台不实现过滤功能，每次查询均视作全部结果"
+                            returnData.data = result.data;//返回的数据列表
                             callback(returnData);
                         }, 200);
                     },
@@ -200,11 +200,10 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
             },
             //http://www.datatables.club/reference/option/dom.html
             // dom: "<'row'<'col-md-2'l><'#bar.col-md-3'><'#searchRs.col-md-2'><'col-md-5'f>r>" + "t" + "<'row'<'col-md-6'i><'col-md-6'p>>",
-            // dom: '<"top"f>rt<"bottom"ilp><"clear">',
             dom:
-            "<'row'<'col-sm-6'l><'col-sm-6'f>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            "<'row'<'col-sm-6 col-md-6'l><'col-sm-6 col-md-6'<'pull-right'f>>>" +
+            "<'row'<'col-sm-12  col-md-12'tr>>" +
+            "<'row'<'col-sm-5 col-md-5'i><'col-sm-7  col-md-7'<'pull-right'p>>>",
             initComplete: function () {
                 $("#bar").append('<button id="batch-btn-del" type="button" class="btn ' + style.btnColor + ' btn-sm">批量删除   <span class="glyphicon glyphicon-remove ' + style.iconColor + '"></span></button>&nbsp');
                 $("#searchRs").append('<div style="background-color: orangered; text-align: center; font-weight: bold;" ><span>没有查询结果</span></div>');

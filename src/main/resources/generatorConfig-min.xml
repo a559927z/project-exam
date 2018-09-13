@@ -59,31 +59,31 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="public_login" domainObjectName="PublicLogin">
-            <property name="constructorBased" value="false"/>
-            <property name="ignoreQualifiersAtRuntime" value="false"/>
-            <property name="immutable" value="false"/>
-            <property name="modelOnly" value="false"/>
-            <property name="useActualColumnNames" value="false"/>
-            <columnOverride column="customer_id">
-                <property name="property" value="customerId"/>
-            </columnOverride>
-        </table>
-        <!--<table tableName="exam_question_bank" domainObjectName="ExamQuestionBank">-->
-            <!--<property name="useActualColumnNames" value="false"/>-->
-            <!--<property name="rootClass" value="com.ks.dto.BaseDto"/>-->
+        <!--<table tableName="public_login" domainObjectName="PublicLogin">-->
+        <!--<property name="constructorBased" value="false"/>-->
+        <!--<property name="ignoreQualifiersAtRuntime" value="false"/>-->
+        <!--<property name="immutable" value="false"/>-->
+        <!--<property name="modelOnly" value="false"/>-->
+        <!--<property name="useActualColumnNames" value="false"/>-->
+        <!--<columnOverride column="customer_id">-->
+        <!--<property name="property" value="customerId"/>-->
+        <!--</columnOverride>-->
         <!--</table>-->
-        <!--<table tableName="exam_roll" domainObjectName="ExamRoll">-->
-            <!--<property name="useActualColumnNames" value="false"/>-->
-            <!--<property name="rootClass" value="com.ks.dto.BaseDto"/>-->
-        <!--</table>-->
-        <!--<table tableName="exam_true_answer" domainObjectName="ExamTrueAnswer">-->
-            <!--<property name="useActualColumnNames" value="false"/>-->
-            <!--<property name="rootClass" value="com.ks.dto.BaseDto"/>-->
-        <!--</table>-->
-        <table tableName="exam_question_bank_score" domainObjectName="ExamQuestionBankScore">
+        <table tableName="exam_question_bank" domainObjectName="ExamQuestionBank">
             <property name="useActualColumnNames" value="false"/>
             <property name="rootClass" value="com.ks.dto.BaseDto"/>
         </table>
+        <!--<table tableName="exam_roll" domainObjectName="ExamRoll">-->
+        <!--<property name="useActualColumnNames" value="false"/>-->
+        <!--<property name="rootClass" value="com.ks.dto.BaseDto"/>-->
+        <!--</table>-->
+        <!--<table tableName="exam_question_bank_true_answer" domainObjectName="ExamQuestionBankTrueAnswer">-->
+        <!--<property name="useActualColumnNames" value="false"/>-->
+        <!--<property name="rootClass" value="com.ks.dto.BaseDto"/>-->
+        <!--</table>-->
+        <!--<table tableName="exam_question_bank_score" domainObjectName="ExamQuestionBankScore">-->
+        <!--<property name="useActualColumnNames" value="false"/>-->
+        <!--<property name="rootClass" value="com.ks.dto.BaseDto"/>-->
+        <!--</table>-->
     </context>
 </generatorConfiguration>

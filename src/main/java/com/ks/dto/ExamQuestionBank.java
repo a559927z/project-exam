@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class ExamQuestionBank extends BaseDto implements Serializable {
-    private Integer id;
+    private String questionId;
 
     private String title;
 
@@ -38,12 +38,12 @@ public class ExamQuestionBank extends BaseDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Integer getId() {
-        return id;
+    public String getQuestionId() {
+        return questionId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setQuestionId(String questionId) {
+        this.questionId = questionId == null ? null : questionId.trim();
     }
 
     public String getTitle() {

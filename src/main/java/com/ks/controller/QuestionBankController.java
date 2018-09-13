@@ -1,6 +1,7 @@
 package com.ks.controller;
 
 import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.ks.constants.QuestionBankCategoryEnum;
 import com.ks.constants.QuestionBankCourseEnum;
@@ -196,9 +197,18 @@ public class QuestionBankController extends BaseController {
 
         Page<ExamQuestionBank> examQuestionBankList =
                 examQuestionBankService.findByPage(startIndex, pageSize, questionBankId);
+        // 需要把Page包装成PageInfo对象才能序列化。该插件也默认实现了一个PageInfo
+        PageInfo<ExamQuestionBank> pageInfo = new PageInfo<>(examQuestionBankList);
+
+        // 结果集
+        List<ExamQuestionBank> list = pageInfo.getList();
+        // 总记录数
+        long total = pageInfo.getTotal();
+        // 每页的数量
+        pageInfo.getPageSize();
 
         List<ExamQuestionBankDto> rs = Lists.newArrayList();
-        examQuestionBankList.forEach((ExamQuestionBank n) -> {
+        list.forEach((ExamQuestionBank n) -> {
             ExamQuestionBankDto dto = new ExamQuestionBankDto();
             BeanUtils.copyProperties(n, dto);
             dto.setCategoryId(QuestionBankCategoryEnum.getNameByCode(n.getCategoryId()));
@@ -208,7 +218,7 @@ public class QuestionBankController extends BaseController {
 
         Map<String, Object> rsMap = CollectionKit.newMap();
         rsMap.put("data", rs);
-        rsMap.put("total", examQuestionBankList.getTotal());
+        rsMap.put("total", total);
         rsMap.put("draw", draw);
         return rsMap;
     }

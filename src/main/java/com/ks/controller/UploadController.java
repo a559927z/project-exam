@@ -6,13 +6,10 @@ import com.ks.dao.ExamQuestionBankMapper;
 import com.ks.dto.ExamQuestionBank;
 import com.ks.dto.ExamQuestionBankDto;
 import com.ks.dto.ExamQuestionBankExample;
-import com.ks.dto.ExamTrueAnswer;
 import com.ks.service.UploadService;
-import com.ks.service.impl.ExamQuestionBankService;
 import com.ks.utils.StringUtil;
 import groovy.util.logging.Slf4j;
 import net.chinahrd.utils.Identities;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -22,17 +19,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -129,7 +120,7 @@ public class UploadController extends BaseController {
                 System.out.println("上传失败");
             }
         }
-        List<ExamQuestionBankDto> list = Lists.newArrayList();
+        List<ExamQuestionBank> list = Lists.newArrayList();
         String title = "";
         String answer = "";
         String jieXi = "";
@@ -173,10 +164,11 @@ public class UploadController extends BaseController {
                 note += stringCellValue;
                 Row nextRow = sheet.getRow(i + 1);
                 if (nextRow == null) {
-                    ExamQuestionBankDto dto = new ExamQuestionBankDto();
+                    ExamQuestionBank dto = new ExamQuestionBank();
+                    dto.setQuestionId(Identities.uuid2());
                     dto.setQuestionBankId(questionBankId);
                     dto.setQuestionBankName(questionBankName);
-                    dto.setTitle(prossTitle(title));
+                    dto.setTitle(processTitle(title));
                     dto.setAnswer(answer);
                     dto.setTrueAnswer(trueAnswer(answer));
                     dto.setJieXi(jieXi);
@@ -193,10 +185,11 @@ public class UploadController extends BaseController {
                 if (!endTitle) {
                     flag = 3;
                 } else {
-                    ExamQuestionBankDto dto = new ExamQuestionBankDto();
+                    ExamQuestionBank dto = new ExamQuestionBank();
+                    dto.setQuestionId(Identities.uuid2());
                     dto.setQuestionBankId(questionBankId);
                     dto.setQuestionBankName(questionBankName);
-                    dto.setTitle(prossTitle(title));
+                    dto.setTitle(processTitle(title));
                     dto.setAnswer(answer);
                     dto.setTrueAnswer(trueAnswer(answer));
                     dto.setJieXi(jieXi);
@@ -273,9 +266,9 @@ public class UploadController extends BaseController {
      * @param list
      * @return 入库条数
      */
-    private int putStorage(List<ExamQuestionBankDto> list) {
+    private int putStorage(List<ExamQuestionBank> list) {
         int rs = 0;
-        for (ExamQuestionBankDto dto : list) {
+        for (ExamQuestionBank dto : list) {
             rs += uploadService.insertSelective(dto);
         }
         return rs;
@@ -346,7 +339,13 @@ public class UploadController extends BaseController {
         System.out.println(stringCellValue);
     }
 
-    private String prossTitle(String title) {
+    /**
+     * 去题号
+     *
+     * @param title
+     * @return
+     */
+    private String processTitle(String title) {
         int i = title.indexOf(".");
         return title.substring(i + 1, title.length());
     }

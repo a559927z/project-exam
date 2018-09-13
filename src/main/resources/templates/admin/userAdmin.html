@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:include="top :: copy" th:with="title='上传管理'"></head>
+<head th:include="top :: copy" th:with="title='用户管理'"></head>
 
 <body>
 
@@ -9,13 +9,7 @@
     <div id="page-wrapper">
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">题库管理</h1>
-                <p  th:text="${successTotal}">(time)</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div id="toIndexBtnId" class="btn btn-primary">返回</div>
+                <h1 class="page-header">用户管理</h1>
             </div>
         </div>
     </div>
@@ -23,24 +17,12 @@
 
 <!-- jQuery -->
 <script th:src="@{/webjars/jquery/2.0.3/jquery.min.js}"></script>
-
 <!-- Bootstrap Core JavaScript -->
 <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
 <!-- Metis Menu Plugin JavaScript -->
 <script th:src="@{/sbAdmin/vendor/metisMenu/metisMenu.min.js}"></script>
-
 <!-- Custom Theme JavaScript -->
 <script th:src="@{/sbAdmin/dist/js/sb-admin-2.js}"></script>
-
-<script>
-    $(function () {
-        $("#toIndexBtnId").click(function () {
-            window.location.href = G_WEB_ROOT + "/admin/upload/index";
-        });
-    });
-
-</script>
 
 
 </body>

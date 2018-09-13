@@ -2,9 +2,7 @@ package com.ks.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.ks.dao.ExamQuestionBankMapper;
-import com.ks.dao.ExamQuestionBankScoreMapper;
-import com.ks.dao.ExamTrueAnswerMapper;
+import com.ks.dao.*;
 import com.ks.dto.*;
 import com.ks.service.impl.ExamQuestionBankService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +26,11 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
 
     @Autowired
     private ExamQuestionBankMapper examQuestionBankMapper;
+    @Autowired
+    private ExamQuestionBankMapperExt examQuestionBankMapperExt;
 
     @Autowired
-    private ExamTrueAnswerMapper examTrueAnswerMapper;
+    private ExamQuestionBankTrueAnswerMapper examQuestionBankTrueAnswerMapper;
 
     @Autowired
     private ExamQuestionBankScoreMapper examQuestionBankScoreMapper;
@@ -38,7 +38,7 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
     @Override
     public Page<ExamQuestionBank> findByPage(int pageNo, int pageSize, String questionBankId) {
         PageHelper.startPage(pageNo, pageSize);
-        return examQuestionBankMapper.findByPage(questionBankId);
+        return examQuestionBankMapperExt.findByPage(questionBankId);
     }
 
     @Override
@@ -47,13 +47,11 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
         example.createCriteria().andQuestionBankIdEqualTo(questionBankId);
         return examQuestionBankMapper.selectByExample(example);
     }
-    
-    
-    
+
 
     @Override
     public List<ExamQuestionBankTotal> queryTotal() {
-        return examQuestionBankMapper.queryTotal();
+        return examQuestionBankMapperExt.queryTotal();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -65,9 +63,10 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
             example.createCriteria().andQuestionBankIdEqualTo(questionBankId);
             i = examQuestionBankMapper.deleteByExample(example);
 
-            ExamTrueAnswerExample trueAnswerExample = new ExamTrueAnswerExample();
+            ExamQuestionBankTrueAnswerExample trueAnswerExample = new ExamQuestionBankTrueAnswerExample();
             trueAnswerExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
-            j = examTrueAnswerMapper.deleteByExample(trueAnswerExample);
+            examQuestionBankTrueAnswerMapper.deleteByExample(trueAnswerExample);
+
         } catch (Exception e) {
             throw new RuntimeException();
         }
