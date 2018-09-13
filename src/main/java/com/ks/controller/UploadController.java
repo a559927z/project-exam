@@ -2,14 +2,18 @@ package com.ks.controller;
 
 import com.google.common.collect.Lists;
 import com.ks.constants.QuestionBankConstants;
+import com.ks.dao.ExamQuestionBankMapper;
 import com.ks.dto.ExamQuestionBank;
 import com.ks.dto.ExamQuestionBankDto;
+import com.ks.dto.ExamQuestionBankExample;
 import com.ks.dto.ExamTrueAnswer;
 import com.ks.service.UploadService;
+import com.ks.service.impl.ExamQuestionBankService;
 import com.ks.utils.StringUtil;
 import groovy.util.logging.Slf4j;
 import net.chinahrd.utils.Identities;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -53,6 +57,9 @@ public class UploadController extends BaseController {
     @Autowired
     private UploadService uploadService;
 
+    @Autowired
+    private ExamQuestionBankMapper examQuestionBankMapper;
+
     /**
      * http://localhost:8080/exam/admin/upload/index
      *
@@ -84,14 +91,22 @@ public class UploadController extends BaseController {
         String questionBankName = request.getParameter("questionBankName");
         String categoryId = request.getParameter("categoryVal");
         String courseId = request.getParameter("courseVal");
-        String optionsRadiosInline = request.getParameter("optionsRadiosInline");
+        String questionBankId = Identities.uuid2();
 
         if (StringUtils.isBlank(questionBankName)) {
-            throw new RuntimeException("为空");
+            throw new RuntimeException("题库名称为空");
         }
 
         if (null == file) {
-            throw new RuntimeException("为空");
+            throw new RuntimeException("上传附件为空");
+        }
+
+        // 合并题库
+        ExamQuestionBankExample example = new ExamQuestionBankExample();
+        example.createCriteria().andQuestionBankNameEqualTo(questionBankName);
+        List<ExamQuestionBank> examQuestionBankList = examQuestionBankMapper.selectByExample(example);
+        if (CollectionUtils.isNotEmpty(examQuestionBankList)) {
+            questionBankId = examQuestionBankList.get(0).getQuestionBankId();
         }
 
         // jar包的路径
@@ -120,7 +135,7 @@ public class UploadController extends BaseController {
         String jieXi = "";
         String note = "";
         Integer flag = 0;
-        String questionBankId = Identities.uuid2();
+
         Workbook sheets = WorkbookFactory.create(file.getInputStream());
         Sheet sheet = sheets.getSheetAt(0);
         for (int i = 0; i <= sheet.getLastRowNum(); i++) {
@@ -215,7 +230,6 @@ public class UploadController extends BaseController {
 
 
     private String processType(String trueAnswer) {
-
         int i = appearNumber(trueAnswer, QuestionBankConstants.ANSWER_TRUE_PATTERN);
         if (i > 1) {
             // 多选题
@@ -230,7 +244,6 @@ public class UploadController extends BaseController {
             // 单选题
             return "1";
         }
-
     }
 
     public int appearNumber(String srcText, String findText) {

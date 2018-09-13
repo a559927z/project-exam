@@ -1,7 +1,7 @@
 /*
 Navicat MariaDB Data Transfer
 
-Source Server         : localhost
+Source Server         : 本地服务
 Source Server Version : 100211
 Source Host           : localhost:3369
 Source Database       : exam
@@ -10,7 +10,7 @@ Target Server Type    : MariaDB
 Target Server Version : 100211
 File Encoding         : 65001
 
-Date: 2018-09-11 01:20:25
+Date: 2018-09-13 19:43:53
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -20,7 +20,7 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `exam_question_bank`;
 CREATE TABLE `exam_question_bank` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '题目ID',
   `title` varchar(255) DEFAULT NULL COMMENT '题目',
   `answer` varchar(500) DEFAULT '' COMMENT '答案',
   `true_answer` varchar(500) DEFAULT '' COMMENT '正确答案',
@@ -37,11 +37,18 @@ CREATE TABLE `exam_question_bank` (
   `updated_by` varchar(32) DEFAULT '' COMMENT '修改人',
   `updated_date` datetime DEFAULT NULL ON UPDATE current_timestamp() COMMENT '修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1328 DEFAULT CHARSET=utf8 COMMENT='题库';
+) ENGINE=InnoDB AUTO_INCREMENT=3553 DEFAULT CHARSET=utf8 COMMENT='题库';
 
 -- ----------------------------
--- Records of exam_question_bank
+-- Table structure for exam_question_bank_score
 -- ----------------------------
+DROP TABLE IF EXISTS `exam_question_bank_score`;
+CREATE TABLE `exam_question_bank_score` (
+  `question_bank_id` varchar(32) NOT NULL COMMENT '题库ID',
+  `question_bank_type` varchar(1) NOT NULL DEFAULT '' COMMENT '题型（1：单选，2多选，3是非）',
+  `score` double(3,1) DEFAULT NULL COMMENT '题目分数',
+  PRIMARY KEY (`question_bank_id`,`question_bank_type`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for exam_roll
@@ -55,10 +62,6 @@ CREATE TABLE `exam_roll` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='卷';
 
 -- ----------------------------
--- Records of exam_roll
--- ----------------------------
-
--- ----------------------------
 -- Table structure for exam_true_answer
 -- ----------------------------
 DROP TABLE IF EXISTS `exam_true_answer`;
@@ -66,12 +69,9 @@ CREATE TABLE `exam_true_answer` (
   `question_bank_id` varchar(32) NOT NULL DEFAULT '' COMMENT '题目ID',
   `true_answer_id` varchar(32) NOT NULL DEFAULT '' COMMENT '答案ID',
   `true_answer` varchar(500) DEFAULT '' COMMENT '答案',
+  `sort` int(1) DEFAULT NULL COMMENT '排序',
   PRIMARY KEY (`question_bank_id`,`true_answer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of exam_true_answer
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for public_config
@@ -88,10 +88,6 @@ CREATE TABLE `public_config` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of public_config
--- ----------------------------
-
--- ----------------------------
 -- Table structure for public_login
 -- ----------------------------
 DROP TABLE IF EXISTS `public_login`;
@@ -105,7 +101,5 @@ CREATE TABLE `public_login` (
   KEY `index_pwd` (`password`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='登录表';
 
--- ----------------------------
--- Records of public_login
 -- ----------------------------
 INSERT INTO `public_login` VALUES ('*', 'superAdmin', 'sa123456', '0');

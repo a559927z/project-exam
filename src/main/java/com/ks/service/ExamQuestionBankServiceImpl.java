@@ -3,11 +3,9 @@ package com.ks.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.ks.dao.ExamQuestionBankMapper;
+import com.ks.dao.ExamQuestionBankScoreMapper;
 import com.ks.dao.ExamTrueAnswerMapper;
-import com.ks.dto.ExamQuestionBank;
-import com.ks.dto.ExamQuestionBankExample;
-import com.ks.dto.ExamQuestionBankTotal;
-import com.ks.dto.ExamTrueAnswerExample;
+import com.ks.dto.*;
 import com.ks.service.impl.ExamQuestionBankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +32,9 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
     @Autowired
     private ExamTrueAnswerMapper examTrueAnswerMapper;
 
+    @Autowired
+    private ExamQuestionBankScoreMapper examQuestionBankScoreMapper;
+
     @Override
     public Page<ExamQuestionBank> findByPage(int pageNo, int pageSize, String questionBankId) {
         PageHelper.startPage(pageNo, pageSize);
@@ -41,11 +42,21 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
     }
 
     @Override
+    public List<ExamQuestionBank> selectByExample(String questionBankId) {
+        ExamQuestionBankExample example = new ExamQuestionBankExample();
+        example.createCriteria().andQuestionBankIdEqualTo(questionBankId);
+        return examQuestionBankMapper.selectByExample(example);
+    }
+    
+    
+    
+
+    @Override
     public List<ExamQuestionBankTotal> queryTotal() {
         return examQuestionBankMapper.queryTotal();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteByExample(String questionBankId) {
         int i = 0, j = 0;
@@ -61,5 +72,39 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
             throw new RuntimeException();
         }
         return i + j;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public int updateQuestionType(String questionBankId, Double singleId, Double multipleId, Double yesNoId) {
+
+        int rs = 0;
+        for (int i = 1; i < 4; i++) {
+            ExamQuestionBankScoreExample where = new ExamQuestionBankScoreExample();
+            ExamQuestionBankScore val = new ExamQuestionBankScore();
+            val.setQuestionBankId(questionBankId);
+            if (i == 1) {
+                val.setScore(singleId);
+                val.setQuestionBankType("1");
+                where.createCriteria()
+                        .andQuestionBankIdEqualTo(questionBankId)
+                        .andQuestionBankTypeEqualTo("1");
+            } else if (i == 2) {
+                val.setScore(multipleId);
+                val.setQuestionBankType("2");
+                where.createCriteria()
+                        .andQuestionBankIdEqualTo(questionBankId)
+                        .andQuestionBankTypeEqualTo("2");
+            } else if (i == 3) {
+                val.setScore(yesNoId);
+                val.setQuestionBankType("3");
+                where.createCriteria()
+                        .andQuestionBankIdEqualTo(questionBankId)
+                        .andQuestionBankTypeEqualTo("3");
+            }
+            examQuestionBankScoreMapper.deleteByExample(where);
+            rs += examQuestionBankScoreMapper.insert(val);
+        }
+        return rs;
     }
 }

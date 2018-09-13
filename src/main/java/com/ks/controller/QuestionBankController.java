@@ -4,16 +4,17 @@ import com.github.pagehelper.Page;
 import com.google.common.collect.Lists;
 import com.ks.constants.QuestionBankCategoryEnum;
 import com.ks.constants.QuestionBankCourseEnum;
-import com.ks.dao.ExamQuestionBankMapper;
+import com.ks.dao.ExamQuestionBankScoreMapper;
 import com.ks.dto.*;
-import com.ks.service.UploadService;
 import com.ks.service.impl.ExamQuestionBankService;
 import groovy.util.logging.Slf4j;
 import net.chinahrd.utils.CollectionKit;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -43,8 +44,65 @@ public class QuestionBankController extends BaseController {
     @Autowired
     private ExamQuestionBankService examQuestionBankService;
 
+    @Autowired
+    private ExamQuestionBankScoreMapper examQuestionBankScoreMapper;
 
     /**
+     * 查题库类型分数
+     * <p>
+     * http://localhost:8080/exam/admin/questionBank/updateQuestionType
+     *
+     * @return
+     */
+    @ResponseBody
+    @GetMapping
+    @RequestMapping(value = "/findScore")
+    public Map<String, Object> findScore(String questionBankId) {
+
+        ExamQuestionBankScoreExample example = new ExamQuestionBankScoreExample();
+        example.createCriteria().andQuestionBankIdEqualTo(questionBankId);
+
+        List<ExamQuestionBankScore> rs = examQuestionBankScoreMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(rs)) {
+            return null;
+        }
+        Map<String, Object> rsMap = CollectionKit.newMap();
+        rs.forEach(n -> {
+            if (n.getQuestionBankType().equals("1")) {
+                rsMap.put("singleId", n.getScore());
+            } else if (n.getQuestionBankType().equals("2")) {
+                rsMap.put("multipleId", n.getScore());
+            } else if (n.getQuestionBankType().equals("3")) {
+                rsMap.put("yesNoId", n.getScore());
+            }
+        });
+        return rsMap;
+    }
+
+    /**
+     * 设置分数
+     * <p>
+     * http://localhost:8080/exam/admin/questionBank/updateQuestionType
+     *
+     * @return
+     */
+    @ResponseBody
+    @GetMapping
+    @RequestMapping(value = "/updateQuestionType")
+    public Map<String, Object> updateQuestionType(
+            String questionBankId, Double singleId, Double multipleId, Double yesNoId) {
+
+        int i = examQuestionBankService.updateQuestionType(questionBankId, singleId, multipleId, yesNoId);
+
+        Map<String, Object> rsMap = CollectionKit.newMap();
+        rsMap.put("k", i == 3 ? true : false);
+        rsMap.put("v", i == 3 ? "成功" : "失败");
+        return rsMap;
+    }
+
+    /**
+     * 查出题库总数
+     * <p>
      * http://localhost:8080/exam/admin/questionBank/queryTotal
      *
      * @param request
@@ -59,6 +117,7 @@ public class QuestionBankController extends BaseController {
             HttpServletResponse response) throws UnsupportedEncodingException {
         request.setCharacterEncoding("UTF-8");
         List<ExamQuestionBankTotal> examQuestionBankTotalList = examQuestionBankService.queryTotal();
+
         Map<String, Object> rsMap = CollectionKit.newMap();
         rsMap.put("data", examQuestionBankTotalList);
         rsMap.put("total", examQuestionBankTotalList.size());
@@ -66,6 +125,8 @@ public class QuestionBankController extends BaseController {
     }
 
     /**
+     * 删除题库
+     * <p>
      * http://localhost:8080/exam/admin/questionBank/deleteQuestionBank
      *
      * @param questionBankId
@@ -83,6 +144,8 @@ public class QuestionBankController extends BaseController {
 
 
     /**
+     * 题库首页
+     * <p>
      * http://localhost:8080/exam/admin/questionBank/index
      *
      * @param locale
@@ -95,7 +158,9 @@ public class QuestionBankController extends BaseController {
     }
 
     /**
-     * 题库
+     * 题库列表
+     * <p>
+     * http://localhost:8080/exam/admin/questionBank/list
      *
      * @param request
      */
@@ -133,8 +198,7 @@ public class QuestionBankController extends BaseController {
                 examQuestionBankService.findByPage(startIndex, pageSize, questionBankId);
 
         List<ExamQuestionBankDto> rs = Lists.newArrayList();
-
-        examQuestionBankList.forEach(n -> {
+        examQuestionBankList.forEach((ExamQuestionBank n) -> {
             ExamQuestionBankDto dto = new ExamQuestionBankDto();
             BeanUtils.copyProperties(n, dto);
             dto.setCategoryId(QuestionBankCategoryEnum.getNameByCode(n.getCategoryId()));
@@ -146,7 +210,6 @@ public class QuestionBankController extends BaseController {
         rsMap.put("data", rs);
         rsMap.put("total", examQuestionBankList.getTotal());
         rsMap.put("draw", draw);
-
         return rsMap;
     }
 

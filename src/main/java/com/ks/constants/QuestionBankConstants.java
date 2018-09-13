@@ -19,5 +19,7 @@ public interface QuestionBankConstants {
     String SHI_FEI_PATTERN1 = "☑正确";
     String SHI_FEI_PATTERN2 = "☑错误";
 
-
+    int SINGLE_QUESTION = 0;
+    int MULTIPLE_QUESTION = 0;
+    int YES_NO_QUESTION = 0;
 }

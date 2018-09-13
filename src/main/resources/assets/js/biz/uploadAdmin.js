@@ -6,30 +6,7 @@ $(function () {
     }
 
 
-    function submit() {
-        $("#submitBtnId").click(function () {
-
-            $.ajax({
-                type: "POST",
-                url: urls.parseXls2Dto,
-                cache: false,	//禁用缓存
-                data: {
-                    "questionBankName": $("#questionBankNameId").val(),
-                    "categoryId": $("#categoryVal").val(),
-                    "courseId": $("#courseVal").val(),
-                    "file": $("#fileId").val(),
-                },
-                dataType: "json",
-                success: function (result) {
-                    console.log(result);
-                }
-            });
-        });
-    }
-
     function initSelect() {
-        //        $("#categoryVal").empty();
-        //        $("#courseVal").empty();
         $("#categorySelect").change(function () {
             $("#courseSelect").empty();
             var categoryVal = $("#categorySelect").val();

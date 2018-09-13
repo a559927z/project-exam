@@ -27,6 +27,11 @@ public interface ExamQuestionBankService {
      */
     Page<ExamQuestionBank> findByPage(int pageNo, int pageSize, String questionBankId);
 
+    /**
+     * @param questionBankId
+     * @return
+     */
+    List<ExamQuestionBank> selectByExample(String questionBankId);
 
     /**
      * 题库的总题数
@@ -39,4 +44,13 @@ public interface ExamQuestionBankService {
     int deleteByExample(String questionBankId);
 
 
+    /**
+     * 设置分数
+     *
+     * @param singleId
+     * @param multipleId
+     * @param yesNoId
+     * @return
+     */
+    int updateQuestionType(String questionBankId, Double singleId, Double multipleId, Double yesNoId);
 }

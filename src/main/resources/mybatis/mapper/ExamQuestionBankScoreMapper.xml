@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ks.dao.ExamQuestionBankScoreMapper">
+    <resultMap id="BaseResultMap" type="com.ks.dto.ExamQuestionBankScore">
+        <id column="question_bank_id" jdbcType="VARCHAR" property="questionBankId"/>
+        <result column="question_bank_type" jdbcType="VARCHAR" property="questionBankType"/>
+        <result column="score" jdbcType="DOUBLE" property="score"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    question_bank_id, question_bank_type, score
+  </sql>
+    <select id="selectByExample" parameterType="com.ks.dto.ExamQuestionBankScoreExample" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from exam_question_bank_score
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from exam_question_bank_score
+        where question_bank_id = #{questionBankId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from exam_question_bank_score
+    where question_bank_id = #{questionBankId,jdbcType=VARCHAR}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.ks.dto.ExamQuestionBankScoreExample">
+        delete from exam_question_bank_score
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.ks.dto.ExamQuestionBankScore">
+    insert into exam_question_bank_score (question_bank_id, question_bank_type, 
+      score)
+    values (#{questionBankId,jdbcType=VARCHAR}, #{questionBankType,jdbcType=VARCHAR}, 
+      #{score,jdbcType=DOUBLE})
+  </insert>
+    <insert id="insertSelective" parameterType="com.ks.dto.ExamQuestionBankScore">
+        insert into exam_question_bank_score
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="questionBankId != null">
+                question_bank_id,
+            </if>
+            <if test="questionBankType != null">
+                question_bank_type,
+            </if>
+            <if test="score != null">
+                score,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="questionBankId != null">
+                #{questionBankId,jdbcType=VARCHAR},
+            </if>
+            <if test="questionBankType != null">
+                #{questionBankType,jdbcType=VARCHAR},
+            </if>
+            <if test="score != null">
+                #{score,jdbcType=DOUBLE},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.ks.dto.ExamQuestionBankScoreExample" resultType="java.lang.Long">
+        select count(*) from exam_question_bank_score
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update exam_question_bank_score
+        <set>
+            <if test="record.questionBankId != null">
+                question_bank_id = #{record.questionBankId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.questionBankType != null">
+                question_bank_type = #{record.questionBankType,jdbcType=VARCHAR},
+            </if>
+            <if test="record.score != null">
+                score = #{record.score,jdbcType=DOUBLE},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update exam_question_bank_score
+        set question_bank_id = #{record.questionBankId,jdbcType=VARCHAR},
+        question_bank_type = #{record.questionBankType,jdbcType=VARCHAR},
+        score = #{record.score,jdbcType=DOUBLE}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ks.dto.ExamQuestionBankScore">
+        update exam_question_bank_score
+        <set>
+            <if test="questionBankType != null">
+                question_bank_type = #{questionBankType,jdbcType=VARCHAR},
+            </if>
+            <if test="score != null">
+                score = #{score,jdbcType=DOUBLE},
+            </if>
+        </set>
+        where question_bank_id = #{questionBankId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ks.dto.ExamQuestionBankScore">
+    update exam_question_bank_score
+    set question_bank_type = #{questionBankType,jdbcType=VARCHAR},
+      score = #{score,jdbcType=DOUBLE}
+    where question_bank_id = #{questionBankId,jdbcType=VARCHAR}
+  </update>
+</mapper>

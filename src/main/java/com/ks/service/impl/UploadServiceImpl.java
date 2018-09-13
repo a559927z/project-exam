@@ -15,6 +15,7 @@ import net.chinahrd.utils.Identities;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,9 +40,10 @@ public class UploadServiceImpl implements UploadService {
     private ExamTrueAnswerMapper examTrueAnswerMapper;
 
 
-    //    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int insertSelective(ExamQuestionBankDto dto) {
+
         int rs = 0;
         try {
             ExamQuestionBank o = new ExamQuestionBank();

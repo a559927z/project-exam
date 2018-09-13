@@ -39,8 +39,8 @@ public class AdminController {
     @RequestMapping("/validate")
     @PostMapping
     public String validate(Model model,
-                        @RequestParam("accessId") String userName,
-                        @RequestParam("password") String password) {
+                           @RequestParam("accessId") String userName,
+                           @RequestParam("password") String password) {
 
         model.addAttribute("access", userName);
         model.addAttribute("password", password);

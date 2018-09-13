@@ -28,12 +28,16 @@
     </select>
 
     <select id="queryTotal" resultType="com.ks.dto.ExamQuestionBankTotal">
-          select
+         SELECT
             t.question_bank_id questionBankId,
             t.question_bank_name questionBankName,
             count(1) total
-        from exam_question_bank t
-        group by t.question_bank_name
+        FROM
+            exam_question_bank t
+        GROUP BY
+            t.question_bank_name
+        ORDER BY
+            t.created_date DESC
     </select>
 
 
