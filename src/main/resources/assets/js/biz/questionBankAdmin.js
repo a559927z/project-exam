@@ -198,7 +198,13 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
 
                 });
             },
-            dom: "<'row'<'col-xs-2'l><'#bar.col-xs-3'><'#searchRs.col-xs-2'><'col-xs-5'f>r>" + "t" + "<'row'<'col-xs-6'i><'col-xs-6'p>>",
+            //http://www.datatables.club/reference/option/dom.html
+            // dom: "<'row'<'col-md-2'l><'#bar.col-md-3'><'#searchRs.col-md-2'><'col-md-5'f>r>" + "t" + "<'row'<'col-md-6'i><'col-md-6'p>>",
+            // dom: '<"top"f>rt<"bottom"ilp><"clear">',
+            dom:
+            "<'row'<'col-sm-6'l><'col-sm-6'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
             initComplete: function () {
                 $("#bar").append('<button id="batch-btn-del" type="button" class="btn ' + style.btnColor + ' btn-sm">批量删除   <span class="glyphicon glyphicon-remove ' + style.iconColor + '"></span></button>&nbsp');
                 $("#searchRs").append('<div style="background-color: orangered; text-align: center; font-weight: bold;" ><span>没有查询结果</span></div>');
