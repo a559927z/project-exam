@@ -1,0 +1,59 @@
+<!--&lt;!&ndash; Custom Fonts &ndash;&gt;-->
+<!--<link href="../sbAdmin/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"></link>-->
+
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="top :: copy" th:with="title='Login'"></head>
+
+<body>
+<div>
+    <link th:href="@{/sbAdmin/dist/css/sb-admin-2.css}" rel="stylesheet"></link>
+    <link th:href="@{/sbAdmin/vendor/metisMenu/metisMenu.min.css}" rel="stylesheet"></link>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="login-panel panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">登录</h3>
+                </div>
+                <div class="panel-body">
+                    <form role="form" th:action="@{/admin/validate}" method="post">
+                        <fieldset>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="用户名" name="accessId" type="text"
+                                       autofocus="autofocus"/>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="密码" name="password" type="password"
+                                       value=""/>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input name="remember" type="checkbox" value="记住"/>记住
+                                </label>
+                            </div>
+                            <input type="submit" value="提交" class="btn btn-lg btn-success btn-block"/>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Metis Menu Plugin JavaScript -->
+<script th:src="@{/sbAdmin/vendor/metisMenu/metisMenu.min.js}"></script>
+
+<!-- Custom Theme JavaScript -->
+<script th:src="@{/sbAdmin/dist/js/sb-admin-2.js}"></script>
+
+<script th:src="@{/js/biz/login.js}"></script>
+
+
+</body>
+
+</html>
+

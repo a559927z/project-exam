@@ -1,0 +1,18 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="top :: copy" th:with="title='服务器异常'"></head>
+
+<script src="https://cdn.bootcss.com/device.js/0.2.7/device.min.js"></script>
+
+<script type="text/javascript" th:inline="javascript">
+    var webRoot = G_WEB_ROOT;
+    if (device.mobile()) {
+        window.location = webRoot + "/app/";
+    }
+    if (device.desktop()) {
+        window.location = webRoot + "/admin/";
+    }
+</script>
+<body>
+
+</body>
+</html>
