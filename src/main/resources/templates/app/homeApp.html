@@ -1,0 +1,105 @@
+<!--http://www.hcoder.net/hui/docs314.html-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/huiAdmin/css/hui.css}"/>
+    <!-- Bootstrap Core CSS -->
+    <!--<link th:href="@{/webjars/bootstrap/3.0.3/dist/css/bootstrap.css}" rel="stylesheet"/>-->
+
+</head>
+
+<body style="background:#FFFFFF;">
+<style>
+    #hui-footer a {
+        width: 33.3%;
+    }
+</style>
+<script type="text/javascript">
+    //创建窗口
+    function createWin() {
+        var view = hui.create('./demo/h5createwindow.html', {}, true, {name: 'hcoder', age: '3.0'});
+        console.log(JSON.stringify(view));
+        hui.toast('窗口创建成功 ^_^');
+        //hui.create()函数返回创建的窗口对象，默认只是创建窗口并不展示【即为预加载】，使用show方法可以打开窗口
+        //plus.webview.show(view);
+    }
+</script>
+
+<div class="hui-wrap">
+    <div class="hui-accordion">
+        <div class="hui-accordion-title">切换科目</div>
+        <div class="hui-accordion-content hui-list">
+            <a href="javascript:hui.open('./demo/base.html');">
+                <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
+                <div class="hui-list-text">
+                    基础文本
+                    <div class="hui-list-info hui-icons hui-icons-right"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="hui-wrap">
+    <img th:src="@{/huiAdmin/img/banner.png}" width="100%"/>
+</div>
+<div class="hui-wrap">
+    <style type="text/css">
+        .bgGreen {
+            background: #1BC5BB !important;
+        }
+
+        .bgRed {
+            background: #EE4B47 !important;
+        }
+
+        .demo {
+            width: 100%;
+            height: 80px;
+            text-align: center;
+            color: #FFF;
+            line-height: 80px;
+            font-size: 22px;
+            margin: 5px;
+            background: #3388FF;
+        }
+    </style>
+    <div class="hui-flex">
+        <div class="demo">错题</div>
+        <div class="demo bgGreen">收藏</div>
+        <div class="demo bgRed">笔记</div>
+    </div>
+</div>
+
+<div class="hui-fooer-line"></div>
+<div id="hui-footer">
+    <a href="javascript:hui.toast('首页');" id="nav-home">
+        <div class="hui-footer-icons hui-icons-home"></div>
+        <div class="hui-footer-text">首页</div>
+    </a>
+
+    <a href="javascript:hui.toast('新闻');" id="nav-news">
+        <div class="hui-footer-icons hui-icons-news"></div>
+        <div class="hui-footer-text">视频</div>
+    </a>
+    <a href="javascript:hui.toast('我的');" id="nav-my">
+        <div class="hui-footer-icons hui-icons-my"></div>
+        <div class="hui-footer-text">我的</div>
+    </a>
+</div>
+
+<script th:src="@{/huiAdmin/js/hui.js}" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/huiAdmin/js/hui-accordion.js}"></script>
+<script type="text/javascript">
+    hui.ready(function () {
+        hui.accordion(true, false);
+        hui('#nav-news').pointMsg('hot', null, null, null, '1px');
+        hui('#nav-my').pointMsg();
+    });
+</script>
+
+</body>
+
+</html>
+

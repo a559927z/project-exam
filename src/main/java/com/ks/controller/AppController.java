@@ -35,7 +35,7 @@ public class AppController {
      */
     @RequestMapping("/toHome")
     public String login() {
-        return "app/login";
+        return "app/homeApp";
     }
 
 }
