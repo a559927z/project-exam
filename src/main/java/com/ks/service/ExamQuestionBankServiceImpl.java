@@ -36,6 +36,16 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
     private ExamQuestionBankScoreMapper examQuestionBankScoreMapper;
 
     @Override
+    public List<ExamQuestionBankReportDto> findReport(String questionBankId) {
+        return examQuestionBankMapperExt.findReport(questionBankId);
+    }
+
+    @Override
+    public List<ExamQuestionBank> queryAllQuestionBank() {
+        return examQuestionBankMapper.selectByExample(null);
+    }
+
+    @Override
     public Page<ExamQuestionBank> findByPage(int pageNo, int pageSize, String questionBankId) {
         PageHelper.startPage(pageNo, pageSize);
         return examQuestionBankMapperExt.findByPage(questionBankId);

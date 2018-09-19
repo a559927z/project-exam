@@ -40,5 +40,10 @@
             t.created_date DESC
     </select>
 
+    <select id="findReport" resultType="com.ks.dto.ExamQuestionBankReportDto">
+        SELECT COUNT(1) questionNum,  type  FROM exam_question_bank t WHERE t.question_bank_id = #{questionBankId}
+        GROUP BY t.question_bank_name, type;
+    </select>
+
 
 </mapper>

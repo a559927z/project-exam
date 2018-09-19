@@ -2,9 +2,8 @@ package com.ks.service.impl;
 
 import com.github.pagehelper.Page;
 import com.ks.dto.ExamQuestionBank;
-import com.ks.dto.ExamQuestionBankExample;
+import com.ks.dto.ExamQuestionBankReportDto;
 import com.ks.dto.ExamQuestionBankTotal;
-import com.ks.dto.ExamTrueAnswer;
 
 import java.util.List;
 
@@ -19,6 +18,21 @@ import java.util.List;
  * ${tags}
  */
 public interface ExamQuestionBankService {
+
+    /**
+     * 题库报告信息
+     *
+     * @param questionBankId
+     * @return
+     */
+    List<ExamQuestionBankReportDto> findReport(String questionBankId);
+
+    /**
+     * 所有
+     *
+     * @return
+     */
+    List<ExamQuestionBank> queryAllQuestionBank();
 
     /**
      * @param pageNo

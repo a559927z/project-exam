@@ -2,10 +2,9 @@ package com.ks.dao;
 
 import com.github.pagehelper.Page;
 import com.ks.dto.ExamQuestionBank;
-import com.ks.dto.ExamQuestionBankExample;
+import com.ks.dto.ExamQuestionBankReportDto;
 import com.ks.dto.ExamQuestionBankTotal;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,4 +17,5 @@ public interface ExamQuestionBankMapperExt {
 
     List<ExamQuestionBankTotal> queryTotal();
 
+    List<ExamQuestionBankReportDto> findReport(String questionBankId);
 }
