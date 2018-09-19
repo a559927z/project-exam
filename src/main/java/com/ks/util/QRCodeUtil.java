@@ -138,7 +138,6 @@ public class QRCodeUtil {
         QRCodeUtil.encode(content, null, output, false);
     }
 
-
 //    /**
 //     * 从二维码中，解析数据
 //     * @param file  二维码图片文件

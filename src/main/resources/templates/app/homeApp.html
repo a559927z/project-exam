@@ -27,17 +27,6 @@
         background: #EE4B47 !important;
     }
 
-    .demo {
-        width: 100%;
-        height: 80px;
-        text-align: center;
-        color: #FFF;
-        line-height: 80px;
-        font-size: 22px;
-        margin: 5px;
-        background: #3388FF;
-    }
-
     .exam-zone {
         border: 1px solid #f1f1f1;
         padding: 10px 20px;
@@ -63,7 +52,7 @@
         margin-top: 8px;
     }
 
-    .span30 span {
+    .span30 span, .review .header span {
         color: #39f;
     }
 
@@ -96,6 +85,32 @@
         height: 100%;
     }
 
+    .review {
+        width: 100%;
+        height: 100px;
+        text-align: center;
+        line-height: 100px;
+        margin: 5px;
+        background: #FFFFFF;
+    }
+
+    .review .header {
+        width: 100%;
+        height: 50px;
+        text-align: center;
+        line-height: 50px;
+        margin-top: 10px;
+    }
+
+    .review .body {
+        width: 100%;
+        height: 30px;
+        text-align: center;
+        line-height: 30px;
+        font-size: 20px;
+    }
+
+
 </style>
 <script type="text/javascript">
     //创建窗口
@@ -122,7 +137,7 @@
         <div class="exam-zone">
             <div class="span100">
                 <div class="span30">
-                    <span class="fa fa-file-text-o fa-3x"></span>
+                    <span class="fa fa-pencil-square-o fa-3x"></span>
                 </div>
                 <div class="span70">
                     <span class="header">模拟考试</span>
@@ -134,7 +149,7 @@
         <div class="exam-zone ">
             <div class="span100">
                 <div class="span30">
-                    <span class="fa fa-file-text-o fa-3x"></span>
+                    <span class="fa fa-list-alt fa-3x"></span>
                 </div>
                 <div class="span70">
                     <span class="header">考前押题</span>
@@ -160,9 +175,30 @@
 
 <div class="hui-wrap">
     <div class="hui-flex hui-tags-fillet">
-        <div class="demo">错题</div>
-        <div class="demo bgGreen">收藏</div>
-        <div class="demo bgRed">笔记</div>
+        <div class="review">
+            <div class="header">
+                <span class="fa fa-times fa-3x"></span>
+            </div>
+            <div class="body">
+                错题
+            </div>
+        </div>
+        <div class="review">
+            <div class="header">
+                <span class="fa fa-star-o fa-3x"></span>
+            </div>
+            <div class="body">
+                收藏
+            </div>
+        </div>
+        <div class="review">
+            <div class="header">
+                <span class="fa fa-file-text-o fa-3x"></span>
+            </div>
+            <div class="body">
+                笔记
+            </div>
+        </div>
     </div>
 </div>
 
