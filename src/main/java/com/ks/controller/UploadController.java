@@ -4,10 +4,8 @@ import com.google.common.collect.Lists;
 import com.ks.constants.QuestionBankConstants;
 import com.ks.dao.ExamQuestionBankMapper;
 import com.ks.dto.ExamQuestionBank;
-import com.ks.dto.ExamQuestionBankDto;
 import com.ks.dto.ExamQuestionBankExample;
 import com.ks.service.UploadService;
-import com.ks.utils.StringUtil;
 import groovy.util.logging.Slf4j;
 import net.chinahrd.utils.Identities;
 import org.apache.commons.collections.CollectionUtils;
@@ -298,12 +296,12 @@ public class UploadController extends BaseController {
      * @return
      */
     private String trueAnswer(String stringCellValue) {
-        if (StringUtil.containsAny(stringCellValue, QuestionBankConstants.ANSWER_PATTERN) ||
-                StringUtil.containsAny(stringCellValue, QuestionBankConstants.ANSWER_TRUE_PATTERN)) {
+        if (StringUtils.containsAny(stringCellValue, QuestionBankConstants.ANSWER_PATTERN) ||
+                StringUtils.containsAny(stringCellValue, QuestionBankConstants.ANSWER_TRUE_PATTERN)) {
             String ss = trim(stringCellValue);
-            ss = StringUtil.substringAfter(ss, QuestionBankConstants.ANSWER_TRUE_PATTERN);
-            ss = StringUtil.substringBefore(ss, QuestionBankConstants.ANSWER_PATTERN);
-            ss = StringUtil.deleteWhitespace(ss).trim();
+            ss = StringUtils.substringAfter(ss, QuestionBankConstants.ANSWER_TRUE_PATTERN);
+            ss = StringUtils.substringBefore(ss, QuestionBankConstants.ANSWER_PATTERN);
+            ss = StringUtils.deleteWhitespace(ss).trim();
             return QuestionBankConstants.ANSWER_TRUE_PATTERN + ss;
         }
         return "";

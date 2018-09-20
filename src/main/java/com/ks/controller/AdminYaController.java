@@ -3,8 +3,10 @@ package com.ks.controller;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.ks.dto.ExamQuestionBank;
 import com.ks.dto.ExamQuestionBankReportDto;
+import com.ks.dto.KVItemDto;
 import com.ks.service.impl.ExamQuestionBankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Title: ${type_name} <br/>
@@ -26,7 +30,7 @@ import java.util.Map;
  */
 @RequestMapping("/admin/ya")
 @Controller
-public class AdminYiController {
+public class AdminYaController {
 
 
     @Autowired
@@ -53,28 +57,13 @@ public class AdminYiController {
     public Map<String, Object> queryAllQuestionBank() {
         List<ExamQuestionBankReportDto> rsList = Lists.newArrayList();
         List<ExamQuestionBank> examQuestionBankList = examQuestionBankService.queryAllQuestionBank();
-//        Lists.transform(examQuestionBankList, new Function<ExamQuestionBank, String>() {
-//            @Override
-//            public String apply(ExamQuestionBank input) {
-//                return null;
-//            }
-//        });
+
+        Set<String> questionBankIdSet = Sets.newHashSet(examQuestionBankList.stream().map(n -> n.getQuestionBankId()).collect(Collectors.toList()));
+
         Map<String, Object> rsMap = Maps.newHashMap();
-        examQuestionBankList.forEach(n -> {
-            String questionBankId = n.getQuestionBankId();
-            Object o = rsMap.get(questionBankId);
-            if (null == o) {
-                ExamQuestionBankReportDto dto = new ExamQuestionBankReportDto();
-                dto.setQuestionBankId(n.getQuestionBankId());
-                dto.setQuestionBankName(n.getQuestionBankName());
-                List<ExamQuestionBankReportDto> report = examQuestionBankService.findReport(questionBankId);
-                report.forEach(j -> {
-                    dto.setQuestionNum(j.getQuestionNum());
-                    dto.setType(j.getType());
-                });
-                rsList.add(dto);
-                rsMap.put(questionBankId, dto);
-            }
+        questionBankIdSet.forEach(n -> {
+            List<ExamQuestionBankReportDto> report = examQuestionBankService.findReport(n);
+            rsMap.put(n, report);
         });
         return rsMap;
     }

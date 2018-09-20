@@ -1,5 +1,6 @@
 package com.ks.dto;
 
+import com.ks.constants.QuestionBankTypeEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -21,6 +22,8 @@ public class ExamQuestionBankReportDto extends BaseDto implements Serializable {
 
     private String type;
 
+    private String typeName;
+
     private Integer isLock;
 
     private String createdBy;
@@ -32,5 +35,10 @@ public class ExamQuestionBankReportDto extends BaseDto implements Serializable {
     private Date updatedDate;
 
     private static final long serialVersionUID = 1L;
+
+    private void setTypeName(String type) {
+        this.typeName = QuestionBankTypeEnum.getNameByCode(type);
+    }
+
 
 }

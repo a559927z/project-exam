@@ -41,7 +41,13 @@
     </select>
 
     <select id="findReport" resultType="com.ks.dto.ExamQuestionBankReportDto">
-        SELECT COUNT(1) questionNum,  type  FROM exam_question_bank t WHERE t.question_bank_id = #{questionBankId}
+        SELECT
+          COUNT(1) questionNum,
+          type,
+          t.question_bank_id questionBankId,
+          t.question_bank_name questionBankName,
+          t.created_date createdDate
+        FROM exam_question_bank t WHERE t.question_bank_id = #{questionBankId}
         GROUP BY t.question_bank_name, type;
     </select>
 

@@ -2,6 +2,7 @@ package com.ks.service.impl;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import com.ks.constants.EisWebContext;
 import com.ks.constants.QuestionBankConstants;
 import com.ks.dao.ExamQuestionBankMapper;
 import com.ks.dao.ExamQuestionBankTrueAnswerMapper;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,6 +46,11 @@ public class UploadServiceImpl implements UploadService {
         try {
             ExamQuestionBank o = new ExamQuestionBank();
             BeanUtils.copyProperties(dto, o);
+            Date date = new Date();
+            o.setCreatedBy(EisWebContext.getCurrentUserId());
+            o.setUpdatedBy(EisWebContext.getCurrentUserId());
+            o.setCreatedDate(date);
+            o.setUpdatedDate(date);
 
             // 题目
             rs += examQuestionBankMapper.insertSelective(o);
