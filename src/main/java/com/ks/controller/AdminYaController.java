@@ -42,6 +42,7 @@ public class AdminYaController {
     @Autowired
     private ExamQuestionBankYaMapper examQuestionBankYaMapper;
 
+
     /**
      * http://localhost:8080/exam/admin/ya/index
      *
@@ -69,6 +70,15 @@ public class AdminYaController {
         Map<String, Object> rsMap = Maps.newHashMap();
         questionBankIdSet.forEach(n -> {
             List<ExamQuestionBankReportDto> report = examQuestionBankService.findReport(n);
+
+            // 是否已选了
+            ExamQuestionBankYaExample example = new ExamQuestionBankYaExample();
+            example.createCriteria().andQuestionBankIdEqualTo(n);
+            List<ExamQuestionBankYa> yaList = examQuestionBankYaMapper.selectByExample(example);
+            if (yaList.size() > 0) {
+                report.get(0).setSelected(true);
+            }
+
             rsMap.put(n, report);
         });
         return rsMap;
@@ -81,26 +91,34 @@ public class AdminYaController {
     @PostMapping
     @RequestMapping(value = "/saveYa")
     public Map<Boolean, String> saveYa(String questionBankIdStr) {
-        if (StringUtils.isBlank(questionBankIdStr)) {
-            return null;
-        }
         Map<Boolean, String> rsMap = Maps.newHashMap();
+        if (StringUtils.isBlank(questionBankIdStr)) {
+            examQuestionBankYaMapper.deleteByExample(null);
+            rsMap.put(true, "保存成败");
+        }
+
 
         String[] questionBankIdArr = questionBankIdStr.split(",");
         try {
             examQuestionBankYaMapper.deleteByExample(null);
             for (String id : questionBankIdArr) {
                 ExamQuestionBankYa dto = new ExamQuestionBankYa();
-                dto.setQuestionBankId(id);
                 dto.setQuestionBankYaId(Identities.uuid2());
+                dto.setQuestionBankId(id);
+                List<ExamQuestionBank> examQuestionBanks = examQuestionBankService.selectByExample(id);
+                if (examQuestionBanks.size() > 0) {
+                    dto.setCourseId(examQuestionBanks.get(0).getCourseId());
+                }
                 examQuestionBankYaMapper.insertSelective(dto);
             }
-            rsMap.put(true, "保存失败");
+
+            rsMap.put(true, "保存成败");
         } catch (Exception e) {
             e.printStackTrace();
             rsMap.put(false, "保存失败");
         }
         return rsMap;
     }
+
 
 }

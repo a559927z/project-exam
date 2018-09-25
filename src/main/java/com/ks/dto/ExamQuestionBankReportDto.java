@@ -41,4 +41,5 @@ public class ExamQuestionBankReportDto extends BaseDto implements Serializable {
     }
 
 
+    private boolean selected = false;
 }

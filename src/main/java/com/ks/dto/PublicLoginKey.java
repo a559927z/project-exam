@@ -2,7 +2,7 @@ package com.ks.dto;
 
 import java.io.Serializable;
 
-public class PublicLoginKey implements Serializable {
+public class PublicLoginKey extends BaseDto implements Serializable {
     private String customerId;
 
     private String accessId;

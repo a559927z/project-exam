@@ -2,7 +2,10 @@ package com.ks.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.ks.dao.*;
+import com.ks.dao.ExamQuestionBankMapper;
+import com.ks.dao.ExamQuestionBankMapperExt;
+import com.ks.dao.ExamQuestionBankScoreMapper;
+import com.ks.dao.ExamQuestionBankTrueAnswerMapper;
 import com.ks.dto.*;
 import com.ks.service.impl.ExamQuestionBankService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -59,16 +59,10 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <!--<table tableName="public_login" domainObjectName="PublicLogin">-->
-        <!--<property name="constructorBased" value="false"/>-->
-        <!--<property name="ignoreQualifiersAtRuntime" value="false"/>-->
-        <!--<property name="immutable" value="false"/>-->
-        <!--<property name="modelOnly" value="false"/>-->
-        <!--<property name="useActualColumnNames" value="false"/>-->
-        <!--<columnOverride column="customer_id">-->
-        <!--<property name="property" value="customerId"/>-->
-        <!--</columnOverride>-->
-        <!--</table>-->
+        <table tableName="public_login" domainObjectName="PublicLogin">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.ks.dto.BaseDto"/>
+        </table>
         <!--<table tableName="exam_question_bank" domainObjectName="ExamQuestionBank">-->
         <!--<property name="useActualColumnNames" value="false"/>-->
         <!--<property name="rootClass" value="com.ks.dto.BaseDto"/>-->
@@ -85,9 +79,13 @@
         <!--<property name="useActualColumnNames" value="false"/>-->
         <!--<property name="rootClass" value="com.ks.dto.BaseDto"/>-->
         <!--</table>-->
-        <table tableName="exam_question_bank_ya" domainObjectName="ExamQuestionBankYa">
-            <property name="useActualColumnNames" value="false"/>
-            <property name="rootClass" value="com.ks.dto.BaseDto"/>
-        </table>
+        <!--<table tableName="exam_question_bank_ya" domainObjectName="ExamQuestionBankYa">-->
+        <!--<property name="useActualColumnNames" value="false"/>-->
+        <!--<property name="rootClass" value="com.ks.dto.BaseDto"/>-->
+        <!--</table>-->
+        <!--<table tableName="exam_user_answer_ya" domainObjectName="ExamUserAnswerYa">-->
+        <!--<property name="useActualColumnNames" value="false"/>-->
+        <!--<property name="rootClass" value="com.ks.dto.BaseDto"/>-->
+        <!--</table>-->
     </context>
 </generatorConfiguration>

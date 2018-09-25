@@ -7,6 +7,8 @@ public class ExamQuestionBankYa extends BaseDto implements Serializable {
 
     private String questionBankId;
 
+    private String courseId;
+
     private static final long serialVersionUID = 1L;
 
     public String getQuestionBankYaId() {
@@ -23,5 +25,13 @@ public class ExamQuestionBankYa extends BaseDto implements Serializable {
 
     public void setQuestionBankId(String questionBankId) {
         this.questionBankId = questionBankId == null ? null : questionBankId.trim();
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId == null ? null : courseId.trim();
     }
 }

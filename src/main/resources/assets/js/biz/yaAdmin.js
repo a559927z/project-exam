@@ -24,22 +24,45 @@ require(['jquery', 'bootstrap', 'utils', 'layer'], function ($) {
                         pHtml += '<p>' + typeName + ':' + item2.questionNum + '题</p>';
                     });
 
-                    html +=
-                        '<div class="col-lg-2 col-md-2">' +
-                        '    <div class="questionBankZone panel panel-primary" data-questionBankId="' + i + '">' +
-                        '        <div class="panel-heading">' +
-                        '            ' + dtoList[0].questionBankName +
-                        '        </div>' +
-                        '        <div class="panel-body text-right">' +
-                        '           <div class="col-lg-3 col-md-3 selectedZone_' + i + '"></div>' +
-                        '           <div class="col-lg-9 col-md-9">' +
-                        '               <p>' + pHtml + '</p>' +
-                        '           </div>' +
-                        '        </div>' +
-                        '        <div class="panel-footer ">创建时间：' + dtoList[0].createdDate + '</div>' +
-                        '    </div>' +
-                        '</div>'
-                    ;
+                    // 回显
+                    if(dtoList[0].selected){
+                        SELECTED_QUESTIONBANK_ID.push(i);
+                        html +=
+                            '<div class="col-lg-2 col-md-2">' +
+                            '    <div class="questionBankZone panel panel-primary" data-questionBankId="' + i + '">' +
+                            '        <div class="panel-heading">' +
+                            '            ' + dtoList[0].questionBankName +
+                            '        </div>' +
+                            '        <div class="panel-body text-right">' +
+                            '           <div class="col-lg-3 col-md-3 selectedZone_' + i + '"><button type="button" class="btn btn-info btn-circle btn-xl"><i class="fa fa-check"></i></button></div>' +
+                            '           <div class="col-lg-9 col-md-9">' +
+                            '               <p>' + pHtml + '</p>' +
+                            '           </div>' +
+                            '        </div>' +
+                            '        <div class="panel-footer ">创建时间：' + dtoList[0].createdDate + '</div>' +
+                            '    </div>' +
+                            '</div>'
+                        ;
+                    }else{
+
+                        html +=
+                            '<div class="col-lg-2 col-md-2">' +
+                            '    <div class="questionBankZone panel panel-primary" data-questionBankId="' + i + '">' +
+                            '        <div class="panel-heading">' +
+                            '            ' + dtoList[0].questionBankName +
+                            '        </div>' +
+                            '        <div class="panel-body text-right">' +
+                            '           <div class="col-lg-3 col-md-3 selectedZone_' + i + '"></div>' +
+                            '           <div class="col-lg-9 col-md-9">' +
+                            '               <p>' + pHtml + '</p>' +
+                            '           </div>' +
+                            '        </div>' +
+                            '        <div class="panel-footer ">创建时间：' + dtoList[0].createdDate + '</div>' +
+                            '    </div>' +
+                            '</div>'
+                        ;
+                    }
+
                 });
                 $('#yaZoneId').append(html);
                 initEvent();
@@ -60,7 +83,6 @@ require(['jquery', 'bootstrap', 'utils', 'layer'], function ($) {
                 var html = '<button type="button" class="btn btn-info btn-circle btn-xl"><i class="fa fa-check"></i></button></div>';
                 $(".selectedZone_" + questionBankId).append(html);
             }
-            console.log(SELECTED_QUESTIONBANK_ID);
 
             var html = SELECTED_QUESTIONBANK_ID.length + '<i class="fa fa-save"></i> 保存 ';
             $("#saveIdBtn").empty();

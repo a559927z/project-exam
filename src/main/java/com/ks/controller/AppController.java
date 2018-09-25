@@ -29,13 +29,25 @@ public class AppController {
 
 
     /**
-     * http://localhost:8080/exam/admin/toLogin
+     * http://localhost:8080/exam/app/toHome
      *
      * @return
      */
     @RequestMapping("/toHome")
-    public String login() {
-        return "app/homeApp";
+    public String index() {
+        return "app/index";
     }
+
+
+    /**
+     * http://localhost:8080/exam/app/toYaHome
+     *
+     * @return
+     */
+    @RequestMapping("/toYaTi")
+    public String toYaTi() {
+        return "app/yaTi";
+    }
+
 
 }

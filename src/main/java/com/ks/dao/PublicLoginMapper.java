@@ -3,9 +3,15 @@ package com.ks.dao;
 import com.ks.dto.PublicLogin;
 import com.ks.dto.PublicLoginExample;
 import com.ks.dto.PublicLoginKey;
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+@Mapper
+@Repository("publicLoginMapper")
 public interface PublicLoginMapper {
     long countByExample(PublicLoginExample example);
 
