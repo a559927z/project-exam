@@ -1,5 +1,8 @@
 package com.ks.controller;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +37,9 @@ public class AdminController {
     }
 
     /**
+     * @param model
+     * @param userName admin
+     * @param password 123456
      * @return
      */
     @RequestMapping("/validate")
@@ -42,14 +48,20 @@ public class AdminController {
                            @RequestParam("accessId") String userName,
                            @RequestParam("password") String password) {
 
-        model.addAttribute("access", userName);
-        model.addAttribute("password", password);
-        // TODO check db
-        if (1 != 1) {
-            return REDIRECT_TO_LOGIN;
-        } else {
+
+        Subject subject = SecurityUtils.getSubject();
+        UsernamePasswordToken token = new UsernamePasswordToken(userName, password);
+        try {
+            subject.login(token);
+            model.addAttribute("access", userName);
+            model.addAttribute("password", password);
             return REDIRECT_TO_INDEX;
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMsg", "用户名或密码错误!");
+            return REDIRECT_TO_LOGIN;
         }
+
     }
 
     /**
