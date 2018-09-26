@@ -1,0 +1,31 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!--<head th:include="top :: copy" th:with="title='后台管理'"></head>-->
+<body>
+
+<div th:fragment="copy">
+    <style type="text/css">
+        #hui-footer a {
+            width: 33.3%;
+        }
+    </style>
+    <div class="hui-fooer-line"></div>
+    <div id="hui-footer">
+        <a th:href="@{/app/toIndex}" id="nav-home">
+            <div class="hui-footer-icons hui-icons-home"></div>
+            <div class="hui-footer-text">首页</div>
+        </a>
+
+        <a href="javascript:hui.toast('视频');" id="nav-news">
+            <div class="hui-footer-icons hui-icons-news"></div>
+            <div class="hui-footer-text">视频</div>
+        </a>
+        <a th:href="@{/app/my/toIndex}" id="nav-my">
+            <div class="hui-footer-icons hui-icons-my"></div>
+            <div class="hui-footer-text">我的</div>
+        </a>
+    </div>
+</div>
+</body>
+
+
+</html>

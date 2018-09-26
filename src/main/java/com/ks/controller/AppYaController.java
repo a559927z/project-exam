@@ -73,5 +73,14 @@ public class AppYaController {
         return rsMap;
     }
 
+    /**
+     * http://localhost:8080/exam/app/toIndex
+     *
+     * @return
+     */
+    @RequestMapping("/toIndex")
+    public String toYaTi() {
+        return "app/yaTiApp";
+    }
 
 }

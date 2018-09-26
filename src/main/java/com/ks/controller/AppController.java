@@ -20,7 +20,7 @@ public class AppController {
     /**
      * 重定向
      */
-    private final String REDIRECT_TO_HOME = "redirect:toHome";
+    private final String REDIRECT_TO_HOME = "redirect:toIndex";
 
     @RequestMapping("/")
     public String root() {
@@ -33,21 +33,11 @@ public class AppController {
      *
      * @return
      */
-    @RequestMapping("/toHome")
+    @RequestMapping("/toIndex")
     public String index() {
-        return "app/index";
+        return "app/indexApp";
     }
 
-
-    /**
-     * http://localhost:8080/exam/app/toYaHome
-     *
-     * @return
-     */
-    @RequestMapping("/toYaTi")
-    public String toYaTi() {
-        return "app/yaTi";
-    }
 
 
 }

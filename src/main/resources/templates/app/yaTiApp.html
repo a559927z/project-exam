@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <title>考前押题</title>
+    <link rel="shortcut icon" type="image/png" th:href="@{/images/favicon.png}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/huiAdmin/css/hui.css}"/>
     <!-- Bootstrap grid CSS -->
     <!--<link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap-grid.min.css" rel="stylesheet">-->
@@ -15,9 +16,6 @@
 
 <body style="background:#f1f1f1;">
 <style type="text/css">
-    #hui-footer a {
-        width: 33.3%;
-    }
 
     .ya-zone {
         border: 1px solid #f1f1f1;
@@ -113,23 +111,24 @@
     </div>
 </div>
 
+<div th:replace="footApp::copy"></div>
 
-<div class="hui-fooer-line"></div>
-<div id="hui-footer">
-    <a href="javascript:hui.toast('首页');" id="nav-home">
-        <div class="hui-footer-icons hui-icons-home"></div>
-        <div class="hui-footer-text">首页</div>
-    </a>
+<!--<div class="hui-fooer-line"></div>-->
+<!--<div id="hui-footer">-->
+    <!--<a href="javascript:hui.toast('首页');" id="nav-home">-->
+        <!--<div class="hui-footer-icons hui-icons-home"></div>-->
+        <!--<div class="hui-footer-text">首页</div>-->
+    <!--</a>-->
 
-    <a href="javascript:hui.toast('新闻');" id="nav-news">
-        <div class="hui-footer-icons hui-icons-news"></div>
-        <div class="hui-footer-text">视频</div>
-    </a>
-    <a href="javascript:hui.toast('我的');" id="nav-my">
-        <div class="hui-footer-icons hui-icons-my"></div>
-        <div class="hui-footer-text">我的</div>
-    </a>
-</div>
+    <!--<a href="javascript:hui.toast('视频');" id="nav-news">-->
+        <!--<div class="hui-footer-icons hui-icons-news"></div>-->
+        <!--<div class="hui-footer-text">视频</div>-->
+    <!--</a>-->
+    <!--<a th:href="@{/app/my/toIndex}" id="nav-my">-->
+        <!--<div class="hui-footer-icons hui-icons-my"></div>-->
+        <!--<div class="hui-footer-text">我的</div>-->
+    <!--</a>-->
+<!--</div>-->
 
 
 <script th:src="@{/huiAdmin/js/hui.js}" type="text/javascript" charset="utf-8"></script>

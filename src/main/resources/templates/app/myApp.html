@@ -1,0 +1,125 @@
+<!--http://www.hcoder.net/hui/docs314.html-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>我的</title>
+    <link rel="shortcut icon" type="image/png" th:href="@{/images/favicon.png}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/huiAdmin/css/hui.css}"/>
+    <!-- Bootstrap grid CSS -->
+    <!--<link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap-grid.min.css" rel="stylesheet">-->
+    <!-- Custom CSS -->
+    <!--<link th:href="@{/sbAdmin/dist/css/sb-admin-2.css}" rel="stylesheet"/>-->
+    <!-- Custom Fonts -->
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+</head>
+
+<body style="background:#f1f1f1;">
+<style type="text/css">
+
+    .my-zone {
+        height: 200px;
+        background-color: #ABCDEF;
+    }
+
+    .my-zone .header {
+        width: 100px;
+        height: 100px;
+        line-height: 100px;
+        background-color: #ac2925;
+        position: absolute;
+        left: 38%;
+        top: 50px;
+        border-radius: 100%;
+    }
+
+
+</style>
+
+<div class="hui-wrap">
+    <div class="my-zone">
+        <div class="header"></div>
+    </div>
+</div>
+
+<div class="hui-wrap">
+    <div class="hui-list" style="background:#FFFFFF; margin-top:28px;">
+        <ul>
+            <li>
+                <a th:href="@{/app/reg/toIndex}">
+                    <div class="hui-list-icons">
+                        <img th:src="@{/img/app/ht.png}">
+                    </div>
+                    <div class="hui-list-text">
+                        绑定手机
+                        <div class="hui-list-info">
+                            <span class="hui-icons hui-icons-right"></span>
+                        </div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/app/reg/toIndex}">
+                    <div class="hui-list-icons">
+                        <img th:src="@{/img/app/sc.png}">
+                    </div>
+                    <div class="hui-list-text">
+                        我的收藏
+                        <div class="hui-list-info">
+                            <span class="hui-icons hui-icons-right"></span>
+                        </div>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="javascript:void(0);">
+                    <div class="hui-list-icons">
+                        <img th:src="@{/img/app/order.png}">
+                    </div>
+                    <div class="hui-list-text">
+                        夜间模式
+                        <div class="hui-list-info">
+                            <span class="hui-icons hui-icons-right"></span>
+                        </div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:void(0);">
+                    <div class="hui-list-icons">
+                        <img th:src="@{/img/app/lishi.png}">
+                    </div>
+                    <div class="hui-list-text">
+                        版本号 v1.0
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div style="background:#FFFFFF; margin-top:28px;">
+        <button type="button" class="hui-button hui-button-large" onclick="hui.toast('退出');">
+            <span class="hui-icons hui-icons-logoff"></span>退出系统
+        </button>
+    </div>
+</div>
+
+
+<div th:replace="footApp::copy"></div>
+
+
+<script th:src="@{/huiAdmin/js/hui.js}" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" th:src="@{/huiAdmin/js/hui-accordion.js}"></script>
+<script type="text/javascript">
+    hui.ready(function () {
+        hui.accordion(true, false);
+        hui('#nav-news').pointMsg('hot', null, null, null, '1px');
+        hui('#nav-my').pointMsg();
+    });
+</script>
+
+
+</body>
+
+</html>
+
