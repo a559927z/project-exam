@@ -56,6 +56,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 throws IOException, ServletException {
             HttpServletRequest request = (HttpServletRequest) srequest;
             System.out.println("this is MyFilter,url :" + request.getRequestURI());
+            request.setCharacterEncoding("UTF-8");
             filterChain.doFilter(srequest, sresponse);
         }
 

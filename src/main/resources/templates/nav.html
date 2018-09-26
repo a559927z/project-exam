@@ -1,4 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org">
+<head th:include="top :: copy" th:with="title='后台管理'"></head>
 <body>
 
 <nav th:fragment="copy"
@@ -207,18 +208,18 @@
             </ul>
             <!-- /.dropdown-alerts -->
         </li>
-        <!-- /.dropdown -->
-        <li class="dropdown">
+        <!-- /.dropdown TODO logout -->
+        <li class="user dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                 <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
             </a>
             <ul class="dropdown-menu dropdown-user">
-                <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                <li><a href="#"><i class="fa fa-user fa-fw"></i> 用户平台</a>
                 </li>
-                <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                <li><a href="#"><i class="fa fa-gear fa-fw"></i> 设置</a>
                 </li>
                 <li class="divider"></li>
-                <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                <li><a th:href="@{/admin/logout}"><i class="fa fa-sign-out fa-fw"></i> 退出系统</a>
                 </li>
             </ul>
             <!-- /.dropdown-user -->
@@ -344,7 +345,24 @@
         <!-- /.sidebar-collapse -->
     </div>
     <!-- /.navbar-static-side -->
-</nav>
 
+    <script type="text/javascript" th:inline="javascript">
+        $(function () {
+            var flag = false;
+            $(".user").on("click", function () {
+                if (flag) {
+                    $(".user").removeClass("open");
+                    flag = true;
+                } else {
+                    $(".user").addClass("open");
+                    flag = false;
+                }
+
+            });
+        });
+    </script>
+</nav>
 </body>
+
+
 </html>

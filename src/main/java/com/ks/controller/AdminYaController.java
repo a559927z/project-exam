@@ -8,7 +8,7 @@ import com.ks.dto.ExamQuestionBank;
 import com.ks.dto.ExamQuestionBankReportDto;
 import com.ks.dto.ExamQuestionBankYa;
 import com.ks.dto.ExamQuestionBankYaExample;
-import com.ks.service.impl.ExamQuestionBankService;
+import com.ks.service.ExamQuestionBankService;
 import net.chinahrd.utils.Identities;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

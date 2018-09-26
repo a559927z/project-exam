@@ -7,11 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/admin")
 @Controller
-public class AdminController {
+public class AdminLoginController {
 
 
     /**
@@ -72,6 +73,20 @@ public class AdminController {
     @RequestMapping("/toIndex")
     public String toIndex() {
         return "admin/index";
+    }
+
+    /**
+     * js提交btn事件：提交过来请求
+     *
+     * @return
+     */
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logout() {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            subject.logout();
+        }
+        return REDIRECT_TO_LOGIN;
     }
 
 }

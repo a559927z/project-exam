@@ -1,4 +1,4 @@
-package com.ks.service.impl;
+package com.ks.service;
 
 import com.github.pagehelper.Page;
 import com.ks.dto.ExamQuestionBank;

@@ -1,5 +1,6 @@
 package com.ks.service;
 
+import com.github.pagehelper.Page;
 import com.ks.dto.PublicUserInfo;
 
 /**
@@ -15,4 +16,11 @@ import com.ks.dto.PublicUserInfo;
 public interface PublicPermissionService {
 
     PublicUserInfo findByUsername(String username);
+
+    /**
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    Page<PublicUserInfo> queryByPage(int pageNo, int pageSize);
 }

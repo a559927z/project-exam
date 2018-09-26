@@ -1,10 +1,13 @@
 package com.ks.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.ks.dao.*;
 import com.ks.dto.*;
 import com.ks.service.PublicPermissionService;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,9 @@ import java.util.List;
 public class PublicPermissionServiceImpl implements PublicPermissionService {
 
     @Autowired
+    private PublicUserInfoMapperExt publicUserInfoMapperExt;
+
+    @Autowired
     private PublicUserInfoMapper publicUserInfoMapper;
     @Autowired
     private PublicSysUserRoleMapper publicSysUserRoleMapper;
@@ -33,7 +39,6 @@ public class PublicPermissionServiceImpl implements PublicPermissionService {
     private PublicSysRolePermissionMapper publicSysRolePermissionMapper;
     @Autowired
     private PublicSysPermissionMapper publicSysPermissionMapper;
-
 
     @Override
     public PublicUserInfo findByUsername(String username) {
@@ -52,6 +57,12 @@ public class PublicPermissionServiceImpl implements PublicPermissionService {
         return publicUserInfo;
     }
 
+    /**
+     * roleList --> permissionList
+     *
+     * @param userId
+     * @return
+     */
     private List<PublicSysRole> queryRoleListByUserId(String userId) {
         PublicSysUserRoleExample userRoleExample = new PublicSysUserRoleExample();
         userRoleExample.createCriteria().andUidEqualTo(userId);
@@ -93,5 +104,19 @@ public class PublicPermissionServiceImpl implements PublicPermissionService {
         return rs;
     }
 
+    @Override
+    public Page<PublicUserInfo> queryByPage(int pageNo, int pageSize) {
+        PageHelper.startPage(pageNo, pageSize);
+//        PublicUserInfoExample userInfoExample = new PublicUserInfoExample();
+//        userInfoExample.createCriteria().andEnNameEqualTo(username);
+        return publicUserInfoMapperExt.queryByPage();
+    }
+
+    public static void main(String[] args) {
+        String str = "123456";
+        String salt = "admin8d78869f470951332959580424d4bf4f";
+        String s = new Md5Hash(str, salt, 2).toString();
+        System.out.println(s);
+    }
 
 }

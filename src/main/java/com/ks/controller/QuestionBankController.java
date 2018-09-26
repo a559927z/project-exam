@@ -7,7 +7,7 @@ import com.ks.constants.QuestionBankCategoryEnum;
 import com.ks.constants.QuestionBankCourseEnum;
 import com.ks.dao.ExamQuestionBankScoreMapper;
 import com.ks.dto.*;
-import com.ks.service.impl.ExamQuestionBankService;
+import com.ks.service.ExamQuestionBankService;
 import groovy.util.logging.Slf4j;
 import net.chinahrd.utils.CollectionKit;
 import org.apache.commons.collections.CollectionUtils;

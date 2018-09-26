@@ -46,7 +46,9 @@ public class MyShiroRealm extends AuthorizingRealm {
         return authorizationInfo;
     }
 
-    /*主要是用来进行身份认证的，也就是说验证用户输入的账号和密码是否正确。*/
+    /**
+     * 主要是用来进行身份认证的，也就是说验证用户输入的账号和密码是否正确。
+     */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token)
             throws AuthenticationException {
@@ -62,10 +64,14 @@ public class MyShiroRealm extends AuthorizingRealm {
             return null;
         }
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
-                userInfo, //用户名
-                userInfo.getPassword(), //密码
-                ByteSource.Util.bytes(userInfo.getCredentialsSalt()),//salt=username+salt
-                getName()  //realm name
+                //用户名
+                userInfo,
+                //密码
+                userInfo.getPassword(),
+                //salt=username+salt
+                ByteSource.Util.bytes(userInfo.getCredentialsSalt()),
+                //realm name
+                getName()
         );
         return authenticationInfo;
     }

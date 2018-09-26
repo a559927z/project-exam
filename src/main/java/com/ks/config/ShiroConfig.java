@@ -56,16 +56,17 @@ public class ShiroConfig {
 
     /**
      * 凭证匹配器
-     * （由于我们的密码校验交给Shiro的SimpleAuthenticationInfo进行处理了
-     * ）
+     * （由于我们的密码校验交给Shiro的SimpleAuthenticationInfo进行处理了）
      *
      * @return
      */
     @Bean
     public HashedCredentialsMatcher hashedCredentialsMatcher() {
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
-        hashedCredentialsMatcher.setHashAlgorithmName("md5");//散列算法:这里使用MD5算法;
-        hashedCredentialsMatcher.setHashIterations(2);//散列的次数，比如散列两次，相当于 md5(md5(""));
+        //散列算法:这里使用MD5算法;
+        hashedCredentialsMatcher.setHashAlgorithmName("md5");
+        //散列的次数，比如散列两次，相当于 md5(md5(""));
+        hashedCredentialsMatcher.setHashIterations(2);
         return hashedCredentialsMatcher;
     }
 
@@ -101,16 +102,20 @@ public class ShiroConfig {
     }
 
     @Bean(name = "simpleMappingExceptionResolver")
-    public SimpleMappingExceptionResolver
-    createSimpleMappingExceptionResolver() {
+    public SimpleMappingExceptionResolver createSimpleMappingExceptionResolver() {
         SimpleMappingExceptionResolver r = new SimpleMappingExceptionResolver();
         Properties mappings = new Properties();
-        mappings.setProperty("DatabaseException", "databaseError");//数据库异常处理
+        //数据库异常处理
+        mappings.setProperty("DatabaseException", "databaseError");
         mappings.setProperty("UnauthorizedException", "403");
-        r.setExceptionMappings(mappings);  // None by default
-        r.setDefaultErrorView("error");    // No default
-        r.setExceptionAttribute("ex");     // Default is "exception"
-        //r.setWarnLogCategory("example.MvcLogger");     // No default
+        // None by default
+        r.setExceptionMappings(mappings);
+        // No default
+        r.setDefaultErrorView("error");
+        // Default is "exception"
+        r.setExceptionAttribute("ex");
+        // No default
+        //r.setWarnLogCategory("example.MvcLogger");
         return r;
     }
 }

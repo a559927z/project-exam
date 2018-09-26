@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ks.dao.PublicUserInfoMapperExt">
+    <resultMap id="BaseResultMapExt" type="com.ks.dto.PublicUserInfo">
+        <id column="uid" jdbcType="VARCHAR" property="uid"/>
+        <result column="en_name" jdbcType="VARCHAR" property="enName"/>
+        <result column="cn_name" jdbcType="VARCHAR" property="cnName"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="salt" jdbcType="VARCHAR" property="salt"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+    </resultMap>
+
+
+    <select id="queryByPage" resultMap="BaseResultMapExt">
+        select
+        <include refid="com.ks.dao.PublicUserInfoMapper.Base_Column_List"/>
+        from public_user_info
+    </select>
+</mapper>

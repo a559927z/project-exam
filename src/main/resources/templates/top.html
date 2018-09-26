@@ -42,10 +42,10 @@
 
     <script th:src="@{/js/require-min.js}" charset="utf-8"></script>
 
-
-    <!--获取项目访问路径名称-->
-    <!--var contextPath = '${pageContext.request.getContextPath()}';-->
+    <!-- 全局js控制 -->
     <script type="text/javascript" th:inline="javascript">
+        //获取项目访问路径名称
+        <!--var contextPath = '${pageContext.request.getContextPath()}';-->
         var ctx = [[@{
             /}]];
             var courseEnum = [

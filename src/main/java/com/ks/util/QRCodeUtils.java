@@ -2,7 +2,6 @@ package com.ks.util;
 
 import com.google.zxing.*;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import javax.imageio.ImageIO;
@@ -10,11 +9,10 @@ import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Hashtable;
 
-public class QRCodeUtil {
+public class QRCodeUtils {
     private static final String CHARSET = "utf-8";
     private static final String FORMAT_NAME = "JPG";
     // 二维码尺寸
@@ -53,7 +51,7 @@ public class QRCodeUtil {
             return image;
         }
         // 插入图片
-        QRCodeUtil.insertImage(image, imgPath, needCompress);
+        QRCodeUtils.insertImage(image, imgPath, needCompress);
         return image;
     }
 
@@ -110,7 +108,7 @@ public class QRCodeUtil {
      * @throws Exception
      */
     public static Boolean encode(String content, String imgPath, String destPath, boolean needCompress, String random) throws Exception {
-        BufferedImage image = QRCodeUtil.createImage(content, imgPath, needCompress);
+        BufferedImage image = QRCodeUtils.createImage(content, imgPath, needCompress);
         if (image == null) {
             return false;
         }
@@ -130,12 +128,12 @@ public class QRCodeUtil {
 
     public static void encode(String content, String imgPath, OutputStream output, boolean needCompress)
             throws Exception {
-        BufferedImage image = QRCodeUtil.createImage(content, imgPath, needCompress);
+        BufferedImage image = QRCodeUtils.createImage(content, imgPath, needCompress);
         ImageIO.write(image, FORMAT_NAME, output);
     }
 
     public static void encode(String content, OutputStream output) throws Exception {
-        QRCodeUtil.encode(content, null, output, false);
+        QRCodeUtils.encode(content, null, output, false);
     }
 
 //    /**

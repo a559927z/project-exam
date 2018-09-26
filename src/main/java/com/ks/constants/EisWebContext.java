@@ -1,5 +1,9 @@
 package com.ks.constants;
 
+import com.ks.dto.PublicUserInfo;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+
 /**
  * Title: ${type_name} <br/>
  * <p>
@@ -19,4 +23,25 @@ public class EisWebContext {
         return "superAdmin";
     }
 
+    /**
+     * Get current logged in user
+     *
+     * @return 永不为null
+     * @throws RuntimeException
+     */
+    public static PublicUserInfo getCurrentUser() {
+        Subject subject = SecurityUtils.getSubject();
+        Object principal = subject.getPrincipal();
+        if (principal instanceof PublicUserInfo) {
+            return (PublicUserInfo) principal;
+        }
+        throw new RuntimeException("There is no user available, maybe the session has expired");
+    }
+
+    /**
+     * 判断用户是否登录
+     */
+    public static boolean isLogin() {
+        return SecurityUtils.getSubject().isAuthenticated();
+    }
 }
