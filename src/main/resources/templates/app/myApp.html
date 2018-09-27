@@ -1,18 +1,5 @@
-<!--http://www.hcoder.net/hui/docs314.html-->
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-    <title>我的</title>
-    <link rel="shortcut icon" type="image/png" th:href="@{/images/favicon.png}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/huiAdmin/css/hui.css}"/>
-    <!-- Bootstrap grid CSS -->
-    <!--<link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap-grid.min.css" rel="stylesheet">-->
-    <!-- Custom CSS -->
-    <!--<link th:href="@{/sbAdmin/dist/css/sb-admin-2.css}" rel="stylesheet"/>-->
-    <!-- Custom Fonts -->
-    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
-</head>
+<head th:include="topApp :: copy" th:with="title='我的'"></head>
 
 <body style="background:#f1f1f1;">
 <style type="text/css">
@@ -106,17 +93,6 @@
 
 
 <div th:replace="footApp::copy"></div>
-
-
-<script th:src="@{/huiAdmin/js/hui.js}" type="text/javascript" charset="utf-8"></script>
-<script type="text/javascript" th:src="@{/huiAdmin/js/hui-accordion.js}"></script>
-<script type="text/javascript">
-    hui.ready(function () {
-        hui.accordion(true, false);
-        hui('#nav-news').pointMsg('hot', null, null, null, '1px');
-        hui('#nav-my').pointMsg();
-    });
-</script>
 
 
 </body>

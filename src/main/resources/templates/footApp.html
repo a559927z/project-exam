@@ -24,6 +24,15 @@
             <div class="hui-footer-text">我的</div>
         </a>
     </div>
+    <script th:src="@{/huiAdmin/js/hui.js}" type="text/javascript" charset="utf-8"></script>
+    <script th:src="@{/huiAdmin/js/hui-accordion.js}" type="text/javascript"></script>
+    <script type="text/javascript">
+        hui.ready(function () {
+            hui.accordion(true, false);
+            hui('#nav-news').pointMsg('hot', null, null, null, '1px');
+            hui('#nav-my').pointMsg();
+        });
+    </script>
 </div>
 </body>
 

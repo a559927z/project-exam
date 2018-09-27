@@ -1,0 +1,33 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="copy">
+    <meta charset="utf-8"></meta>
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+    <title th:text="${title}">(title)</title>
+    <link rel="shortcut icon" type="image/png" th:href="@{/images/favicon.png}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/huiAdmin/css/hui.css}"/>
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+
+    <!-- Bootstrap grid CSS -->
+    <!--<link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap-grid.min.css" rel="stylesheet">-->
+    <!-- Custom CSS -->
+    <!--<link th:href="@{/sbAdmin/dist/css/sb-admin-2.css}" rel="stylesheet"/>-->
+    <!-- Custom Fonts -->
+
+    <!--<script th:src="@{/js/require-min.js}" charset="utf-8"></script>-->
+
+    <!-- 全局js控制 -->
+    <script type="text/javascript" th:inline="javascript">
+        //获取项目访问路径名称
+        var ctx = [[@{
+            /}]];
+
+            /*<![CDATA[*/
+            var G_WEB_ROOT = /*[[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]]*/;
+        /*]]>*/
+    </script>
+
+
+</head>
+
+</html>
