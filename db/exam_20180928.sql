@@ -1,7 +1,7 @@
 /*
 Navicat MariaDB Data Transfer
 
-Source Server         : 本地服务
+Source Server         : localhost
 Source Server Version : 100211
 Source Host           : localhost:3369
 Source Database       : exam
@@ -10,7 +10,7 @@ Target Server Type    : MariaDB
 Target Server Version : 100211
 File Encoding         : 65001
 
-Date: 2018-09-26 17:13:02
+Date: 2018-09-29 01:02:00
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -1128,14 +1128,18 @@ CREATE TABLE `public_sys_permission` (
   `resource_type` varchar(30) DEFAULT '' COMMENT '资源类型，[menu|button]',
   `url` varchar(255) DEFAULT '' COMMENT '资源路径',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of public_sys_permission
 -- ----------------------------
-INSERT INTO `public_sys_permission` VALUES ('1', '0', '用户管理', '0', '0/', 'userInfo:view', 'menu', 'userInfo/userList');
-INSERT INTO `public_sys_permission` VALUES ('2', '0', '用户添加', '1', '0/1', 'userInfo:add', 'button', 'userInfo/userAdd');
-INSERT INTO `public_sys_permission` VALUES ('3', '0', '用户删除', '1', '0/1', 'userInfo:del', 'button', 'userInfo/userDel');
+INSERT INTO `public_sys_permission` VALUES ('0', '0', '后台管理', '0', '0/', '', 'menu', '/admin');
+INSERT INTO `public_sys_permission` VALUES ('1', '0', '登录', '0', '0/', '', 'menu', '/app/login/');
+INSERT INTO `public_sys_permission` VALUES ('2', '0', '首页', '0', '0/', '', 'menu', '/app/home/');
+INSERT INTO `public_sys_permission` VALUES ('3', '0', '我的', '0', '0/', '', 'menu', '/app/my/');
+INSERT INTO `public_sys_permission` VALUES ('21', '0', '模拟考试', '2', '2/1/', '', 'menu', '');
+INSERT INTO `public_sys_permission` VALUES ('22', '0', '考前押题', '2', '2/2/', '', 'menu', '/app/ya/');
+INSERT INTO `public_sys_permission` VALUES ('31', '0', '绑定', '3', '3/1', '', 'menu', '/app/reg/');
 
 -- ----------------------------
 -- Table structure for public_sys_role
@@ -1147,7 +1151,7 @@ CREATE TABLE `public_sys_role` (
   `description` varchar(30) DEFAULT '' COMMENT '角色描述,UI界面显示使用',
   `role` varchar(30) DEFAULT '' COMMENT '角色标识程序中判断使用,如"admin",这个是唯一的:',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of public_sys_role
@@ -1155,6 +1159,7 @@ CREATE TABLE `public_sys_role` (
 INSERT INTO `public_sys_role` VALUES ('1', '0', '管理员', 'admin');
 INSERT INTO `public_sys_role` VALUES ('2', '0', 'VIP会员', 'vip');
 INSERT INTO `public_sys_role` VALUES ('3', '1', 'test', 'test');
+INSERT INTO `public_sys_role` VALUES ('4', '0', '移动端', 'app');
 
 -- ----------------------------
 -- Table structure for public_sys_role_permission
@@ -1169,9 +1174,13 @@ CREATE TABLE `public_sys_role_permission` (
 -- ----------------------------
 -- Records of public_sys_role_permission
 -- ----------------------------
-INSERT INTO `public_sys_role_permission` VALUES ('1', '1');
-INSERT INTO `public_sys_role_permission` VALUES ('2', '1');
-INSERT INTO `public_sys_role_permission` VALUES ('3', '2');
+INSERT INTO `public_sys_role_permission` VALUES ('0', '1');
+INSERT INTO `public_sys_role_permission` VALUES ('1', '4');
+INSERT INTO `public_sys_role_permission` VALUES ('2', '4');
+INSERT INTO `public_sys_role_permission` VALUES ('3', '4');
+INSERT INTO `public_sys_role_permission` VALUES ('21', '4');
+INSERT INTO `public_sys_role_permission` VALUES ('22', '4');
+INSERT INTO `public_sys_role_permission` VALUES ('31', '4');
 
 -- ----------------------------
 -- Table structure for public_sys_user_role
@@ -1194,7 +1203,7 @@ INSERT INTO `public_sys_user_role` VALUES ('1', '2');
 -- ----------------------------
 DROP TABLE IF EXISTS `public_user_info`;
 CREATE TABLE `public_user_info` (
-  `uid` varchar(255) NOT NULL,
+  `uid` varchar(32) NOT NULL,
   `en_name` varchar(30) NOT NULL DEFAULT '' COMMENT '帐号',
   `cn_name` varchar(30) DEFAULT '' COMMENT '名称（昵称或者真实姓名，不同系统不同定义）',
   `password` varchar(60) DEFAULT '' COMMENT '密码',
@@ -1209,3 +1218,10 @@ CREATE TABLE `public_user_info` (
 INSERT INTO `public_user_info` VALUES ('1', 'admin', '管理员', 'd3c59d25033dbf980d29554025c23a75', '8d78869f470951332959580424d4bf4f', '0');
 INSERT INTO `public_user_info` VALUES ('2', 'superAdmin', '超级管理员', 'a26cf971f3dabdbfe2b636b6ac1160fd', 'kingsing', '0');
 INSERT INTO `public_user_info` VALUES ('3', 'test1', '测试', '', '', '1');
+INSERT INTO `public_user_info` VALUES ('495354803069648896', '1111', '23123', 'b1f2f94abcab6e19fb0f756959f8baab', '1123123', '1');
+INSERT INTO `public_user_info` VALUES ('495356379918237696', '222', 'qwe', 'd7bb64f4aae8d1fc76b622d32b8e7a91', 'qweqwe', '1');
+INSERT INTO `public_user_info` VALUES ('495357596606136320', '313', '232', '3a15ecaac814993c268a2e8448dcd7b0', '123123', '1');
+INSERT INTO `public_user_info` VALUES ('495358326687662080', '444', '123', '3a15ecaac814993c268a2e8448dcd7b0', '123123', '1');
+INSERT INTO `public_user_info` VALUES ('495359878974406656', '555', '123', '3a15ecaac814993c268a2e8448dcd7b0', '123123', '1');
+INSERT INTO `public_user_info` VALUES ('495362930649333760', '66', '123', '6b3f2319411efa114c025ce91c594382', '231231', '1');
+INSERT INTO `public_user_info` VALUES ('495393437709762560', 'eqwe', 'qwe', '3a15ecaac814993c268a2e8448dcd7b0', '123123', '0');
