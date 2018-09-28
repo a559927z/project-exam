@@ -86,12 +86,15 @@
         }
         //提交
         if (res) {
-            hui.iconToast('验证通过！');
-            hui.post(
+            hui.postJSON(
                 urls.doLogin,
                 param,
                 function (rs) {
-                    console.log(rs);
+                    if (rs.k && rs.v == "已注册过，已激活过。只是客户端清空了cookie") {
+                        window.location = webRoot + "/app/home/toIndex";
+                    } else {
+                        hui.iconToast(rs.v);
+                    }
                 },
                 function (e) {
                     hui.iconToast('读取消息失败', 'warn');

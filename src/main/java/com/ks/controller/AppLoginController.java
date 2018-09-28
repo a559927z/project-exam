@@ -1,14 +1,11 @@
 package com.ks.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
-import com.ks.constants.CookieContext;
-import com.ks.dao.ExamQuestionBankYaMapper;
-import com.ks.dao.ExamUserAnswerYaMapper;
-import com.ks.dao.PublicLoginMapper;
+import com.ks.constants.CookieConstants;
 import com.ks.dao.PublicUserInfoMapper;
-import com.ks.dto.*;
+import com.ks.dto.KVItemDto;
+import com.ks.dto.PublicUserInfo;
+import com.ks.dto.PublicUserInfoExample;
 import com.ks.util.ShiroUtils;
 import com.ks.utils.CookieUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +66,7 @@ public class AppLoginController {
     @RequestMapping("/toLogin")
     public String toLogin(HttpServletRequest request) {
         // cookie 已有验证通过的
-        String enName = CookieUtils.getCookieValue(request, CookieContext.USER_INFO_KEY);
+        String enName = CookieUtils.getCookieValue(request, CookieConstants.USER_INFO_KEY);
         PublicUserInfoExample example = new PublicUserInfoExample();
         // cookie 取enName
         if (StringUtils.isNotBlank(enName)) {
@@ -112,7 +108,7 @@ public class AppLoginController {
             PublicUserInfoExample example = new PublicUserInfoExample();
             String enName = requestDto.getEnName();
             // 检查用户是否已经注册并激活过
-            example.createCriteria().andEnNameEqualTo(enName).andStateEqualTo(0);
+            example.createCriteria().andEnNameEqualTo(enName);
             List<PublicUserInfo> exists = publicUserInfoMapper.selectByExample(example);
             rs = regUser(response, requestDto, rs, exists);
             return rs;
@@ -145,9 +141,16 @@ public class AppLoginController {
             // 1用户被锁定，待后台激动为0
             dto.setState(1);
             publicUserInfoMapper.insertSelective(dto);
-            CookieUtils.addCookie(response, CookieContext.USER_INFO_KEY, dto.getEnName(), CookieContext.MAX_AGE);
+            CookieUtils.addCookie(response, CookieConstants.USER_INFO_KEY, dto.getEnName(), CookieConstants.MAX_AGE);
             rs.setK(true);
             rs.setV("注册成功，等待后台激活。");
+        } else if (exists.get(0).getState() == 1) {
+            rs.setK(true);
+            rs.setV("已注册过，等待后台激活。");
+        } else if (exists.get(0).getState() == 0) {
+            rs.setK(true);
+            rs.setV("已注册过，已激活过。只是客户端清空了cookie");
+            CookieUtils.addCookie(response, CookieConstants.USER_INFO_KEY, requestDto.getEnName(), CookieConstants.MAX_AGE);
         } else {
             rs.setK(false);
             rs.setV("注册失败");

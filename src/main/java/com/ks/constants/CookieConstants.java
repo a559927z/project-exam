@@ -10,7 +10,7 @@ package com.ks.constants;
  * @Verdion 1.0 版本
  * ${tags}
  */
-public interface CookieContext {
+public interface CookieConstants {
 
     /**
      * 三个月
