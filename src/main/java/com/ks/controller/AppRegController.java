@@ -1,19 +1,18 @@
 package com.ks.controller;
 
-import com.ks.dao.ExamQuestionBankYaMapper;
-import com.ks.dao.ExamUserAnswerYaMapper;
 import com.ks.dao.PublicUserInfoMapper;
-import com.ks.dto.*;
+import com.ks.dto.KVItemDto;
+import com.ks.dto.PublicUserInfo;
+import com.ks.dto.PublicUserInfoExample;
+import com.ks.dto.RegUserDto;
 import com.ks.util.ShiroUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.chinahrd.utils.Identities;
 import net.chinahrd.utils.verifyCode.VerifyCodeUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -42,12 +39,8 @@ import java.util.List;
 @Controller
 public class AppRegController {
 
-
     @Autowired
     private PublicUserInfoMapper publicUserInfoMapper;
-    @Autowired
-    private ExamUserAnswerYaMapper examUserAnswerYaMapper;
-
 
     /**
      * http://localhost:8080/exam/app/my/toIndex
@@ -86,6 +79,13 @@ public class AppRegController {
     }
 
 
+    /**
+     * 绑定
+     *
+     * @param request
+     * @param regUserDto
+     * @return
+     */
     @PostMapping
     @ResponseBody
     @RequestMapping("/regUser")
@@ -128,8 +128,6 @@ public class AppRegController {
             rs.setV("绑定失败");
             return rs;
         }
-
-
     }
 
 }

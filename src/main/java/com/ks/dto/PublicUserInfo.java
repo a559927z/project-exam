@@ -17,11 +17,16 @@ public class PublicUserInfo implements Serializable {
 
     private String salt;
 
+    /**
+     * 0:正常状态,1：用户被锁定.
+     * 删除(用户状态,0:创建未认证（比如没有激活，没有输入验证码等等）--等待验证的用户 , 0:正常状态,1：用户被锁定.)
+     */
     private Integer state;
 
     private static final long serialVersionUID = 1L;
 
-    private List<PublicSysRole> roleList;// 一个用户具有多个角色
+    // 一个用户具有多个角色
+    private List<PublicSysRole> roleList;
 
     /**
      * 密码盐.

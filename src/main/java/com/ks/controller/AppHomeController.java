@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @Verdion 1.0 版本
  * ${tags}
  */
-@RequestMapping("/app")
+@RequestMapping("/app/home")
 @Controller
-public class AppController {
+public class AppHomeController {
 
     /**
      * 重定向
@@ -35,7 +35,7 @@ public class AppController {
      */
     @RequestMapping("/toIndex")
     public String index() {
-        return "app/indexApp";
+        return "app/homeApp";
     }
 
 
