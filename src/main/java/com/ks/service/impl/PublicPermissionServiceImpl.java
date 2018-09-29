@@ -45,17 +45,52 @@ public class PublicPermissionServiceImpl implements PublicPermissionService {
         PublicUserInfoExample userInfoExample = new PublicUserInfoExample();
         userInfoExample.createCriteria().andEnNameEqualTo(username);
         List<PublicUserInfo> publicUserInfoList = publicUserInfoMapper.selectByExample(userInfoExample);
-
         if (CollectionUtils.isEmpty(publicUserInfoList)) {
             return null;
         }
-
-        PublicUserInfo publicUserInfo = publicUserInfoList.get(0);
-
-        String uid = publicUserInfo.getUid();
-        publicUserInfo.setRoleList(queryRoleListByUserId(uid));
-        return publicUserInfo;
+        PublicUserInfo userInfo = publicUserInfoList.get(0);
+        String uid = userInfo.getUid();
+        userInfo.setRoleList(queryRoleList(uid));
+        return userInfo;
     }
+
+//    /**
+//     * roleList --> permissionList
+//     *
+//     * @param userId
+//     * @return
+//     */
+//    private List<PublicSysRole> queryRoleList(String userId) {
+//        PublicSysUserRoleExample userRoleExample = new PublicSysUserRoleExample();
+//        userRoleExample.createCriteria().andUidEqualTo(userId);
+//        // 用户<->角色ID集
+//        List<PublicSysUserRoleKey> roleIdList
+//                = publicSysUserRoleMapper.selectByExample(userRoleExample);
+//
+//        List<PublicSysRole> rsRoleList = Lists.newArrayList();
+//        roleIdList.forEach(n -> {
+//            Integer roleId = n.getRoleId();
+//
+//            PublicSysRoleExample roleExample = new PublicSysRoleExample();
+//            roleExample.createCriteria().andIdEqualTo(roleId);
+//            List<PublicSysRole> roleDTOList = publicSysRoleMapper.selectByExample(roleExample);
+//
+//            if (CollectionUtils.isNotEmpty(roleDTOList)) {
+//                rsRoleList.add(roleDTOList.get(0));
+//            }
+//        });
+//
+//        return rsRoleList;
+//    }
+//
+//    private List<PublicSysPermission> queryPermissionList(List<PublicSysRole> roleList) {
+//        roleList.forEach(n -> {
+//            Integer id = n.getId();
+//
+//        });
+//
+//    }
+
 
     /**
      * roleList --> permissionList
@@ -63,11 +98,10 @@ public class PublicPermissionServiceImpl implements PublicPermissionService {
      * @param userId
      * @return
      */
-    private List<PublicSysRole> queryRoleListByUserId(String userId) {
+    private List<PublicSysRole> queryRoleList(String userId) {
         PublicSysUserRoleExample userRoleExample = new PublicSysUserRoleExample();
         userRoleExample.createCriteria().andUidEqualTo(userId);
-
-        // 用户的角色ID集
+        // 用户<->角色ID集
         List<PublicSysUserRoleKey> roleIdList
                 = publicSysUserRoleMapper.selectByExample(userRoleExample);
 
@@ -77,7 +111,6 @@ public class PublicPermissionServiceImpl implements PublicPermissionService {
 
             PublicSysRoleExample roleExample = new PublicSysRoleExample();
             roleExample.createCriteria().andIdEqualTo(roleId);
-
             List<PublicSysRole> roleDTOList = publicSysRoleMapper.selectByExample(roleExample);
 
             if (CollectionUtils.isEmpty(roleDTOList)) {
@@ -98,17 +131,16 @@ public class PublicPermissionServiceImpl implements PublicPermissionService {
 
                 roleDTO.setPermissionList(permissionDTOList);
             });
-
             rs.add(roleDTO);
         });
+
         return rs;
     }
+
 
     @Override
     public Page<PublicUserInfo> queryByPage(int pageNo, int pageSize) {
         PageHelper.startPage(pageNo, pageSize);
-//        PublicUserInfoExample userInfoExample = new PublicUserInfoExample();
-//        userInfoExample.createCriteria().andEnNameEqualTo(username);
         return publicUserInfoMapperExt.queryByPage();
     }
 

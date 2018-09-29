@@ -1,13 +1,26 @@
 package com.ks.config;
 
+import com.alibaba.fastjson.JSON;
+import com.ks.constants.CookieConstants;
 import com.ks.constants.UrlConstants;
+import com.ks.constants.UserInfoConstants;
+import com.ks.dao.PublicUserInfoMapper;
+import com.ks.dto.PublicUserInfo;
+import com.ks.dto.PublicUserInfoExample;
+import com.ks.utils.CookieUtils;
+import com.ks.utils.cache.LoadingCacheUtil;
 import org.apache.catalina.filters.RemoteIpFilter;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.web.servlet.ErrorPage;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -18,9 +31,17 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
+
+    @Autowired
+    private Environment env;
+
+    @Autowired
+    private PublicUserInfoMapper publicUserInfoMapper;
 
     /**
      * 配置静态访问资源
@@ -56,9 +77,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     }
 
     public class AuthHandlerInterceptor extends HandlerInterceptorAdapter {
-        /**
-         * 403
-         */
+
         final String unAuthorized = UrlConstants.URI_TO_LOGIN;
 
         @Override
@@ -68,27 +87,55 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 // 走拦截器链
                 return true;
             }
-
             // 不通过重定向到403
             String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
             response.sendRedirect(basePath + unAuthorized);
-
             // 不走拦截器链
             return false;
         }
 
         /**
          * 是否有认证权限
+         * 1：从客户端的cookie里得到enName   (客户端的cookie是用户落地成功会返回给客户端， 生存期3个月)
+         * 2：通过本地缓存取检验是否存在（本地缓存里在登录时查出 已激活的账号才保存在缓存里， 生存期2天）
          *
          * @param request
          * @return
          */
-        private boolean isAuth(HttpServletRequest request) {
-            System.out.println("是否有认证权限");
-//            EmpExtendDto empInfo = (EmpExtendDto) request.getSession().getAttribute("empInfo");
-//            if (null == empInfo) {
-//                return false;
-//            }
+        private boolean isAuth(HttpServletRequest request) throws ExecutionException {
+            String ctxPath = "";
+            String active = env.getProperty("spring.profiles.active");
+            if ("dev".equalsIgnoreCase(active)) {
+                ctxPath = "/exam";
+            }
+
+            String requestURI = request.getRequestURI();
+            if (StringUtils.startsWith(requestURI, ctxPath + "/app/login/")
+                    || StringUtils.startsWith(requestURI, ctxPath + "/admin/")) {
+                return true;
+            }
+
+            String enName = CookieUtils.getCookieValue(request, CookieConstants.USER_INFO_KEY);
+            if (StringUtils.isBlank(enName)) {
+                return false;
+            }
+            LoadingCacheUtil loadingCacheUtil = LoadingCacheUtil.getInstance();
+            if (null == loadingCacheUtil) {
+                return false;
+            }
+            String userInfo = loadingCacheUtil.get(enName, String.class);
+            if (null == userInfo) {
+                // 缓存没，再去数据检查一次，正常缓存是在/app/login/toLogin里就设置的，防止客户端2天没有退出，缓存没了。
+                PublicUserInfoExample example = new PublicUserInfoExample();
+                example.createCriteria().andEnNameEqualTo(enName).andStateEqualTo(UserInfoConstants.UN_LOCK);
+                List<PublicUserInfo> exists = publicUserInfoMapper.selectByExample(example);
+                if (CollectionUtils.isNotEmpty(exists)) {
+                    LoadingCacheUtil.getInstance().save(enName, JSON.toJSONString(exists.get(0)));
+                    return true;
+                } else {
+                    return false;
+                }
+            }
             return true;
         }
     }
@@ -111,21 +158,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
             String requestURI = request.getRequestURI();
 
             System.out.println("this is MyFilter,url :" + requestURI);
-//            // admin 走shiro权限
-//            if (requestURI.contains("/admin/") ||
-//                    requestURI.contains("/assets/") ||
-//                    requestURI.contains("/app/login/toLogin/") ||
-//                    requestURI.contains("/app/login/doLogin/")
-//                    ) {
-//                filterChain.doFilter(srequest, sresponse);
-//            }
-//            // app 走是否激活验证
-//            else if (1 != 1) {
-//
-//                filterChain.doFilter(srequest, sresponse);
-//            } else {
-//                return;
-//            }
             filterChain.doFilter(srequest, sresponse);
         }
 

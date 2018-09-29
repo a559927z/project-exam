@@ -46,7 +46,7 @@
                 </a>
             </li>
             <li>
-                <a th:href="@{/app/reg/toIndex}">
+                <a th:href="@{/app/reg/toIndex}" onclick="hui.toast('暂没开放');">
                     <div class="hui-list-icons">
                         <img th:src="@{/img/app/sc.png}">
                     </div>
@@ -60,7 +60,7 @@
             </li>
 
             <li>
-                <a href="javascript:void(0);">
+                <a href="javascript:void(0);" onclick="hui.toast('暂没开放');">
                     <div class="hui-list-icons">
                         <img th:src="@{/img/app/order.png}">
                     </div>
@@ -85,16 +85,33 @@
         </ul>
     </div>
     <div style="background:#FFFFFF; margin-top:28px;">
-        <button type="button" class="hui-button hui-button-large" onclick="hui.toast('退出');">
+        <button id="logout" type="button" class="hui-button hui-button-large">
             <span class="hui-icons hui-icons-logoff"></span>退出系统
         </button>
     </div>
 </div>
 
-
 <div th:replace="footApp::copy"></div>
 
-
+<script type="text/javascript">
+    var webRoot = G_WEB_ROOT;
+    var urls = {
+        toLogout: webRoot + '/app/login/toLogout',
+        toLogin: webRoot + "/app/login/toLogin"
+    }
+    hui('#logout').click(function () {
+        hui.getJSON(
+            urls.toLogout,
+            function (rs) {
+                if (rs) {
+                    window.location = urls.toLogin;
+                }
+            },
+            function (e) {
+            }
+        );
+    });
+</script>
 </body>
 
 </html>

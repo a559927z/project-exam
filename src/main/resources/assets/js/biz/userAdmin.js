@@ -91,6 +91,14 @@ require(['jquery', 'bootstrap', 'dataTable', 'datatables.net', 'utils', 'layer']
                     width: "150px"
                 }, {
                     className: "ellipsis",
+                    data: "cnName",
+                    width: "150px"
+                }, {
+                    className: "ellipsis",
+                    data: "salt",
+                    width: "150px"
+                }, {
+                    className: "ellipsis",
                     data: "state",
                     width: "150px"
                 }, {
@@ -116,7 +124,7 @@ require(['jquery', 'bootstrap', 'dataTable', 'datatables.net', 'utils', 'layer']
                 } else {
                     $btnLock = btnHtml.unlock;
                 }
-                $('td', row).eq(3).append($btnLock).append("    ").append(btnHtml.del);
+                $('td', row).eq(5).append($btnLock).append("    ").append(btnHtml.del);
             },
             drawCallback: function (settings) {
                 //渲染完毕后的回调
