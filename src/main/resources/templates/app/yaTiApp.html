@@ -99,63 +99,23 @@
 </div>
 
 <div th:replace="footApp::copy"></div>
-
-
-<div class="hui-slide-menu">
-    <div class="hui-accordion">
-        <div class="hui-accordion-title">银行从业</div>
-        <div class="hui-accordion-content hui-list">
-            <a href="javascript:hui.open('../demo/base.html');">
-                <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
-                <div class="hui-list-text">
-                    银行业法律法规与综合能力
-                    <div class="hui-list-info hui-icons hui-icons-right"></div>
-                </div>
-            </a>
-        </div>
-    </div>
-    <div class="hui-accordion">
-        <div class="hui-accordion-title">基金从业</div>
-        <div class="hui-accordion-content hui-list">
-            <a href="javascript:hui.open('../demo/base.html');">
-                <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
-                <div class="hui-list-text">
-                    基金法律法规、职业道德与业务规范
-                    <div class="hui-list-info hui-icons hui-icons-right"></div>
-                </div>
-            </a>
-            <a href="javascript:hui.open('../demo/base.html');">
-                <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
-                <div class="hui-list-text">
-                    证券投资基金基础知识
-                    <div class="hui-list-info hui-icons hui-icons-right"></div>
-                </div>
-            </a>
-            <a href="javascript:hui.open('../demo/base.html');">
-                <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
-                <div class="hui-list-text">
-                    私募股权投资基金基础知识
-                    <div class="hui-list-info hui-icons hui-icons-right"></div>
-                </div>
-            </a>
-        </div>
-    </div>
-    <div class="hui-accordion">
-        <button type="button" class="hui-button hui-button-large" onclick="hui.closeSlideMenu();">关闭菜单</button>
-    </div>
-
-    <!--<ul>-->
-    <!--<li>银行从业</li>-->
-    <!--<li>基金从业</li>-->
-    <!--<li>证券从业</li>-->
-    <!--<li style="padding-top:30px;">-->
-    <!--<button type="button" class="hui-button hui-button-large" onclick="hui.closeSlideMenu();">关闭菜单</button>-->
-    <!--</li>-->
-    <!--</ul>-->
-</div>
 <script type="text/javascript">
-    hui.slideMenu();
+    var webRoot = G_WEB_ROOT;
+    var urls = {
+        queryYaTiByUserId: webRoot + '/app/ya/queryYaTiByUserId?courseId=1',
+    }
+    hui.getJSON(
+        urls.queryYaTiByUserId,
+        function (rs) {
+            if (rs) {
+               console.log(rs);
+            }
+        },
+        function (e) {
+        }
+    );
 </script>
+
 
 </body>
 

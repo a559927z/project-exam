@@ -9,6 +9,7 @@ import com.ks.dto.PublicUserInfo;
 import com.ks.dto.PublicUserInfoExample;
 import com.ks.utils.CookieUtils;
 import com.ks.utils.cache.LoadingCacheUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.filters.RemoteIpFilter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +35,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+@Slf4j
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
 
@@ -102,7 +104,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
          * @param request
          * @return
          */
-        private boolean isAuth(HttpServletRequest request) throws ExecutionException {
+        private boolean isAuth(HttpServletRequest request) {
             String ctxPath = "";
             String active = env.getProperty("spring.profiles.active");
             if ("dev".equalsIgnoreCase(active)) {
@@ -112,31 +114,50 @@ public class WebConfig extends WebMvcConfigurerAdapter {
             String requestURI = request.getRequestURI();
             if (StringUtils.startsWith(requestURI, ctxPath + "/app/login/")
                     || StringUtils.startsWith(requestURI, ctxPath + "/admin/")) {
+                log.info("通过：都不做过认证");
                 return true;
             }
 
             String enName = CookieUtils.getCookieValue(request, CookieConstants.USER_INFO_KEY);
             if (StringUtils.isBlank(enName)) {
+                log.info("不通过：cookie没值");
                 return false;
             }
-            LoadingCacheUtil loadingCacheUtil = LoadingCacheUtil.getInstance();
-            if (null == loadingCacheUtil) {
-                return false;
+            String userInfo = null;
+            try {
+                userInfo = LoadingCacheUtil.getInstance().get(enName, String.class);
+                if (null == userInfo) {
+                    return saveCache(enName);
+                } else {
+                    log.info("通过：缓存有");
+                    return true;
+                }
+            } catch (ExecutionException e) {
+                return saveCache(enName);
             }
-            String userInfo = loadingCacheUtil.get(enName, String.class);
-            if (null == userInfo) {
-                // 缓存没，再去数据检查一次，正常缓存是在/app/login/toLogin里就设置的，防止客户端2天没有退出，缓存没了。
-                PublicUserInfoExample example = new PublicUserInfoExample();
-                example.createCriteria().andEnNameEqualTo(enName).andStateEqualTo(UserInfoConstants.UN_LOCK);
+        }
+
+        /**
+         * @param enName
+         * @return
+         */
+        private boolean saveCache(String enName) {
+            PublicUserInfoExample example = new PublicUserInfoExample();
+            example.createCriteria().andEnNameEqualTo(enName).andStateEqualTo(UserInfoConstants.UN_LOCK);
+            try {
                 List<PublicUserInfo> exists = publicUserInfoMapper.selectByExample(example);
                 if (CollectionUtils.isNotEmpty(exists)) {
                     LoadingCacheUtil.getInstance().save(enName, JSON.toJSONString(exists.get(0)));
+                    log.info("通过：缓存没有，从数据库里带出，正常缓存是在/app/login/toLogin里就设置的，防止客户端2天没有退出，缓存没了。");
                     return true;
                 } else {
+                    log.info("不通过：缓存没有，从数据库里没带出。");
                     return false;
                 }
+            } catch (Exception e) {
+                log.error("不通过：缓存没有，从数据库里查询出错");
+                return false;
             }
-            return true;
         }
     }
 
