@@ -1,6 +1,7 @@
 package com.ks.service;
 
 import com.ks.dto.ExamUserAnswerYa;
+import com.ks.vo.ExamUserAnswerYaVo;
 
 import java.util.List;
 
@@ -22,5 +23,5 @@ public interface AppYaService {
      * @param courseId
      * @return
      */
-    List<ExamUserAnswerYa> queryYaTiByUserId(String userId, String courseId);
+    List<ExamUserAnswerYaVo> queryYaTiByUserId(String userId, String courseId);
 }
