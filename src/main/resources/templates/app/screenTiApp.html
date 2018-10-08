@@ -1,0 +1,86 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="topApp :: copy" th:with="title='题目筛选'"></head>
+
+<body>
+<style type="text/css">
+    .screenZone {
+        margin: 20px 0px;
+        padding: 10px 20px;
+        background-color: #FFF;
+    }
+
+    .screenZone .lh {
+        line-height: 35px;
+    }
+
+    .title {
+        margin-bottom: 10px;
+    }
+
+    .left {
+        display: block;
+        float: left;
+    }
+
+    .right {
+        display: block;
+        float: right;
+    }
+
+    .screenZone div {
+        margin-right: 10px;
+    }
+
+</style>
+
+<header class="hui-header">
+    <div id="hui-back"></div>
+    <h1>题目筛选</h1>
+</header>
+<div class="hui-wrap">
+    <div id="screenZone">
+        <div class="screenZone">
+            <div class="left lh">练习未做题目</div>
+            <div class="right">
+                <div class="hui-switch " id="switchBox"><span>Off</span>
+                    <div class="hui-switch-in"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="screenZone tiTypeZone">
+            <div class="title">题目类型</div>
+            <div class="hui-button hui-fl hui-primary">全部</div>
+            <div class="hui-button hui-fl">单选题</div>
+            <div class="hui-button hui-fl">多选题</div>
+            <div class="hui-button hui-fl">是非题</div>
+        </div>
+
+        <div class="screenZone">
+            <div class="title">选择做题数量</div>
+            <div class="hui-button hui-fl hui-primary">全部</div>
+            <div class="hui-button hui-fl">5</div>
+            <div class="hui-button hui-fl">10</div>
+        </div>
+    </div>
+    <div class="hui-button hui-primary hui-button-large">开始做题</div>
+</div>
+
+
+<div th:replace="footApp::copy"></div>
+
+<script type="text/javascript">
+    hui('#switchBox').switchBox(['Off', 'On'], function (res) {
+        if (res) {
+            hui.toast('开关打开');
+        } else {
+            hui.toast('开关关闭');
+        }
+    }, true);
+</script>
+
+
+</body>
+
+</html>
+

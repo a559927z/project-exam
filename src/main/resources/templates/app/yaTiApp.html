@@ -1,7 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:include="topApp :: copy" th:with="title='考前押题'"></head>
 
-<body style="background:#f1f1f1;">
+<body>
 <style type="text/css">
 
     .qb-zone {
@@ -49,12 +49,10 @@
 
 
 </style>
-<div th:replace="menuApp::copy"></div>
-<div style="clear: both"></div>
 
+<div th:replace="menuApp::copy"></div>
 <div class="hui-wrap">
-    <div class="yaZone">
-    </div>
+    <div id="yaZone"></div>
 </div>
 
 <div th:replace="footApp::copy"></div>
@@ -67,7 +65,6 @@
     }
 
     function render(list) {
-        console.log(list);
         var html = "";
         $.each(list, function (i, item) {
             console.log(item);
@@ -93,12 +90,11 @@
                 '            <div style="clear: both"></div>' +
                 '       </div>';
         });
-        $(".yaZone").empty();
-        $(".yaZone").append(html);
+        $("#yaZone").empty();
+        $("#yaZone").append(html);
     }
 
     function resetPage(courseId) {
-        console.log(courseId);
         getData(courseId);
     }
 
