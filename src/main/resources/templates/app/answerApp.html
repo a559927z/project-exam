@@ -1,0 +1,117 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="topApp :: copy" th:with="title='答题'"></head>
+
+<body>
+<style type="text/css">
+    #answerZone {
+        background-color: #FFF;
+    }
+
+    .questionZone {
+        /*background-color: #FFF;*/
+        padding: 10px 20px;
+    }
+
+    .questionZone .body {
+        margin: 10px 0px;
+    }
+
+    .answerZone {
+        padding: 10px 20px;
+    }
+
+    .trueAnswerZone {
+        margin: 20px 0px;
+        padding: 10px 20px;
+    }
+
+    .jieXiZone {
+        padding: 10px 20px;
+    }
+
+    #hui-footer a {
+        display: block;
+        width: 33.3%;
+        text-align: center;
+    }
+
+</style>
+
+<header class="hui-header">
+    <div id="hui-back"></div>
+    <h1>答题</h1>
+</header>
+<div class="hui-wrap">
+    <div id="answerZone">
+        <div class="questionZone">
+            <div class="hui-badge hui-danger hui-fl">单选题</div>
+            <div class="hui-fr">1/7</div>
+            <div style="clear: both"></div>
+            <div class="body">
+                甲与乙约定：若乙考上大学，甲将其小提琴以1万元的价格卖给乙。后甲因善意第三人丙出价甚高，便将该小提琴出售于丙，且钱货两清。乙考上大学后，向甲求购小提琴未果而引发纠纷。对此，乙可以请求（）。
+            </div>
+        </div>
+        <div class="answerZone">
+            <div class="">
+                <div class="hui-badge">A</div>
+                丙承担违约责任
+            </div>
+            <div class="">
+                <div class="hui-badge hui-primary">B</div>
+                丙返还该小提琴
+            </div>
+            <div class="">
+                <div class="hui-badge">C</div>
+                甲赔偿乙所受损失
+            </div>
+            <div class="">
+                <div class="hui-badge">D</div>
+                甲和丙负连带责任
+            </div>
+        </div>
+
+        <div class="trueAnswerZone hui-accordion">
+            <div class="hui-accordion-title ">答案</div>
+            <div class="hui-accordion-content">
+                <div class="hui-badge hui-danger">B</div>
+            </div>
+        </div>
+
+        <div class="jieXiZone  hui-accordion">
+            <div class="hui-accordion-title">解析</div>
+            <div class="hui-accordion-content">丙是善意第三人，不承担责任。</div>
+        </div>
+    </div>
+</div>
+<div class="hui-fooer-line"></div>
+<div id="hui-footer">
+    <a th:href="@{/app/home/toIndex}" id="nav-home">
+        <i class="fa fa-angle-left fa-2x hui-footer-icons"></i>
+        <div class="hui-footer-text">上一题</div>
+    </a>
+
+    <a href="javascript:hui.toast('视频');" id="nav-news">
+        <div class="hui-footer-icons hui-icons-news"></div>
+        <div class="hui-footer-text">答题卡</div>
+    </a>
+    <a th:href="@{/app/my/toIndex}" id="nav-my">
+        <div class="fa fa-star-o fa-2x hui-footer-icons"></div>
+        <div class="hui-footer-text">收藏</div>
+    </a>
+    <a th:href="@{/app/my/toIndex}" id="nav-next">
+        <i class="fa fa-angle-right fa-2x hui-footer-icons"></i>
+        <div class="hui-footer-text">下一题</div>
+    </a>
+</div>
+<script th:src="@{/huiAdmin/js/hui-accordion.js}" type="text/javascript"></script>
+<script type="text/javascript">
+    hui.ready(function () {
+        hui.accordion(false, false);
+    });
+</script>
+
+
+</body>
+
+</html>
+

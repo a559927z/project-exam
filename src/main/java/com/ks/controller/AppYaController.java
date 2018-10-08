@@ -32,12 +32,6 @@ public class AppYaController {
 
 
     @Autowired
-    private ExamQuestionBankYaMapper examQuestionBankYaMapper;
-
-    @Autowired
-    private ExamUserAnswerYaMapper examUserAnswerYaMapper;
-
-    @Autowired
     private AppYaService appYaService;
 
     /**
