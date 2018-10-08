@@ -41,21 +41,16 @@ public class AppYaController {
     private AppYaService appYaService;
 
     /**
-     * http://localhost:8080/exam/admin/ya/queryYaTi
+     * http://localhost:8080/app/ya/queryYaTiByUserId
      * 押题管理列表
      *
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/queryYaTiByUserId")
-    public Map<String, Object> queryYaTiByUserId(HttpServletRequest request, String courseId) {
+    public List<ExamUserAnswerYaVo> queryYaTiByUserId(HttpServletRequest request, String courseId) {
         String enName = CookieUtils.getCookieValue(request, CookieConstants.USER_INFO_KEY);
-
-        List<ExamUserAnswerYaVo> yaTiList = appYaService.queryYaTiByUserId(enName, courseId);
-
-        Map<String, Object> rsMap = Maps.newHashMap();
-        rsMap.put("list", yaTiList);
-        return rsMap;
+        return appYaService.queryYaTiByUserId(enName, courseId);
     }
 
     /**

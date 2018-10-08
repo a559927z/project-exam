@@ -4,7 +4,7 @@
 <body style="background:#f1f1f1;">
 <style type="text/css">
 
-    .ya-zone {
+    .qb-zone {
         border: 1px solid #f1f1f1;
         padding: 10px 10px;
         border-radius: 10px;
@@ -49,72 +49,89 @@
 
 
 </style>
-<header class="hui-header">
-    <!--<div id="hui-back"></div>-->
-    <h1>股权投资基金基础</h1>
-    <div id="hui-header-menu" onclick="hui.showSlideMenu();"></div>
-</header>
+<div th:replace="menuApp::copy"></div>
+<div style="clear: both"></div>
 
 <div class="hui-wrap">
-    <div class="">
-        <div class="ya-zone">
-            <div class="span100">
-                <div class="header">
-                    <div style="text-align:right; padding:5px 0px;">60%</div>
-                    <div class="hui-progress">
-                        <span style="width: 60%;"></span>
-                    </div>
-                </div>
-                <div class="body">
-                    <div class="span95">
-                        <span>xxxxxxxxxxxxxxxxxxxxxxxxxxx</span>
-                    </div>
-                    <div class="span5">
-                        <span class="fa fa-pencil-square-o"></span>
-                    </div>
-                </div>
-            </div>
-            <div style="clear: both"></div>
-        </div>
-        <div class="ya-zone">
-            <div class="span100">
-                <div class="header">
-                    <div style="text-align:right; padding:5px 0px;">90%</div>
-                    <div class="hui-progress">
-                        <span style="width: 90%;"></span>
-                    </div>
-                </div>
-                <div class="body">
-                    <div class="span95">
-                        <span>yyyyyyyyyyyyyyyyyyyyyyy</span>
-                    </div>
-                    <div class="span5">
-                        <span class="fa fa-pencil-square-o"></span>
-                    </div>
-                </div>
-            </div>
-            <div style="clear: both"></div>
-        </div>
+    <div class="yaZone">
     </div>
 </div>
 
 <div th:replace="footApp::copy"></div>
+
+
 <script type="text/javascript">
     var webRoot = G_WEB_ROOT;
     var urls = {
-        // TODO courseId
-        queryYaTiByUserId: webRoot + '/app/ya/queryYaTiByUserId?courseId=1',
+        queryYaTiByUserId: webRoot + '/app/ya/queryYaTiByUserId?courseId=',
     }
-    hui.getJSON(
-        urls.queryYaTiByUserId,
-        function (rs) {
-            if (rs) {
-               console.log(rs);
-            }
-        },
-        function (e) {
+
+    function render(list) {
+        console.log(list);
+        var html = "";
+        $.each(list, function (i, item) {
+            console.log(item);
+            console.log('')
+            html +=
+                '        <div class="qb-zone">' +
+                '            <div class="span100">' +
+                '                <div class="header">' +
+                '                    <div style="text-align:right; padding:5px 0px;">' + item.finishTotal + '/' + item.total + '</div>' +
+                '                   <div class="hui-progress">' +
+                '                       <span style="width: ' + item.finishRate + ';"></span>' +
+                '                    </div>' +
+                '                </div>' +
+                '                <div class="body">' +
+                '                    <div class="span95">' +
+                '                        <span>' + item.questionBankName + '</span>' +
+                '                    </div>' +
+                '                    <div class="span5">' +
+                '                        <span class="fa fa-pencil-square-o"></span>' +
+                '                    </div>' +
+                '                </div>' +
+                '            </div>' +
+                '            <div style="clear: both"></div>' +
+                '       </div>';
+        });
+        $(".yaZone").empty();
+        $(".yaZone").append(html);
+    }
+
+    function resetPage(courseId) {
+        console.log(courseId);
+        getData(courseId);
+    }
+
+    function init() {
+        var courseId = "";
+        var C_EXAM_COURSE = getCookie("C_EXAM_COURSE");
+        if (C_EXAM_COURSE != "") {
+            courseId = C_EXAM_COURSE.split(",")[0];
         }
-    );
+        if (courseId != "") {
+            getData(courseId);
+        }
+    }
+
+    function getData(courseId) {
+        hui.getJSON(
+            urls.queryYaTiByUserId + courseId,
+            function (rs) {
+                if (rs) {
+                    render(rs);
+                }
+            },
+            function (e) {
+            }
+        );
+    }
+
+    function main() {
+        init();
+    }
+
+    main();
+
 </script>
 
 

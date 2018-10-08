@@ -1,0 +1,155 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div style="margin-bottom: 44px;" th:fragment="copy">
+    <header class="hui-header">
+        <!--<div id="hui-back"></div>-->
+        <h1 id="menuValueZone"></h1>
+        <div id="hui-header-menu" onclick="hui.showSlideMenu();"></div>
+    </header>
+    <div class="hui-slide-menu">
+        <div class="hui-accordion">
+            <div class="hui-accordion-title">银行从业</div>
+            <div class="hui-accordion-content hui-list">
+                <a class="courseZone" data-courseId="1,银行业法律法规与综合能力">
+                    <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
+                    <div class="hui-list-text">
+                        银行业法律法规与综合能力
+                        <div class="hui-list-info hui-icons hui-icons-right"></div>
+                    </div>
+                </a>
+                <a class="courseZone" data-courseId="2,个人理财">
+                    <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
+                    <div class="hui-list-text">
+                        个人理财
+                        <div class="hui-list-info hui-icons hui-icons-right"></div>
+                    </div>
+                </a>
+                <a class="courseZone" data-courseId="3,个人贷款">
+                    <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
+                    <div class="hui-list-text">
+                        个人贷款
+                        <div class="hui-list-info hui-icons hui-icons-right"></div>
+                    </div>
+                </a>
+                <a class="courseZone" data-courseId="4,公司信贷">
+                    <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
+                    <div class="hui-list-text">
+                        公司信贷
+                        <div class="hui-list-info hui-icons hui-icons-right"></div>
+                    </div>
+                </a>
+                <a class="courseZone" data-courseId="5,风险管理">
+                    <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
+                    <div class="hui-list-text">
+                        风险管理
+                        <div class="hui-list-info hui-icons hui-icons-right"></div>
+                    </div>
+                </a>
+                <a class="courseZone" data-courseId="6,银行管">
+                    <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
+                    <div class="hui-list-text">
+                        银行管
+                        <div class="hui-list-info hui-icons hui-icons-right"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="hui-accordion">
+            <div class="hui-accordion-title">基金从业</div>
+            <div class="hui-accordion-content hui-list">
+                <a class="courseZone" data-courseId="7,基金法律法规、职业道德与业务规范">
+                    <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
+                    <div class="hui-list-text">
+                        基金法律法规、职业道德与业务规范
+                        <div class="hui-list-info hui-icons hui-icons-right"></div>
+                    </div>
+                </a>
+                <a class="courseZone" data-courseId="8,证券投资基金基础知识">
+                    <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
+                    <div class="hui-list-text">
+                        证券投资基金基础知识
+                        <div class="hui-list-info hui-icons hui-icons-right"></div>
+                    </div>
+                </a>
+                <a class="courseZone" data-courseId="9,私募股权投资基金基础知识">
+                    <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
+                    <div class="hui-list-text">
+                        私募股权投资基金基础知识
+                        <div class="hui-list-info hui-icons hui-icons-right"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="hui-accordion">
+            <div class="hui-accordion-title">证券从业</div>
+            <div class="hui-accordion-content hui-list">
+                <a class="courseZone" data-courseId="10,证券市场基本法律法规">
+                    <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
+                    <div class="hui-list-text">
+                        证券市场基本法律法规
+                        <div class="hui-list-info hui-icons hui-icons-right"></div>
+                    </div>
+                </a>
+                <a class="courseZone" data-courseId="11,金融市场基础知识">
+                    <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
+                    <div class="hui-list-text">
+                        金融市场基础知识
+                        <div class="hui-list-info hui-icons hui-icons-right"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="hui-accordion">
+            <button type="button" class="hui-button hui-button-large" onclick="hui.closeSlideMenu();">关闭菜单</button>
+        </div>
+
+        <!--<ul>-->
+        <!--<li>银行从业</li>-->
+        <!--<li>基金从业</li>-->
+        <!--<li>证券从业</li>-->
+        <!--<li style="padding-top:30px;">-->
+        <!--<button type="button" class="hui-button hui-button-large" onclick="hui.closeSlideMenu();">关闭菜单</button>-->
+        <!--</li>-->
+        <!--</ul>-->
+    </div>
+    <script type="text/javascript">
+        hui.slideMenu();
+        $(function () {
+
+
+            /**
+             * 1：通过点事获取值
+             * 2：保存在cookie里
+             * 3：同时刷当前页resetPage()的实现在各自页面里
+             */
+            function event() {
+                $(".courseZone").on("click", function () {
+                    var $this = $(this);
+                    var val = $this.attr("data-courseId");
+                    var courseId = val.split(",")[0];
+                    var courseName = val.split(",")[1];
+                    setCookie("C_EXAM_COURSE", val, 1);
+                    $("#menuValueZone").text(courseName);
+                    hui.closeSlideMenu();
+                    resetPage(courseId);
+                });
+            }
+
+            function init() {
+                var C_EXAM_COURSE = getCookie("C_EXAM_COURSE");
+                if (C_EXAM_COURSE != "") {
+                    var courseName = C_EXAM_COURSE.split(",")[1];
+                    $("#menuValueZone").text(courseName);
+                }
+            }
+
+            function main() {
+                init();
+                event();
+            }
+
+            main();
+        });
+    </script>
+</div>
+
+</html>

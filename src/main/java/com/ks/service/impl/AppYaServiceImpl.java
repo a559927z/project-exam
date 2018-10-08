@@ -7,7 +7,9 @@ import com.ks.dao.ExamUserAnswerYaMapper;
 import com.ks.dto.*;
 import com.ks.service.AppYaService;
 import com.ks.vo.ExamUserAnswerYaVo;
+import net.chinahrd.utils.ArithUtil;
 import net.chinahrd.utils.Identities;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +47,59 @@ public class AppYaServiceImpl implements AppYaService {
      */
     @Override
     public List<ExamUserAnswerYaVo> queryYaTiByUserId(String enName, String courseId) {
+        List<ExamUserAnswerYaVo> voList = Lists.newArrayList();
+
+        //  押题科目下的关的所有题库
+        ExamQuestionBankYaExample qbYaExample = new ExamQuestionBankYaExample();
+        qbYaExample.createCriteria()
+                .andCourseIdEqualTo(courseId);
+        List<ExamQuestionBankYa> qbYaList = examQuestionBankYaMapper.selectByExample(qbYaExample);
+
+        qbYaList.forEach(n -> {
+            //  题库
+            String questionBankId = n.getQuestionBankId();
+            ExamQuestionBankExample qbExample = new ExamQuestionBankExample();
+            qbExample.createCriteria()
+                    .andQuestionBankIdEqualTo(questionBankId);
+            List<ExamQuestionBank> qbList = examQuestionBankMapper.selectByExample(qbExample);
+
+            // 我答题
+            ExamUserAnswerYaExample uaYaExample = new ExamUserAnswerYaExample();
+            uaYaExample.createCriteria()
+                    .andUserIdEqualTo(enName)
+                    .andCourseIdEqualTo(courseId)
+                    .andQuestionBankIdEqualTo(questionBankId);
+            List<ExamUserAnswerYa> uaYaList = examUserAnswerYaMapper.selectByExample(uaYaExample);
+
+            long total = 0;
+            long finishTotal = 0;
+            if (CollectionUtils.isNotEmpty(qbList)) {
+                total = qbList.size();
+            }
+            if (CollectionUtils.isNotEmpty(uaYaList)) {
+                total = uaYaList.size();
+            }
+
+            ExamUserAnswerYaVo vo = new ExamUserAnswerYaVo();
+            vo.setUserId(enName);
+            vo.setQuestionBankId(questionBankId);
+            vo.setQuestionBankName(qbList.get(0).getQuestionBankName());
+            vo.setTotal(total);
+            vo.setFinishTotal(finishTotal);
+            vo.setFinishRate(ArithUtil.div(finishTotal, total, 2) + "%");
+            voList.add(vo);
+        });
+        return voList;
+    }
+
+    /**
+     * TODO，数据入库。user_answer_ya，是否考滤所有题目
+     *
+     * @param enName
+     * @param courseId
+     * @return
+     */
+    public List<ExamUserAnswerYaVo> queryYaTiByUserId2(String enName, String courseId) {
         ExamUserAnswerYaExample uaYaExample = new ExamUserAnswerYaExample();
         uaYaExample.createCriteria().andUserIdEqualTo(enName).andCourseIdEqualTo(courseId);
         List<ExamUserAnswerYa> uaYaList = examUserAnswerYaMapper.selectByExample(uaYaExample);
@@ -84,7 +139,7 @@ public class AppYaServiceImpl implements AppYaService {
             long finishTotal = examUserAnswerYaMapper.countByExample(yaExample);
 
             ExamUserAnswerYaVo vo = new ExamUserAnswerYaVo();
-            vo.setUserAnswerId(pkId);
+//            vo.setUserAnswerId(pkId);
             vo.setUserId(enName);
             vo.setQuestionBankId(questionBankId);
             vo.setTotal(total);
