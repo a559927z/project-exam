@@ -62,15 +62,21 @@
     var webRoot = G_WEB_ROOT;
     var urls = {
         queryYaTiByUserId: webRoot + '/app/ya/queryYaTiByUserId?courseId=',
+        toScreen: webRoot + '/app/screen/toIndex?questionBankId='
+    }
+
+    function event() {
+        $(".qb-zone").on("click", function () {
+            var questionBankId = $(this).attr("data-questionBankId");
+            window.location.href = urls.toScreen + questionBankId;
+        });
     }
 
     function render(list) {
         var html = "";
         $.each(list, function (i, item) {
-            console.log(item);
-            console.log('')
             html +=
-                '        <div class="qb-zone">' +
+                '        <div class="qb-zone" data-questionBankId="' + item.questionBankId + '">' +
                 '            <div class="span100">' +
                 '                <div class="header">' +
                 '                    <div style="text-align:right; padding:5px 0px;">' + item.finishTotal + '/' + item.total + '</div>' +
@@ -92,6 +98,7 @@
         });
         $("#yaZone").empty();
         $("#yaZone").append(html);
+        event();
     }
 
     function resetPage(courseId) {
