@@ -13,19 +13,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @Verdion 1.0 版本
  * ${tags}
  */
-@RequestMapping("/app/screen")
+@RequestMapping("/app/score")
 @Controller
-public class AppScreenController {
+public class AppScoreController {
 
 
     /**
-     * http://localhost:8080/exam/app/screen/toIndex
+     * http://localhost:8080/exam/app/score/toIndex
      *
      * @return
      */
     @RequestMapping("/toIndex")
-    public String toScreenTi() {
-        return "app/screenTiApp";
+    public String toScore() {
+        return "app/scoreApp";
     }
 
 

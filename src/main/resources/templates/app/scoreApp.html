@@ -1,0 +1,94 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="topApp :: copy" th:with="title='得分'"></head>
+
+<body>
+<style type="text/css">
+    #scoreZone {
+        background-color: #FFF;
+        text-align: center;
+    }
+
+    .myBadge {
+        padding: 64px 30px;
+        font-size: 70px;
+        margin: 15px 0px 20px;
+        color: red;
+        background-color: #FFFF;
+        border: 1px solid #c2c2c2;
+        line-height: 1;
+        display: inline-block;
+        border-radius: 100px;
+    }
+
+    .tablezone {
+        width: 100%;
+        padding: 0px 30px;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 80%;
+    }
+
+    table, td, th {
+        border: 1px solid black;
+    }
+
+    th {
+        height: 35px;
+    }
+
+    td {
+        text-align: center;
+        height: 40px;
+        /*vertical-align: bottom;*/
+    }
+
+</style>
+
+<header class="hui-header">
+    <div id="yaTiBackId"></div>
+    <h1>得分</h1>
+</header>
+<div class="hui-wrap">
+    <div id="scoreZone">
+        <div class="rateZone">
+            <div class="myBadge">20%</div>
+        </div>
+        <div>正确率=做对数量/已做数量</div>
+        <div class="tableZone">
+            <table>
+                <tr>
+                    <th></th>
+                    <th>做对</th>
+                    <th>做错</th>
+                    <th>正确率</th>
+                </tr>
+                <tr>
+                    <td>单选题</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>40%</td>
+                </tr>
+                <tr>
+                    <td>多选题</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>40%</td>
+                </tr>
+                <tr>
+                    <td>是非题</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>40%</td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+</body>
+</html>
+
