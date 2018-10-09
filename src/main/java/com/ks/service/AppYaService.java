@@ -16,9 +16,10 @@ import java.util.List;
  * ${tags}
  */
 public interface AppYaService {
-
-
+    
     /**
+     * 押题管理列表
+     *
      * @param userId
      * @param courseId
      * @return

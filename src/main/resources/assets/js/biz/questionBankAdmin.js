@@ -59,13 +59,14 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
         deleteItem: function (selectedItems) {
         },
         deleteQuestionBank: function (questionBankId) {
-            console.log(questionBankId)
             var setting = {
                 url: urls.deleteQuestionBank,
                 data: {"questionBankId": questionBankId},
                 success: function (rs, status) {
                     if (rs.success) {
-                        layer.msg("成功删除", {icon: 1});
+                        layer.msg(rs.msg, {icon: 1});
+                    } else {
+                        layer.msg(rs.msg, {icon: 5});
                     }
                 }
             }
@@ -240,9 +241,11 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
             url: urls.deleteQuestionBank,
             data: {"questionBankId": questionBankId},
             success: function (rs, status) {
+                console.info(rs);
                 if (rs.success) {
-                    layer.msg("成功删除", {icon: 1});
-                    window.location.href = urls.index;
+                    layer.msg(rs.msg, {icon: 1});
+                } else {
+                    layer.msg(rs.msg, {icon: 5});
                 }
             }
         }

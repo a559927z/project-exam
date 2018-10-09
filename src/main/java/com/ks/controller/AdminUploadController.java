@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 @Slf4j
 @Controller
 @RequestMapping("/admin/upload")
-public class UploadController extends BaseController {
+public class AdminUploadController extends BaseController {
 
     @Autowired
     private UploadService uploadService;
@@ -70,7 +70,6 @@ public class UploadController extends BaseController {
      * @param response
      * @return
      */
-//    @ResponseBody
     @RequestMapping(value = "/parseXls2Dto", method = {RequestMethod.GET, RequestMethod.POST})
     public String parseXls2Dto(Model model,
                                MultipartFile file,

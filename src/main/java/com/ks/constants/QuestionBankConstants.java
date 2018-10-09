@@ -19,4 +19,15 @@ public interface QuestionBankConstants {
     String SHI_FEI_PATTERN1 = "☑正确";
     String SHI_FEI_PATTERN2 = "☑错误";
 
+    Integer NOT_USEING = 0;
+
+    /**
+     * 学员在“考前押题里”有操作记录
+     */
+    Integer USER_ANSWER_YA_USEING = -9999;
+
+    /**
+     * 已经被列入押题管理
+     */
+    Integer QUESTION_BANK_YA_USEING = -8888;
 }

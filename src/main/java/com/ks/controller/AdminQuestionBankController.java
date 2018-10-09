@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.ks.constants.QuestionBankCategoryEnum;
+import com.ks.constants.QuestionBankConstants;
 import com.ks.constants.QuestionBankCourseEnum;
 import com.ks.dao.ExamQuestionBankScoreMapper;
 import com.ks.dto.*;
@@ -40,7 +41,7 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequestMapping("/admin/questionBank")
-public class QuestionBankController extends BaseController {
+public class AdminQuestionBankController extends BaseController {
 
     @Autowired
     private ExamQuestionBankService examQuestionBankService;
@@ -138,9 +139,20 @@ public class QuestionBankController extends BaseController {
     public Map<String, Object> deleteQuestionBank(String questionBankId) {
         int i = examQuestionBankService.deleteByExample(questionBankId);
         Map<String, Object> rsMap = CollectionKit.newMap();
-        rsMap.put("success", true);
-        rsMap.put("msg", i);
-        return rsMap;
+
+        if (i == QuestionBankConstants.USER_ANSWER_YA_USEING) {
+            rsMap.put("success", false);
+            rsMap.put("msg", "学员在“考前押题里”有操作记录，不能删除题库");
+            return rsMap;
+        } else if (i == QuestionBankConstants.QUESTION_BANK_YA_USEING) {
+            rsMap.put("success", false);
+            rsMap.put("msg", "已经被列入押题管理，请先再押题库里移除题库");
+            return rsMap;
+        } else {
+            rsMap.put("success", true);
+            rsMap.put("msg", "成功删除除");
+            return rsMap;
+        }
     }
 
 

@@ -38,13 +38,6 @@ public class AppYaServiceImpl implements AppYaService {
     private ExamQuestionBankMapper examQuestionBankMapper;
 
 
-    /**
-     * TODO，数据入库。user_answer_ya，是否考滤所有题目
-     *
-     * @param enName
-     * @param courseId
-     * @return
-     */
     @Override
     public List<ExamUserAnswerYaVo> queryYaTiByUserId(String enName, String courseId) {
         List<ExamUserAnswerYaVo> voList = Lists.newArrayList();

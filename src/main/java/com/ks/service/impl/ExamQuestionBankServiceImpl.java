@@ -2,10 +2,8 @@ package com.ks.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.ks.dao.ExamQuestionBankMapper;
-import com.ks.dao.ExamQuestionBankMapperExt;
-import com.ks.dao.ExamQuestionBankScoreMapper;
-import com.ks.dao.ExamQuestionBankTrueAnswerMapper;
+import com.ks.constants.QuestionBankConstants;
+import com.ks.dao.*;
 import com.ks.dto.*;
 import com.ks.service.ExamQuestionBankService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +35,15 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
 
     @Autowired
     private ExamQuestionBankScoreMapper examQuestionBankScoreMapper;
+
+
+    @Autowired
+    private ExamQuestionBankYaMapper examQuestionBankYaMapper;
+
+
+    @Autowired
+    private ExamUserAnswerYaMapper examUserAnswerYaMapper;
+
 
     @Override
     public List<ExamQuestionBankReportDto> findReport(String questionBankId) {
@@ -70,6 +77,12 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteByExample(String questionBankId) {
+        Integer val = checkUseing(questionBankId);
+        if (val != 0) {
+            return val;
+        }
+
+
         int i = 0, j = 0;
         try {
             ExamQuestionBankExample example = new ExamQuestionBankExample();
@@ -78,12 +91,37 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
 
             ExamQuestionBankTrueAnswerExample trueAnswerExample = new ExamQuestionBankTrueAnswerExample();
             trueAnswerExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
-            examQuestionBankTrueAnswerMapper.deleteByExample(trueAnswerExample);
+            j = examQuestionBankTrueAnswerMapper.deleteByExample(trueAnswerExample);
 
         } catch (Exception e) {
             throw new RuntimeException();
         }
         return i + j;
+    }
+
+    /**
+     * 检查题库是否被使用中
+     *
+     * @param questionBankId
+     * @return
+     */
+    private Integer checkUseing(String questionBankId) {
+        ExamUserAnswerYaExample uaYaExample = new ExamUserAnswerYaExample();
+        uaYaExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
+        List<ExamUserAnswerYa> uaYaList = examUserAnswerYaMapper.selectByExample(uaYaExample);
+        if (uaYaList.size() > 0) {
+            // 学员在“考前押题里”有操作记录
+            return QuestionBankConstants.USER_ANSWER_YA_USEING;
+        }
+
+        ExamQuestionBankYaExample qbYaExample = new ExamQuestionBankYaExample();
+        qbYaExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
+        List<ExamQuestionBankYa> qbYaList = examQuestionBankYaMapper.selectByExample(qbYaExample);
+        if (qbYaList.size() > 0) {
+            // 已经被列入押题管理
+            return QuestionBankConstants.QUESTION_BANK_YA_USEING;
+        }
+        return QuestionBankConstants.NOT_USEING;
     }
 
     @Transactional(rollbackFor = Exception.class)
