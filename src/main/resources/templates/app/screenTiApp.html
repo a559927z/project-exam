@@ -31,6 +31,10 @@
         margin-right: 10px;
     }
 
+    .hide {
+        display: none;
+    }
+
 </style>
 
 <header class="hui-header">
@@ -39,7 +43,6 @@
 </header>
 <div class="hui-wrap">
     <div id="screenZone">
-        <p th:text="${questionBankId}">(questionBankId)</p>
         <div class="screenZone">
             <div class="left lh">练习未做题目</div>
             <div class="right">
@@ -49,20 +52,23 @@
             </div>
         </div>
 
-        <div class="screenZone">
+        <div class="screenZone typeZone">
             <div class="title">题目类型</div>
-            <div class="hui-button hui-fl hui-primary">全部</div>
-            <div class="hui-button hui-fl">单选题</div>
-            <div class="hui-button hui-fl">多选题</div>
-            <div class="hui-button hui-fl">是非题</div>
+            <div class="hui-button hui-fl hui-primary" data-type=9999>全部</div>
+            <div class="hui-button hui-fl" data-type=1>单选题</div>
+            <div class="hui-button hui-fl" data-type=2>多选题</div>
+            <div class="hui-button hui-fl" data-type=3>是非题</div>
         </div>
 
-        <div class="screenZone">
+        <div class="screenZone totalZone">
             <div class="title">选择做题数量</div>
-            <div class="hui-button hui-fl hui-primary">全部</div>
-            <div class="hui-button hui-fl">5</div>
-            <div class="hui-button hui-fl">10</div>
+            <div class="hui-button hui-fl hui-primary" data-type=9999>全部</div>
+            <div class="hui-button hui-fl" data-type=5>5</div>
+            <div class="hui-button hui-fl" data-type=10>10</div>
+            <div class="hui-button hui-fl" data-type=20>20</div>
+            <div class="hui-button hui-fl" data-type=30>30</div>
         </div>
+        <p class="hide" id="questionBankId" th:text="${questionBankId}">(questionBankId)</p>
     </div>
     <div class="hui-button hui-primary hui-button-large">开始做题</div>
 </div>
@@ -71,13 +77,54 @@
 <div th:replace="footApp::copy"></div>
 
 <script type="text/javascript">
-    hui('#switchBox').switchBox(['Off', 'On'], function (res) {
-        if (res) {
-            hui.toast('开关打开');
-        } else {
-            hui.toast('开关关闭');
+
+    $(function () {
+        var webRoot = G_WEB_ROOT;
+        var param = {
+            "questionBankId": $("#questionBankId").text(),
+            "type": 9999,
+            "total": 9999,
+            "notDo": false
         }
-    }, true);
+
+        function getData() {
+            window.location =
+                webRoot + "/app/answer/toIndex?questionBankId="
+                + param.questionBankId + "&type=" + param.type + "&total=" + param.total + "&notDo=" + param.notDo;
+        }
+
+        function event() {
+            hui('#switchBox').switchBox(['Off', 'On'], function (res) {
+                param.notDo = res;
+            }, true);
+
+            $(".typeZone div").on("click", function () {
+                $this = $(this);
+                $(".typeZone div").removeClass("hui-primary");
+                $this.addClass("hui-primary");
+                param.type = $this.attr("data-type");
+            });
+
+            $(".totalZone div").on("click", function () {
+                $this = $(this);
+                $(".totalZone div").removeClass("hui-primary");
+                $this.addClass("hui-primary");
+                param.total = $this.attr("data-type");
+            });
+
+            $(".hui-button-large").click(function () {
+                getData();
+            });
+
+        }
+
+        function main() {
+            event();
+        }
+
+        main();
+    })
+
 </script>
 
 
