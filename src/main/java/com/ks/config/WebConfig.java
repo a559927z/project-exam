@@ -130,6 +130,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                     return saveCache(enName);
                 } else {
                     log.info("通过：缓存有");
+                    // TODO 缓存里的值是否合法 select db
                     return true;
                 }
             } catch (ExecutionException e) {

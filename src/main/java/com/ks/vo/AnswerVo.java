@@ -17,6 +17,10 @@ import java.util.List;
 @Data
 public class AnswerVo {
 
+    /**
+     * 题号
+     */
+    private int no;
     private String questionBankId;
     private String questionId;
     private String title;

@@ -1,6 +1,5 @@
 package com.ks.service.impl;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.ks.constants.QuestionBankConstants;
 import com.ks.dao.ExamQuestionBankMapper;
@@ -47,9 +46,10 @@ public class AppAnswerServiceImpl implements AppAnswerService {
         String questionBankId = screenTiDto.getQuestionBankId();
 
         // query qbList
-        ExamQuestionBankExample qbYaExample = new ExamQuestionBankExample();
-        qbYaExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
-        List<ExamQuestionBank> examQuestionBankList = examQuestionBankMapper.selectByExample(qbYaExample);
+        ExamQuestionBankExample qbExample = new ExamQuestionBankExample();
+        qbExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
+        qbExample.setOrderByClause("type asc");
+        List<ExamQuestionBank> examQuestionBankList = examQuestionBankMapper.selectByExample(qbExample);
         if (CollectionKit.isEmpty(examQuestionBankList)) {
             log.error("题库被删除了");
         }
@@ -77,9 +77,8 @@ public class AppAnswerServiceImpl implements AppAnswerService {
             voList.add(vo);
         });
 
-
         // TODO cach
-//        examQuestionBankList;
+//        voList;
 
         // filter type
         List<AnswerVo> typeQbList = Lists.newArrayList();
@@ -88,7 +87,7 @@ public class AppAnswerServiceImpl implements AppAnswerService {
             typeQbList = voList;
         } else {
             String type = typeInt + "";
-            for (AnswerVo vo : typeQbList) {
+            for (AnswerVo vo : voList) {
                 if (vo.getType().equals(type)) {
                     typeQbList.add(vo);
                 }
@@ -112,7 +111,14 @@ public class AppAnswerServiceImpl implements AppAnswerService {
                 rsList.add(filterList.get(i));
             }
         }
-        return rsList;
+
+        List<AnswerVo> rsList2 = Lists.newArrayList();
+        for (int i = 0; i < rsList.size(); i++) {
+            AnswerVo vo = rsList.get(i);
+            vo.setNo(i + 1);
+            rsList2.add(vo);
+        }
+        return rsList2;
     }
 
     /**

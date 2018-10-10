@@ -58,7 +58,7 @@
     .myBadge {
         padding: 15px 20px;
         font-size: 15px;
-        margin: 0px 0px 10px;
+        margin: 0px 7px 10px;
     }
 
     .hide {
@@ -183,16 +183,18 @@
         </div>
 
         <div class="trueAnswerZone hui-accordion">
-            <div class="hui-accordion-title ">答案</div>
+            <div class="hui-accordion-title">答案</div>
             <div class="hui-accordion-content">
                 <div class="hui-badge hui-danger">B</div>
+                <div class="">解析</div>
+                <br/>
+                <div class="">丙是善意第三人，不承担责任。</div>
             </div>
         </div>
-
-        <div class="jieXiZone  hui-accordion">
-            <div class="hui-accordion-title">解析</div>
-            <div class="hui-accordion-content">丙是善意第三人，不承担责任。</div>
-        </div>
+        <!--<div class="jieXiZone hui-accordion">-->
+        <!--<div class="hui-accordion-title">解析</div>-->
+        <!--<div class="hui-accordion-content">丙是善意第三人，不承担责任。</div>-->
+        <!--</div>-->
     </div>
 </div>
 <p class="hide" id="questionBankId" th:text="${questionBankId}">(questionBankId)</p>
@@ -202,7 +204,7 @@
 
 <div class="hui-fooer-line"></div>
 <div id="hui-footer">
-    <a th:href="@{/app/home/toIndex}" id="nav-home">
+    <a href="javascript:void(0);" id="nav-previous">
         <i class="fa fa-angle-left fa-2x hui-footer-icons"></i>
         <div class="hui-footer-text">上一题</div>
     </a>
@@ -215,7 +217,7 @@
         <div class="fa fa-star-o fa-2x hui-footer-icons"></div>
         <div class="hui-footer-text">收藏</div>
     </a>
-    <a th:href="@{/app/my/toIndex}" id="nav-next">
+    <a href="javascript:void(0);" id="nav-next">
         <i class="fa fa-angle-right fa-2x hui-footer-icons"></i>
         <div class="hui-footer-text">下一题</div>
     </a>
@@ -223,8 +225,16 @@
 
 <script th:src="@{/huiAdmin/js/hui-accordion.js}" type="text/javascript"></script>
 <script type="text/javascript">
-
+    hui.ready(function () {
+        hui.accordion(false, false);
+    });
     $(document).ready(function () {
+        var transformType = ['', '单选题', '多选题', '是非题'];
+        var transformAnswer = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+        var curNo = 1;
+        var curObj = {};
+        var questionList = [];
+
         var webRoot = G_WEB_ROOT;
         var urls = {
             getData: webRoot + '/app/answer/getData',
@@ -236,27 +246,134 @@
             "notDo": $("#notDo").text()
         }
 
+        function cardReader(rs) {
+            var html1 = "<p>单选题</p>";
+            var html2 = "<p>多选题</p>";
+            var html3 = "<p>是非题</p>";
+            $.each(rs, function (i, item) {
+                var type = item.type;
+                if (type == "1") {
+                    html1 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + i + '>' + i + '</div>';
+                } else if (type == "2") {
+                    html2 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + i + '>' + i + '</div>';
+                } else if (type == "3") {
+                    html3 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + i + '>' + i + '</div>';
+                }
+            });
+            $(".panel").empty();
+            $(".panel").append(html1 + html2 + html3);
+        }
+
+        function pageReader(questionList) {
+            var total = questionList.length;
+            var questionObj = questionList[curNo - 1];
+            var html = "";
+            var no = questionObj.no;
+            var type = questionObj.type;
+            var answerArr = questionObj.answer;
+            var trueAnswer = questionObj.trueAnswer;
+            var jieXi = questionObj.jieXi;
+            var title = questionObj.title;
+            var trueAnswerABCD = "";
+
+            html +=
+                '<div class="questionZone">' +
+                '            <div class="hui-badge hui-danger hui-fl">' + transformType[type] + '</div>' +
+                '            <div class="hui-fr">' + no + '/' + total + '</div>' +
+                '            <div style="clear: both"></div>' +
+                '            <div class="body">' + title +
+                '    </div>' +
+                ' </div>';
+
+            var answerHtml =
+                '<div class="answerZone">';
+            $.each(answerArr, function (i, item) {
+                if (item == trueAnswer) {
+                    trueAnswerABCD = transformAnswer[i];
+                }
+                answerHtml +=
+                    '<div class="">' +
+                    '    <div class="hui-badge">' + transformAnswer[i] + '</div>' + item +
+                    '</div>'
+            });
+            answerHtml += '</div>';
+            html += answerHtml;
+
+            var trueAnswerHtml = "";
+            trueAnswerHtml +=
+                '<div class="trueAnswerZone hui-accordion">' +
+                '    <div class="hui-accordion-title">答案</div>' +
+                '    <div class="hui-accordion-content">' +
+                '        <div class="hui-badge hui-danger">' + trueAnswerABCD + '</div>' +
+                '        <br/>' +
+                '        <br/>' +
+                '        <div class="">解析</div>' +
+                '        <br/>' +
+                '        <div class="">' + jieXi + '</div>' +
+                '    </div>' +
+                '</div>';
+            html += trueAnswerHtml;
+
+            $("#answerZone").empty();
+            $("#answerZone").append(html);
+
+            answerEvent();
+        }
+
+        function reader(rs) {
+            cardReader(rs);
+            pageReader(rs);
+
+            fooerEvent(rs);
+        }
+
+        function fooerEvent(rs) {
+            $("#nav-card").click(function () {
+                $(".panel").slideToggle("slow");
+            });
+            $("#nav-previous").click(function () {
+                if (curNo == 1) {
+                    hui.alert("第一题了");
+                } else {
+                    curNo = (curNo - 1);
+                    pageReader(rs);
+                }
+            });
+            $("#nav-next").click(function () {
+                if (curNo == rs.length) {
+                    hui.alert("最后一题了");
+                } else {
+                    curNo = (curNo + 1);
+                    pageReader(rs);
+                }
+            });
+
+            $(".questionNo").click(function () {
+                var $this = $(this);
+                var questionNo = $this.attr("data-questionNo");
+                curNo = questionNo;
+                pageReader(rs);
+                $(".panel").css("display", "none");
+            });
+        }
+
+        function answerEvent() {
+            hui.accordion(false, false);
+        }
+
+
         function getData() {
             hui.postJSON(
                 urls.getData,
                 param,
                 function (rs) {
-                    console.log(rs);
-                    event();
+                    questionList = rs;
+                    reader(rs);
                 },
                 function (e) {
                     hui.iconToast('读取消息失败', 'warn');
                 }
             );
-        }
-
-        function event() {
-            $(".flip").click(function () {
-                $(".panel").slideToggle("slow");
-            });
-            hui.ready(function () {
-                hui.accordion(false, false);
-            });
         }
 
         function main() {
