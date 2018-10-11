@@ -47,6 +47,13 @@
             /*<![CDATA[*/
             var G_WEB_ROOT = /*[[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]]*/;
         /*]]>*/
+            Array.prototype.remove = function (val) {
+                var index = this.indexOf(val);
+                if (index > -1) {
+                    this.splice(index, 1);
+                }
+            };
+
     </script>
     <script th:src="@{/huiAdmin/js/hui.js}" type="text/javascript" charset="utf-8"/>
     <style type="text/css">

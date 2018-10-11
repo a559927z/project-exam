@@ -229,12 +229,14 @@
 
 <script th:src="@{/huiAdmin/js/hui-accordion.js}" type="text/javascript"></script>
 <script type="text/javascript">
+    var selectAnswer = [];
+
     hui.ready(function () {
         hui.accordion(false, false);
     });
 
     function paper() {
-        console.log(111);
+        console.log(selectAnswer);
     }
 
     $(document).ready(function () {
@@ -283,6 +285,7 @@
             var jieXi = questionObj.jieXi;
             var title = questionObj.title;
             var trueAnswerABCD = "";
+            var questionId = questionObj.questionId;
 
             html +=
                 '<div class="questionZone">' +
@@ -296,12 +299,12 @@
             var answerHtml =
                 '<div class="answerZone">';
             $.each(answerArr, function (i, item) {
-                console.log(item);
                 trueAnswerABCD = item.split("@")[0];
                 trueAnswer = item.split("@")[1];
+                var selectObjStr = trueAnswerABCD + "@" + questionId;
                 answerHtml +=
-                    '<div class="paddingBottom" data->' +
-                    '    <div class="hui-badge">' + trueAnswerABCD + '</div>' + trueAnswer +
+                    '<div class="paddingBottom">' +
+                    '    <div class="hui-badge"  data-selectObjStr=' + selectObjStr + '>' + trueAnswerABCD + '</div>' + trueAnswer +
                     '</div>'
             });
             answerHtml += '</div>';
@@ -365,8 +368,24 @@
             });
         }
 
+        //  TODO 点下一题时才保存入 selectAnswer.push(selectObjStr);
         function answerEvent() {
             hui.accordion(false, false);
+            var isSelect = false;
+            $(".answerZone .hui-badge").on("click", function () {
+                var $this = $(this);
+                var selectObjStr = $this.attr("data-selectObjStr");
+                if (isSelect) {
+                    isSelect = false;
+                    $this.removeClass("hui-primary");
+                    selectAnswer.remove(selectObjStr);
+                } else {
+                    isSelect = true;
+                    $this.addClass("hui-primary");
+                    selectAnswer.push(selectObjStr);
+                }
+                console.log(selectAnswer);
+            });
         }
 
 
