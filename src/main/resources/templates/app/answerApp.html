@@ -8,7 +8,6 @@
     }
 
     .questionZone {
-        /*background-color: #FFF;*/
         padding: 10px 20px;
     }
 
@@ -65,6 +64,10 @@
         display: none;
     }
 
+    .paddingBottom {
+        padding-bottom: 10px;
+    }
+
     #hui-footer a {
         display: block;
         width: 33.3%;
@@ -78,6 +81,7 @@
 <header class="hui-header">
     <div id="hui-back"></div>
     <h1>答题</h1>
+    <div onclick="paper();">交卷</div>
 </header>
 
 <div class="hui-wrap">
@@ -228,9 +232,13 @@
     hui.ready(function () {
         hui.accordion(false, false);
     });
+
+    function paper() {
+        console.log(111);
+    }
+
     $(document).ready(function () {
         var transformType = ['', '单选题', '多选题', '是非题'];
-        var transformAnswer = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
         var curNo = 1;
         var curObj = {};
         var questionList = [];
@@ -271,7 +279,7 @@
             var no = questionObj.no;
             var type = questionObj.type;
             var answerArr = questionObj.answer;
-            var trueAnswer = questionObj.trueAnswer;
+            var trueAnswer = "";
             var jieXi = questionObj.jieXi;
             var title = questionObj.title;
             var trueAnswerABCD = "";
@@ -288,12 +296,12 @@
             var answerHtml =
                 '<div class="answerZone">';
             $.each(answerArr, function (i, item) {
-                if (item == trueAnswer) {
-                    trueAnswerABCD = transformAnswer[i];
-                }
+                console.log(item);
+                trueAnswerABCD = item.split("@")[0];
+                trueAnswer = item.split("@")[1];
                 answerHtml +=
-                    '<div class="">' +
-                    '    <div class="hui-badge">' + transformAnswer[i] + '</div>' + item +
+                    '<div class="paddingBottom" data->' +
+                    '    <div class="hui-badge">' + trueAnswerABCD + '</div>' + trueAnswer +
                     '</div>'
             });
             answerHtml += '</div>';

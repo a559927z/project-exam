@@ -31,7 +31,7 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
     private ExamQuestionBankMapperExt examQuestionBankMapperExt;
 
     @Autowired
-    private ExamQuestionBankTrueAnswerMapper examQuestionBankTrueAnswerMapper;
+    private ExamQuestionBankAnswerMapper examQuestionBankAnswerMapper;
 
     @Autowired
     private ExamQuestionBankScoreMapper examQuestionBankScoreMapper;
@@ -82,21 +82,25 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
             return val;
         }
 
-
-        int i = 0, j = 0;
+        int i = 0, j = 0, k = 0;
         try {
             ExamQuestionBankExample example = new ExamQuestionBankExample();
             example.createCriteria().andQuestionBankIdEqualTo(questionBankId);
             i = examQuestionBankMapper.deleteByExample(example);
 
-            ExamQuestionBankTrueAnswerExample trueAnswerExample = new ExamQuestionBankTrueAnswerExample();
-            trueAnswerExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
-            j = examQuestionBankTrueAnswerMapper.deleteByExample(trueAnswerExample);
+            ExamQuestionBankAnswerExample answerExample = new ExamQuestionBankAnswerExample();
+            answerExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
+
+            j = examQuestionBankAnswerMapper.deleteByExample(answerExample);
+
+            ExamQuestionBankScoreExample scoreExample = new ExamQuestionBankScoreExample();
+            answerExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
+            k = examQuestionBankScoreMapper.deleteByExample(scoreExample);
 
         } catch (Exception e) {
             throw new RuntimeException();
         }
-        return i + j;
+        return i + j + k;
     }
 
     /**

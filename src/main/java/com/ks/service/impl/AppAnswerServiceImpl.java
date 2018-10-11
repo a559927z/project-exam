@@ -2,9 +2,8 @@ package com.ks.service.impl;
 
 import com.google.common.collect.Lists;
 import com.ks.constants.QuestionBankConstants;
+import com.ks.dao.ExamQuestionBankAnswerMapper;
 import com.ks.dao.ExamQuestionBankMapper;
-import com.ks.dao.ExamQuestionBankTrueAnswerMapper;
-import com.ks.dao.ExamQuestionBankYaMapper;
 import com.ks.dto.*;
 import com.ks.service.AppAnswerService;
 import com.ks.utils.StringUtil;
@@ -35,10 +34,9 @@ public class AppAnswerServiceImpl implements AppAnswerService {
 
     @Autowired
     private ExamQuestionBankMapper examQuestionBankMapper;
+
     @Autowired
-    private ExamQuestionBankYaMapper examQuestionBankYaMapper;
-    @Autowired
-    private ExamQuestionBankTrueAnswerMapper examQuestionBankTrueAnswerMapper;
+    private ExamQuestionBankAnswerMapper examQuestionBankAnswerMapper;
 
     @Override
     public List<AnswerVo> getData(ScreenTiDto screenTiDto) {
@@ -54,28 +52,34 @@ public class AppAnswerServiceImpl implements AppAnswerService {
             log.error("题库被删除了");
         }
 
-        ExamQuestionBankTrueAnswerExample qbTrueAnswerExample = new ExamQuestionBankTrueAnswerExample();
-        qbTrueAnswerExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
-        List<ExamQuestionBankTrueAnswer> qbTrueAnswerList = examQuestionBankTrueAnswerMapper.selectByExample(qbTrueAnswerExample);
+        ExamQuestionBankAnswerExample qbAnswerExample = new ExamQuestionBankAnswerExample();
+        qbAnswerExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
+        List<ExamQuestionBankAnswer> qbAnswerList = examQuestionBankAnswerMapper.selectByExample(qbAnswerExample);
 
         List<AnswerVo> voList = Lists.newArrayList();
-        examQuestionBankList.forEach(i -> {
-            String questionId = i.getQuestionId();
-            AnswerVo vo = new AnswerVo();
-            vo.setQuestionBankId(questionBankId);
-            vo.setQuestionId(questionId);
-            vo.setJieXi(i.getJieXi());
-            vo.setType(i.getType());
-            vo.setTitle(i.getTitle());
-            String answer = i.getAnswer();
-            vo.setAnswer(processAnswer(answer));
-            qbTrueAnswerList.forEach(j -> {
-                if (questionId.equals(j.getQuestionId())) {
-                    vo.setTrueAnswer(j.getTrueAnswer());
-                }
-            });
-            voList.add(vo);
-        });
+        examQuestionBankList
+                .forEach(i -> {
+                    String questionId = i.getQuestionId();
+                    AnswerVo vo = new AnswerVo();
+                    vo.setQuestionBankId(questionBankId);
+                    vo.setQuestionId(questionId);
+                    vo.setJieXi(i.getJieXi());
+                    vo.setType(i.getType());
+                    vo.setTitle(i.getTitle());
+                    //  String answer = i.getAnswer();
+                    //  vo.setAnswer(processAnswer(answer));
+                    List<String> answerList = Lists.newArrayList();
+                    qbAnswerList.forEach(j -> {
+                        if (questionId.equals(j.getQuestionId())) {
+                            answerList.add(j.getAnswerno() + "@" + j.getAnswer());
+                            if (j.getIsanswer()) {
+                                vo.setTrueAnswer(j.getAnswer());
+                            }
+                        }
+                    });
+                    vo.setAnswer(answerList);
+                    voList.add(vo);
+                });
 
         // TODO cach
 //        voList;

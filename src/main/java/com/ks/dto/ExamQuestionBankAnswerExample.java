@@ -3,14 +3,14 @@ package com.ks.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExamQuestionBankTrueAnswerExample {
+public class ExamQuestionBankAnswerExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public ExamQuestionBankTrueAnswerExample() {
+    public ExamQuestionBankAnswerExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -104,6 +104,76 @@ public class ExamQuestionBankTrueAnswerExample {
             criteria.add(new Criterion(condition, value1, value2));
         }
 
+        public Criteria andIdIsNull() {
+            addCriterion("id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdIsNotNull() {
+            addCriterion("id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdEqualTo(String value) {
+            addCriterion("id =", value, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNotEqualTo(String value) {
+            addCriterion("id <>", value, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdGreaterThan(String value) {
+            addCriterion("id >", value, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdGreaterThanOrEqualTo(String value) {
+            addCriterion("id >=", value, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdLessThan(String value) {
+            addCriterion("id <", value, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdLessThanOrEqualTo(String value) {
+            addCriterion("id <=", value, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdLike(String value) {
+            addCriterion("id like", value, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNotLike(String value) {
+            addCriterion("id not like", value, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdIn(List<String> values) {
+            addCriterion("id in", values, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNotIn(List<String> values) {
+            addCriterion("id not in", values, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdBetween(String value1, String value2) {
+            addCriterion("id between", value1, value2, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNotBetween(String value1, String value2) {
+            addCriterion("id not between", value1, value2, "id");
+            return (Criteria) this;
+        }
+
         public Criteria andQuestionIdIsNull() {
             addCriterion("question_id is null");
             return (Criteria) this;
@@ -174,143 +244,133 @@ public class ExamQuestionBankTrueAnswerExample {
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIdIsNull() {
-            addCriterion("true_answer_id is null");
+        public Criteria andAnswerIsNull() {
+            addCriterion("answer is null");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIdIsNotNull() {
-            addCriterion("true_answer_id is not null");
+        public Criteria andAnswerIsNotNull() {
+            addCriterion("answer is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIdEqualTo(String value) {
-            addCriterion("true_answer_id =", value, "trueAnswerId");
+        public Criteria andAnswerEqualTo(String value) {
+            addCriterion("answer =", value, "answer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIdNotEqualTo(String value) {
-            addCriterion("true_answer_id <>", value, "trueAnswerId");
+        public Criteria andAnswerNotEqualTo(String value) {
+            addCriterion("answer <>", value, "answer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIdGreaterThan(String value) {
-            addCriterion("true_answer_id >", value, "trueAnswerId");
+        public Criteria andAnswerGreaterThan(String value) {
+            addCriterion("answer >", value, "answer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIdGreaterThanOrEqualTo(String value) {
-            addCriterion("true_answer_id >=", value, "trueAnswerId");
+        public Criteria andAnswerGreaterThanOrEqualTo(String value) {
+            addCriterion("answer >=", value, "answer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIdLessThan(String value) {
-            addCriterion("true_answer_id <", value, "trueAnswerId");
+        public Criteria andAnswerLessThan(String value) {
+            addCriterion("answer <", value, "answer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIdLessThanOrEqualTo(String value) {
-            addCriterion("true_answer_id <=", value, "trueAnswerId");
+        public Criteria andAnswerLessThanOrEqualTo(String value) {
+            addCriterion("answer <=", value, "answer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIdLike(String value) {
-            addCriterion("true_answer_id like", value, "trueAnswerId");
+        public Criteria andAnswerLike(String value) {
+            addCriterion("answer like", value, "answer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIdNotLike(String value) {
-            addCriterion("true_answer_id not like", value, "trueAnswerId");
+        public Criteria andAnswerNotLike(String value) {
+            addCriterion("answer not like", value, "answer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIdIn(List<String> values) {
-            addCriterion("true_answer_id in", values, "trueAnswerId");
+        public Criteria andAnswerIn(List<String> values) {
+            addCriterion("answer in", values, "answer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIdNotIn(List<String> values) {
-            addCriterion("true_answer_id not in", values, "trueAnswerId");
+        public Criteria andAnswerNotIn(List<String> values) {
+            addCriterion("answer not in", values, "answer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIdBetween(String value1, String value2) {
-            addCriterion("true_answer_id between", value1, value2, "trueAnswerId");
+        public Criteria andAnswerBetween(String value1, String value2) {
+            addCriterion("answer between", value1, value2, "answer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIdNotBetween(String value1, String value2) {
-            addCriterion("true_answer_id not between", value1, value2, "trueAnswerId");
+        public Criteria andAnswerNotBetween(String value1, String value2) {
+            addCriterion("answer not between", value1, value2, "answer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIsNull() {
-            addCriterion("true_answer is null");
+        public Criteria andIsanswerIsNull() {
+            addCriterion("isAnswer is null");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIsNotNull() {
-            addCriterion("true_answer is not null");
+        public Criteria andIsanswerIsNotNull() {
+            addCriterion("isAnswer is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerEqualTo(String value) {
-            addCriterion("true_answer =", value, "trueAnswer");
+        public Criteria andIsanswerEqualTo(Boolean value) {
+            addCriterion("isAnswer =", value, "isanswer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerNotEqualTo(String value) {
-            addCriterion("true_answer <>", value, "trueAnswer");
+        public Criteria andIsanswerNotEqualTo(Boolean value) {
+            addCriterion("isAnswer <>", value, "isanswer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerGreaterThan(String value) {
-            addCriterion("true_answer >", value, "trueAnswer");
+        public Criteria andIsanswerGreaterThan(Boolean value) {
+            addCriterion("isAnswer >", value, "isanswer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerGreaterThanOrEqualTo(String value) {
-            addCriterion("true_answer >=", value, "trueAnswer");
+        public Criteria andIsanswerGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("isAnswer >=", value, "isanswer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerLessThan(String value) {
-            addCriterion("true_answer <", value, "trueAnswer");
+        public Criteria andIsanswerLessThan(Boolean value) {
+            addCriterion("isAnswer <", value, "isanswer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerLessThanOrEqualTo(String value) {
-            addCriterion("true_answer <=", value, "trueAnswer");
+        public Criteria andIsanswerLessThanOrEqualTo(Boolean value) {
+            addCriterion("isAnswer <=", value, "isanswer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerLike(String value) {
-            addCriterion("true_answer like", value, "trueAnswer");
+        public Criteria andIsanswerIn(List<Boolean> values) {
+            addCriterion("isAnswer in", values, "isanswer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerNotLike(String value) {
-            addCriterion("true_answer not like", value, "trueAnswer");
+        public Criteria andIsanswerNotIn(List<Boolean> values) {
+            addCriterion("isAnswer not in", values, "isanswer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerIn(List<String> values) {
-            addCriterion("true_answer in", values, "trueAnswer");
+        public Criteria andIsanswerBetween(Boolean value1, Boolean value2) {
+            addCriterion("isAnswer between", value1, value2, "isanswer");
             return (Criteria) this;
         }
 
-        public Criteria andTrueAnswerNotIn(List<String> values) {
-            addCriterion("true_answer not in", values, "trueAnswer");
-            return (Criteria) this;
-        }
-
-        public Criteria andTrueAnswerBetween(String value1, String value2) {
-            addCriterion("true_answer between", value1, value2, "trueAnswer");
-            return (Criteria) this;
-        }
-
-        public Criteria andTrueAnswerNotBetween(String value1, String value2) {
-            addCriterion("true_answer not between", value1, value2, "trueAnswer");
+        public Criteria andIsanswerNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("isAnswer not between", value1, value2, "isanswer");
             return (Criteria) this;
         }
 
@@ -441,6 +501,76 @@ public class ExamQuestionBankTrueAnswerExample {
 
         public Criteria andSortNotBetween(Integer value1, Integer value2) {
             addCriterion("sort not between", value1, value2, "sort");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswernoIsNull() {
+            addCriterion("answerNo is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswernoIsNotNull() {
+            addCriterion("answerNo is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswernoEqualTo(String value) {
+            addCriterion("answerNo =", value, "answerno");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswernoNotEqualTo(String value) {
+            addCriterion("answerNo <>", value, "answerno");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswernoGreaterThan(String value) {
+            addCriterion("answerNo >", value, "answerno");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswernoGreaterThanOrEqualTo(String value) {
+            addCriterion("answerNo >=", value, "answerno");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswernoLessThan(String value) {
+            addCriterion("answerNo <", value, "answerno");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswernoLessThanOrEqualTo(String value) {
+            addCriterion("answerNo <=", value, "answerno");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswernoLike(String value) {
+            addCriterion("answerNo like", value, "answerno");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswernoNotLike(String value) {
+            addCriterion("answerNo not like", value, "answerno");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswernoIn(List<String> values) {
+            addCriterion("answerNo in", values, "answerno");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswernoNotIn(List<String> values) {
+            addCriterion("answerNo not in", values, "answerno");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswernoBetween(String value1, String value2) {
+            addCriterion("answerNo between", value1, value2, "answerno");
+            return (Criteria) this;
+        }
+
+        public Criteria andAnswernoNotBetween(String value1, String value2) {
+            addCriterion("answerNo not between", value1, value2, "answerno");
             return (Criteria) this;
         }
     }
