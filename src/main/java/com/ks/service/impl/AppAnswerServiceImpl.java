@@ -66,8 +66,6 @@ public class AppAnswerServiceImpl implements AppAnswerService {
                     vo.setJieXi(i.getJieXi());
                     vo.setType(i.getType());
                     vo.setTitle(i.getTitle());
-                    //  String answer = i.getAnswer();
-                    //  vo.setAnswer(processAnswer(answer));
                     List<String> answerList = Lists.newArrayList();
                     qbAnswerList.forEach(j -> {
                         if (questionId.equals(j.getQuestionId())) {
@@ -125,20 +123,4 @@ public class AppAnswerServiceImpl implements AppAnswerService {
         return rsList2;
     }
 
-    /**
-     * @param answer
-     * @return
-     */
-    private List<String> processAnswer(String answer) {
-        String replace = answer.replace(QuestionBankConstants.ANSWER_PATTERN, "@")
-                .replace(QuestionBankConstants.ANSWER_TRUE_PATTERN, "@");
-        String[] split = replace.split("@");
-        List<String> rs = Lists.newArrayList();
-        for (int i = 0; i < split.length; i++) {
-            if (StringUtil.isNotBlank(split[i])) {
-                rs.add(split[i]);
-            }
-        }
-        return rs;
-    }
 }

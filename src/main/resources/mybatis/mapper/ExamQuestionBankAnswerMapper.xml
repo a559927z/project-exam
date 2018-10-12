@@ -9,6 +9,7 @@
     <result column="question_bank_id" jdbcType="VARCHAR" property="questionBankId" />
     <result column="sort" jdbcType="INTEGER" property="sort" />
     <result column="answerNo" jdbcType="VARCHAR" property="answerno" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -69,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, question_id, answer, isAnswer, question_bank_id, sort, answerNo
+    id, question_id, answer, isAnswer, question_bank_id, sort, answerNo, type
   </sql>
   <select id="selectByExample" parameterType="com.ks.dto.ExamQuestionBankAnswerExample" resultMap="BaseResultMap">
     select
@@ -104,10 +105,10 @@
   <insert id="insert" parameterType="com.ks.dto.ExamQuestionBankAnswer">
     insert into exam_question_bank_answer (id, question_id, answer, 
       isAnswer, question_bank_id, sort, 
-      answerNo)
+      answerNo, type)
     values (#{id,jdbcType=VARCHAR}, #{questionId,jdbcType=VARCHAR}, #{answer,jdbcType=VARCHAR}, 
       #{isanswer,jdbcType=BIT}, #{questionBankId,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, 
-      #{answerno,jdbcType=VARCHAR})
+      #{answerno,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.ks.dto.ExamQuestionBankAnswer">
     insert into exam_question_bank_answer
@@ -133,6 +134,9 @@
       <if test="answerno != null">
         answerNo,
       </if>
+      <if test="type != null">
+        type,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -155,6 +159,9 @@
       </if>
       <if test="answerno != null">
         #{answerno,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -188,6 +195,9 @@
       <if test="record.answerno != null">
         answerNo = #{record.answerno,jdbcType=VARCHAR},
       </if>
+      <if test="record.type != null">
+        type = #{record.type,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -201,7 +211,8 @@
       isAnswer = #{record.isanswer,jdbcType=BIT},
       question_bank_id = #{record.questionBankId,jdbcType=VARCHAR},
       sort = #{record.sort,jdbcType=INTEGER},
-      answerNo = #{record.answerno,jdbcType=VARCHAR}
+      answerNo = #{record.answerno,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -227,6 +238,9 @@
       <if test="answerno != null">
         answerNo = #{answerno,jdbcType=VARCHAR},
       </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -237,7 +251,8 @@
       isAnswer = #{isanswer,jdbcType=BIT},
       question_bank_id = #{questionBankId,jdbcType=VARCHAR},
       sort = #{sort,jdbcType=INTEGER},
-      answerNo = #{answerno,jdbcType=VARCHAR}
+      answerNo = #{answerno,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

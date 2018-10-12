@@ -20,8 +20,7 @@
     }
 
     .trueAnswerZone {
-        margin: 20px 0px;
-        padding: 10px 20px;
+        padding: 0px 20px;
     }
 
     .jieXiZone {
@@ -60,12 +59,23 @@
         margin: 0px 7px 10px;
     }
 
+    .myBadgeABCD {
+        font-size: 20px;
+    }
+
     .hide {
         display: none;
     }
 
+    .paper {
+        width: 100px;
+        font-size: 25px;
+        line-height: 40px;
+        color: #fff;
+    }
+
     .paddingBottom {
-        padding-bottom: 10px;
+        padding-bottom: 20px;
     }
 
     #hui-footer a {
@@ -81,7 +91,7 @@
 <header class="hui-header">
     <div id="hui-back"></div>
     <h1>答题</h1>
-    <div onclick="paper();">交卷</div>
+    <div class="paper" onclick="paper();">交卷</div>
 </header>
 
 <div class="hui-wrap">
@@ -230,12 +240,31 @@
 <script th:src="@{/huiAdmin/js/hui-accordion.js}" type="text/javascript"></script>
 <script type="text/javascript">
     var selectAnswer = [];
-
+    var webRoot = G_WEB_ROOT;
+    var urls = {
+        getData: webRoot + '/app/answer/getData',
+        calcScore: webRoot + '/app/score/calcScore',
+    }
     hui.ready(function () {
         hui.accordion(false, false);
     });
 
     function paper() {
+        $.ajax({
+            type: "POST",
+            url: urls.calcScore,
+            dataType: 'json',
+            data: {
+                "idList": selectAnswer, "questionBankId": $("#questionBankId").text()
+            },
+            success: function (rs) {
+                console.log(rs);
+            }
+            ,
+            error: function (res) {
+            }
+        })
+        ;
         console.log(selectAnswer);
     }
 
@@ -245,10 +274,6 @@
         var curObj = {};
         var questionList = [];
 
-        var webRoot = G_WEB_ROOT;
-        var urls = {
-            getData: webRoot + '/app/answer/getData',
-        }
         var param = {
             "questionBankId": $("#questionBankId").text(),
             "type": $("#type").text(),
@@ -303,8 +328,8 @@
                 trueAnswer = item.split("@")[1];
                 var selectObjStr = trueAnswerABCD + "@" + questionId;
                 answerHtml +=
-                    '<div class="paddingBottom">' +
-                    '    <div class="hui-badge"  data-selectObjStr=' + selectObjStr + '>' + trueAnswerABCD + '</div>' + trueAnswer +
+                    '<div class="paddingBottom"  >' +
+                    '    <div class="hui-badge myBadgeABCD" data-is-select="0" data-selectObjStr=' + selectObjStr + '>' + trueAnswerABCD + '</div>' + trueAnswer +
                     '</div>'
             });
             answerHtml += '</div>';
@@ -368,24 +393,40 @@
             });
         }
 
-        //  TODO 点下一题时才保存入 selectAnswer.push(selectObjStr);
+
         function answerEvent() {
             hui.accordion(false, false);
-            var isSelect = false;
-            $(".answerZone .hui-badge").on("click", function () {
+            // 每一题这个记录重新new
+            var answerRecord = "";
+            $(".answerZone .paddingBottom").on("click", function () {
+                var html = $(".answerZone .hui-danger").html();
                 var $this = $(this);
-                var selectObjStr = $this.attr("data-selectObjStr");
-                if (isSelect) {
-                    isSelect = false;
-                    $this.removeClass("hui-primary");
-                    selectAnswer.remove(selectObjStr);
+                var $children = $this.children();
+                var selectObjStr = $children.attr("data-selectObjStr");
+                var isSelect = $children.data("isSelect");
+                if (html == "多选题") {
+                    if (isSelect == 1) {
+                        $children.data("isSelect", 0);
+                        $children.removeClass("hui-primary");
+                        selectAnswer.remove(selectObjStr);
+                    } else {
+                        $children.data("isSelect", 1);
+                        $children.addClass("hui-primary");
+                        selectAnswer.push(selectObjStr);
+                    }
                 } else {
-                    isSelect = true;
-                    $this.addClass("hui-primary");
+                    $(".answerZone .paddingBottom .hui-badge").removeClass("hui-primary");
+                    $children.addClass("hui-primary");
+                    // 删除上一个
+                    selectAnswer.remove(answerRecord);
+                    // 加入当前
                     selectAnswer.push(selectObjStr);
+                    // 当前的记录起来
+                    answerRecord = selectObjStr;
                 }
                 console.log(selectAnswer);
             });
+
         }
 
 

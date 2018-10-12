@@ -84,6 +84,7 @@ public class UploadServiceImpl implements UploadService {
             qbAnswer.setId(Identities.uuid2());
             qbAnswer.setQuestionId(entry.getQuestionId());
             qbAnswer.setQuestionBankId(entry.getQuestionBankId());
+            qbAnswer.setType(entry.getType());
             qbAnswer.setAnswer(answer);
             qbAnswer.setSort(i);
             qbAnswer.setAnswerno(answerNo[i]);

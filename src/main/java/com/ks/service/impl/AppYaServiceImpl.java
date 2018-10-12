@@ -92,6 +92,7 @@ public class AppYaServiceImpl implements AppYaService {
      * @param courseId
      * @return
      */
+    @Deprecated
     public List<ExamUserAnswerYaVo> queryYaTiByUserId2(String enName, String courseId) {
         ExamUserAnswerYaExample uaYaExample = new ExamUserAnswerYaExample();
         uaYaExample.createCriteria().andUserIdEqualTo(enName).andCourseIdEqualTo(courseId);
@@ -132,7 +133,6 @@ public class AppYaServiceImpl implements AppYaService {
             long finishTotal = examUserAnswerYaMapper.countByExample(yaExample);
 
             ExamUserAnswerYaVo vo = new ExamUserAnswerYaVo();
-//            vo.setUserAnswerId(pkId);
             vo.setUserId(enName);
             vo.setQuestionBankId(questionBankId);
             vo.setTotal(total);

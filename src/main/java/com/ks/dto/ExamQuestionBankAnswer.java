@@ -17,6 +17,8 @@ public class ExamQuestionBankAnswer implements Serializable {
 
     private String answerno;
 
+    private String type;
+
     private static final long serialVersionUID = 1L;
 
     public String getId() {
@@ -73,5 +75,13 @@ public class ExamQuestionBankAnswer implements Serializable {
 
     public void setAnswerno(String answerno) {
         this.answerno = answerno == null ? null : answerno.trim();
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type == null ? null : type.trim();
     }
 }
