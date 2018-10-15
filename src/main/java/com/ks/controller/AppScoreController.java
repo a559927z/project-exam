@@ -60,5 +60,21 @@ public class AppScoreController {
         return "";
     }
 
+    /**
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/calcScore2")
+    public String calcScore2(@RequestParam("idList[]") List<String> idList, String questionBankId,
+                             HttpServletRequest request) {
+        String enName = CookieUtils.getCookieValue(request, CookieConstants.USER_INFO_KEY);
+        if (CollectionUtils.isEmpty(idList)) {
+            return "xxx";
+        }
+        appScoreService.calcScore(idList, questionBankId, enName);
+
+        return "";
+    }
+
 
 }

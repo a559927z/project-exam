@@ -91,7 +91,7 @@
 <header class="hui-header">
     <div id="hui-back"></div>
     <h1>答题</h1>
-    <div class="paper" onclick="paper();">交卷</div>
+    <div class="paper">交卷</div>
 </header>
 
 <div class="hui-wrap">
@@ -239,7 +239,7 @@
 
 <script th:src="@{/huiAdmin/js/hui-accordion.js}" type="text/javascript"></script>
 <script type="text/javascript">
-    var selectAnswer = [];
+    var selectObjList = [];
     var webRoot = G_WEB_ROOT;
     var urls = {
         getData: webRoot + '/app/answer/getData',
@@ -249,29 +249,9 @@
         hui.accordion(false, false);
     });
 
-    function paper() {
-        $.ajax({
-            type: "POST",
-            url: urls.calcScore,
-            dataType: 'json',
-            data: {
-                "idList": selectAnswer, "questionBankId": $("#questionBankId").text()
-            },
-            success: function (rs) {
-                console.log(rs);
-            }
-            ,
-            error: function (res) {
-            }
-        })
-        ;
-        console.log(selectAnswer);
-    }
-
     $(document).ready(function () {
         var transformType = ['', '单选题', '多选题', '是非题'];
         var curNo = 1;
-        var curObj = {};
         var questionList = [];
 
         var param = {
@@ -315,7 +295,7 @@
             html +=
                 '<div class="questionZone">' +
                 '            <div class="hui-badge hui-danger hui-fl">' + transformType[type] + '</div>' +
-                '            <div class="hui-fr">' + no + '/' + total + '</div>' +
+                '            <div class="hui-fr" data-question-no="' + no + '">' + no + '/' + total + '</div>' +
                 '            <div style="clear: both"></div>' +
                 '            <div class="body">' + title +
                 '    </div>' +
@@ -329,7 +309,7 @@
                 var selectObjStr = trueAnswerABCD + "@" + questionId;
                 answerHtml +=
                     '<div class="paddingBottom"  >' +
-                    '    <div class="hui-badge myBadgeABCD" data-is-select="0" data-selectObjStr=' + selectObjStr + '>' + trueAnswerABCD + '</div>' + trueAnswer +
+                    '    <div class="hui-badge myBadgeABCD ' + trueAnswerABCD + '" data-is-select="0" data-select-Obj-str=' + selectObjStr + '>' + trueAnswerABCD + '</div>' + trueAnswer +
                     '</div>'
             });
             answerHtml += '</div>';
@@ -353,14 +333,32 @@
             $("#answerZone").empty();
             $("#answerZone").append(html);
 
-            answerEvent();
+            answerEvent(type, no);
         }
+
+        function selectReader(no) {
+            if (selectObjList.length > 0) {
+                $.each(selectObjList, function (i, item) {
+                    if (no == item.no) {
+                        $.each(item.answer, function (j, jItem) {
+                            var newVar = $("." + jItem);
+                            newVar.addClass("hui-primary");
+                            newVar.data("isSelect", 1);
+                        });
+                    }
+                });
+            }
+            console.log(selectObjList);
+        }
+
 
         function reader(rs) {
             cardReader(rs);
             pageReader(rs);
-
             fooerEvent(rs);
+            $(".paper").click(function () {
+                paper();
+            });
         }
 
         function fooerEvent(rs) {
@@ -371,17 +369,23 @@
                 if (curNo == 1) {
                     hui.alert("第一题了");
                 } else {
+                    saveSelectObj(curNo);
                     curNo = (curNo - 1);
                     pageReader(rs);
+                    selectReader(curNo);
                 }
             });
             $("#nav-next").click(function () {
                 if (curNo == rs.length) {
                     hui.alert("最后一题了");
                 } else {
+                    saveSelectObj(curNo);
+                    // 下一题curNo
                     curNo = (curNo + 1);
                     pageReader(rs);
+                    selectReader(curNo);
                 }
+
             });
 
             $(".questionNo").click(function () {
@@ -393,42 +397,106 @@
             });
         }
 
-
-        function answerEvent() {
+        function answerEvent(type, no) {
             hui.accordion(false, false);
-            // 每一题这个记录重新new
-            var answerRecord = "";
             $(".answerZone .paddingBottom").on("click", function () {
-                var html = $(".answerZone .hui-danger").html();
                 var $this = $(this);
                 var $children = $this.children();
-                var selectObjStr = $children.attr("data-selectObjStr");
                 var isSelect = $children.data("isSelect");
-                if (html == "多选题") {
+
+                // 多选题
+                if (type == "2") {
                     if (isSelect == 1) {
                         $children.data("isSelect", 0);
                         $children.removeClass("hui-primary");
-                        selectAnswer.remove(selectObjStr);
                     } else {
                         $children.data("isSelect", 1);
                         $children.addClass("hui-primary");
-                        selectAnswer.push(selectObjStr);
                     }
                 } else {
                     $(".answerZone .paddingBottom .hui-badge").removeClass("hui-primary");
                     $children.addClass("hui-primary");
-                    // 删除上一个
-                    selectAnswer.remove(answerRecord);
-                    // 加入当前
-                    selectAnswer.push(selectObjStr);
-                    // 当前的记录起来
-                    answerRecord = selectObjStr;
                 }
-                console.log(selectAnswer);
             });
-
         }
 
+        function saveSelectObj(no) {
+            var questionId = "";
+            var selectAnswer = [];
+            var $answerZone = $(".answerZone .paddingBottom .hui-primary");
+            $.each($answerZone, function (i, item) {
+                var selectObjStr = $(item).data("selectObjStr");
+                var split = selectObjStr.split("@");
+                var _answer = split[0];
+                var _questionId = split[1];
+                selectAnswer.push(_answer);
+                questionId = _questionId
+            });
+
+            var selectObj = getSelectObj(no);
+            if (selectObj == null) {
+                selectObj = {
+                    no: no,
+                    questionId: questionId,
+                    answer: selectAnswer
+                };
+                selectObjList.push(selectObj);
+
+            } else {
+                selectObj.answer = selectAnswer;
+                selectObj.questionId = questionId;
+                $.each(selectObjList, function (i, item) {
+                    var _questionNo = item.no;
+                    if (_questionNo == no) {
+                        selectObjList.remove(item);
+                        selectObjList.push(selectObj);
+                    }
+                });
+            }
+        }
+
+        function getSelectObj(no) {
+            var rs = null;
+            $.each(selectObjList, function (i, item) {
+                var _questionNo = item.no;
+                if (no == _questionNo) {
+                    rs = item;
+                    return;
+                }
+            });
+            return rs;
+        }
+
+        function paper() {
+            var no = $(".questionZone .hui-fr").data("questionNo");
+            saveSelectObj(no);
+
+            var selectAnswer = [];
+            if (selectObjList.length > 0) {
+                $.each(selectObjList, function (i, item) {
+                    $.each(item.answer, function (j, jItem) {
+                        selectAnswer.push(jItem + "@" + item.questionId);
+                    });
+                });
+            }
+
+            $.ajax({
+                type: "POST",
+                url: urls.calcScore,
+                dataType: 'json',
+                data: {
+                    "idList": selectAnswer, "questionBankId": $("#questionBankId").text()
+                },
+                success: function (rs) {
+                    console.log(rs);
+                }
+                ,
+                error: function (res) {
+                }
+            })
+            ;
+            console.log(selectAnswer);
+        }
 
         function getData() {
             hui.postJSON(
@@ -449,6 +517,8 @@
         }
 
         main();
+
+
     });
 
 </script>

@@ -1,5 +1,6 @@
 package com.ks.service;
 
+import com.ks.vo.ScoreVo;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -16,5 +17,5 @@ import java.util.List;
  */
 public interface AppScoreService {
 
-    void calcScore(List<String> idList, String questionBankId, String enName);
+    List<ScoreVo> calcScore(List<String> idList, String questionBankId, String enName);
 }

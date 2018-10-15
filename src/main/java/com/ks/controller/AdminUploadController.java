@@ -2,6 +2,7 @@ package com.ks.controller;
 
 import com.google.common.collect.Lists;
 import com.ks.constants.QuestionBankConstants;
+import com.ks.constants.QuestionBankTypeEnum;
 import com.ks.dao.ExamQuestionBankMapper;
 import com.ks.dto.ExamQuestionBank;
 import com.ks.dto.ExamQuestionBankExample;
@@ -221,18 +222,31 @@ public class AdminUploadController extends BaseController {
 
     private String processType(String trueAnswer) {
         int i = appearNumber(trueAnswer, QuestionBankConstants.ANSWER_TRUE_PATTERN);
+//        if (i > 1) {
+//            // 多选题
+//            return "2";
+//        } else if (
+//                StringUtils.equals(trueAnswer, QuestionBankConstants.SHI_FEI_PATTERN1)
+//                        || StringUtils.equals(trueAnswer, QuestionBankConstants.SHI_FEI_PATTERN2)
+//                ) {
+//            // 是非选题
+//            return "3";
+//        } else {
+//            // 单选题
+//            return "1";
+//        }
         if (i > 1) {
             // 多选题
-            return "3";
+            return QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode();
         } else if (
                 StringUtils.equals(trueAnswer, QuestionBankConstants.SHI_FEI_PATTERN1)
                         || StringUtils.equals(trueAnswer, QuestionBankConstants.SHI_FEI_PATTERN2)
                 ) {
             // 是非选题
-            return "2";
+            return QuestionBankTypeEnum.YES_NO_QUESTION.getCode();
         } else {
             // 单选题
-            return "1";
+            return QuestionBankTypeEnum.SINGLE_QUESTION.getCode();
         }
     }
 
