@@ -40,6 +40,7 @@ public class AppAnswerServiceImpl implements AppAnswerService {
 
     @Override
     public List<AnswerVo> getData(ScreenTiDto screenTiDto) {
+        //TODO
         boolean notDo = screenTiDto.isNotDo();
         String questionBankId = screenTiDto.getQuestionBankId();
 
@@ -67,14 +68,16 @@ public class AppAnswerServiceImpl implements AppAnswerService {
                     vo.setType(i.getType());
                     vo.setTitle(i.getTitle());
                     List<String> answerList = Lists.newArrayList();
+                    List<String> trueAnswerList = Lists.newArrayList();
                     qbAnswerList.forEach(j -> {
                         if (questionId.equals(j.getQuestionId())) {
                             answerList.add(j.getAnswerno() + "@" + j.getAnswer());
                             if (j.getIsanswer()) {
-                                vo.setTrueAnswer(j.getAnswer());
+                                trueAnswerList.add(j.getAnswerno());
                             }
                         }
                     });
+                    vo.setTrueAnswer(trueAnswerList);
                     vo.setAnswer(answerList);
                     voList.add(vo);
                 });

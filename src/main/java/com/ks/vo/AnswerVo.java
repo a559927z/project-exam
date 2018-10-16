@@ -25,7 +25,7 @@ public class AnswerVo {
     private String questionId;
     private String title;
     private List<String> answer;
-    private String trueAnswer;
+    private List<String> trueAnswer;
     private String jieXi;
 
     private String type;

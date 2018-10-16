@@ -1,26 +1,23 @@
 package com.ks.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.base.Splitter;
 import com.google.common.collect.*;
-import com.ks.constants.QuestionBankConstants;
 import com.ks.constants.QuestionBankTypeEnum;
 import com.ks.dao.ExamQuestionBankAnswerMapper;
 import com.ks.dao.ExamQuestionBankScoreMapper;
 import com.ks.dao.ExamUserAnswerYaMapper;
 import com.ks.dto.*;
 import com.ks.service.AppScoreService;
-import com.ks.utils.cache.LoadingCacheUtil;
 import com.ks.vo.ScoreVo;
 import lombok.extern.slf4j.Slf4j;
 import net.chinahrd.utils.ArithUtil;
 import net.chinahrd.utils.Identities;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Title: ${type_name} <br/>
@@ -47,22 +44,20 @@ public class AppScoreServiceImpl implements AppScoreService {
 
 
     /**
-     * 入库 用户答案
+     * TODO throw ex
      *
      * @param idList
      * @param questionBankId
-     * @return
-     * @throws ExecutionException
+     * @param enName
      */
-    private List<ExamUserAnswerYa> saveScore(List<String> idList, String questionBankId, String enName) {
-//        PublicUserInfo userInfo = null;
-//        try {
-//            userInfo = LoadingCacheUtil.getInstance().get("enName", PublicUserInfo.class);
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        }
-//        String enName = userInfo.getEnName();
-
+    @Override
+    public void saveScore(List<String> idList, String questionBankId, String enName) throws Exception {
+        if (CollectionUtils.isEmpty(idList)) {
+            log.info("没有答题");
+        }
+        ExamUserAnswerYaExample uaYaExampl = new ExamUserAnswerYaExample();
+        uaYaExampl.createCriteria().andQuestionBankIdEqualTo(questionBankId).andUserIdEqualTo(enName);
+        examUserAnswerYaMapper.deleteByExample(uaYaExampl);
 
         List<ExamUserAnswerYa> userAnswerYaList = Lists.newArrayList();
         idList.forEach(i -> {
@@ -80,23 +75,25 @@ public class AppScoreServiceImpl implements AppScoreService {
             userAnswerYaList.add(dto);
             examUserAnswerYaMapper.insertSelective(dto);
         });
-        return userAnswerYaList;
     }
 
 
     @Override
-    public List<ScoreVo> calcScore(List<String> idList, String questionBankId, String enName) {
-        if (CollectionUtils.isEmpty(idList)) {
+    public List<ScoreVo> calcScore(String questionBankId, String enName) {
+        ExamUserAnswerYaExample uaYaExampl = new ExamUserAnswerYaExample();
+        uaYaExampl.createCriteria().andQuestionBankIdEqualTo(questionBankId).andUserIdEqualTo(enName);
+        List<ExamUserAnswerYa> userAnswerYaList = examUserAnswerYaMapper.selectByExample(uaYaExampl);
+
+        if (CollectionUtils.isEmpty(userAnswerYaList)) {
             log.info("没有答题");
         }
-        List<ExamUserAnswerYa> userAnswerYaList = saveScore(idList, questionBankId, enName);
+
         //  用户答案的多值map, key: qId, value: List<ExamUserAnswerYa>
         Multimap<String, ExamUserAnswerYa> uaYaMultiMap = ArrayListMultimap.create();
         userAnswerYaList.forEach(n -> {
             String questionId = n.getQuestionId();
             uaYaMultiMap.put(questionId, n);
         });
-
 
         ExamQuestionBankAnswerExample qbAnswerExample = new ExamQuestionBankAnswerExample();
         qbAnswerExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
@@ -108,7 +105,6 @@ public class AppScoreServiceImpl implements AppScoreService {
             qbAnswerMultiMap.put(questionId, n);
         });
 
-
         Map<String, Boolean> result = Maps.newHashMap();
         Multiset<String> keys = uaYaMultiMap.keys();
         // 获取用户多值Map里的questionId
@@ -117,28 +113,48 @@ public class AppScoreServiceImpl implements AppScoreService {
             Collection<ExamUserAnswerYa> qUaYaList = uaYaMultiMap.get(questionId);
 
             // 每个key对应一个List, 用户答案和真答案匹配
-            for (ExamUserAnswerYa uaYa : qUaYaList) {
-                boolean yes = false;
-                String uaABCD = uaYa.getUserAnswer();
-                for (ExamQuestionBankAnswer qbAnswer : qAnswerList) {
-                    String answerABCD = qbAnswer.getAnswerno();
-                    if (uaABCD.equals(answerABCD)) {
-                        yes = true;
-                        break;
-                    } else {
-                        yes = false;
-                    }
-                }
-                result.put(questionId, yes);
-            }
+//            for (ExamUserAnswerYa uaYa : qUaYaList) {
+//                boolean yes = false;
+//                String uaABCD = uaYa.getUserAnswer();
+//                for (ExamQuestionBankAnswer qbAnswer : qAnswerList) {
+//                    String answerABCD = qbAnswer.getAnswerno();
+//                    if (uaABCD.equals(answerABCD)) {
+//                        yes = true;
+//                        break;
+//                    } else {
+//                        yes = false;
+//                    }
+//                }
+//                result.put(questionId, yes);
+//            }
+            result.put(questionId, match(qUaYaList, qAnswerList));
         }
         return ratio(result, qbAnswerList, questionBankId);
+    }
 
+    private boolean match(Collection<ExamUserAnswerYa> qUaYaList, Collection<ExamQuestionBankAnswer> qAnswerList) {
+        boolean yes = false;
+        String qAnswerStr = "";
+        for (ExamQuestionBankAnswer qAnswer : qAnswerList) {
+            if (qAnswer.getIsanswer()) {
+                qAnswerStr += qAnswer.getAnswerno();
+            }
+        }
+
+        for (ExamUserAnswerYa uaYa : qUaYaList) {
+            String uaABCD = uaYa.getUserAnswer();
+            if (StringUtils.containsAny(qAnswerStr, uaABCD)) {
+                yes = true;
+            } else {
+                yes = false;
+            }
+        }
+        return yes;
     }
 
 
     /**
-     * 计算
+     * 计算正确率
      *
      * @param result
      * @param qbAnswerList
@@ -149,38 +165,54 @@ public class AppScoreServiceImpl implements AppScoreService {
         int mRight = 0, mWrong = 0;
         int ynRight = 0, ynWrong = 0;
 
+        List<Map.Entry<String, Boolean>> sList = Lists.newArrayList();
+        List<Map.Entry<String, Boolean>> mList = Lists.newArrayList();
+        List<Map.Entry<String, Boolean>> ynList = Lists.newArrayList();
+
+        List<ExamQuestionBankAnswer> trueAnswerList = Lists.newArrayList();
+        for (ExamQuestionBankAnswer qbAnswer : qbAnswerList) {
+            if (qbAnswer.getIsanswer()) {
+                trueAnswerList.add(qbAnswer);
+            }
+        }
+
+
         Set<Map.Entry<String, Boolean>> entries = result.entrySet();
         for (Map.Entry<String, Boolean> entry : entries) {
 
             String questionId = entry.getKey();
             Boolean yes = entry.getValue();
 
-            for (ExamQuestionBankAnswer qbAnswer : qbAnswerList) {
-                if (questionId.equals(qbAnswer.getQuestionId())) {
-                    String type = qbAnswer.getType();
+            for (ExamQuestionBankAnswer trueAnswer : trueAnswerList) {
+                if (questionId.equals(trueAnswer.getQuestionId())) {
+                    String type = trueAnswer.getType();
+//                    if (QuestionBankTypeEnum.SINGLE_QUESTION.getCode().equals(type)) {
+//                        sList.add(entry);
+//                    } else if (QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode().equals(type) && yes) {
+//                        mList.add(entry);
+//                    } else if (QuestionBankTypeEnum.YES_NO_QUESTION.getCode().equals(type) && !yes) {
+//                        ynList.add(entry);
+//                    }
                     if (QuestionBankTypeEnum.SINGLE_QUESTION.getCode().equals(type) && yes) {
                         sRight++;
-                    } else {
+                    } else if (QuestionBankTypeEnum.SINGLE_QUESTION.getCode().equals(type) && !yes) {
                         sWrong++;
-                    }
-                    if (QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode().equals(type) && yes) {
+                    } else if (QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode().equals(type) && yes) {
                         mRight++;
-                    } else {
+                    } else if (QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode().equals(type) && !yes) {
                         mWrong++;
-                    }
-                    if (QuestionBankTypeEnum.YES_NO_QUESTION.getCode().equals(type) && yes) {
+                    } else if (QuestionBankTypeEnum.YES_NO_QUESTION.getCode().equals(type) && yes) {
                         ynRight++;
-                    } else {
+                    } else if (QuestionBankTypeEnum.YES_NO_QUESTION.getCode().equals(type) && !yes) {
                         ynWrong++;
                     }
                 }
-
             }
         }
 
-        ScoreVo sVo = calcRatio(sRight, sWrong, QuestionBankTypeEnum.SINGLE_QUESTION.getCode());
-        ScoreVo mVo = calcRatio(sRight, sWrong, QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode());
-        ScoreVo ynVo = calcRatio(sRight, sWrong, QuestionBankTypeEnum.YES_NO_QUESTION.getCode());
+        if (sList.size() > 0) {
+
+        }
 
         // 得分
         ExamQuestionBankScoreExample qbScoreExample = new ExamQuestionBankScoreExample();
@@ -190,14 +222,23 @@ public class AppScoreServiceImpl implements AppScoreService {
             log.info("没有设置得分");
         }
 
-
-        sVo.setScore(calcScore(sVo.getRight(), QuestionBankTypeEnum.SINGLE_QUESTION.getCode(), qbScoreList));
-        mVo.setScore(calcScore(mVo.getRight(), QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode(), qbScoreList));
-        ynVo.setScore(calcScore(ynVo.getRight(), QuestionBankTypeEnum.YES_NO_QUESTION.getCode(), qbScoreList));
         List<ScoreVo> rs = Lists.newArrayList();
-        rs.add(sVo);
-        rs.add(mVo);
-        rs.add(ynVo);
+        if (sRight != 0 || sWrong != 0) {
+            ScoreVo sVo = calcRatio(sRight, sWrong, QuestionBankTypeEnum.SINGLE_QUESTION.getCode());
+            sVo.setScore(calcScore(sVo.getRight(), QuestionBankTypeEnum.SINGLE_QUESTION.getCode(), qbScoreList));
+            rs.add(sVo);
+        }
+
+        if (mRight != 0 || mWrong != 0) {
+            ScoreVo mVo = calcRatio(mRight, mWrong, QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode());
+            mVo.setScore(calcScore(mVo.getRight(), QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode(), qbScoreList));
+            rs.add(mVo);
+        }
+        if (ynRight != 0 || ynWrong != 0) {
+            ScoreVo ynVo = calcRatio(ynRight, ynWrong, QuestionBankTypeEnum.YES_NO_QUESTION.getCode());
+            ynVo.setScore(calcScore(ynVo.getRight(), QuestionBankTypeEnum.YES_NO_QUESTION.getCode(), qbScoreList));
+            rs.add(ynVo);
+        }
         return rs;
     }
 
@@ -209,7 +250,6 @@ public class AppScoreServiceImpl implements AppScoreService {
      * @return
      */
     private double calcScore(int right, String type, List<ExamQuestionBankScore> qbScoreList) {
-
         for (ExamQuestionBankScore qbScore : qbScoreList) {
             String qbType = qbScore.getQuestionBankType();
             if (qbType.equals(type)) {
@@ -234,7 +274,7 @@ public class AppScoreServiceImpl implements AppScoreService {
         vo.setWrong(wrong);
         vo.setType(type);
         vo.setRatioStr(
-                ArithUtil.div(right, (right + wrong), 2) + "%"
+                ArithUtil.mul(ArithUtil.div(right, (right + wrong), 2), 100) + "%"
         );
         return vo;
     }

@@ -239,17 +239,18 @@
 
 <script th:src="@{/huiAdmin/js/hui-accordion.js}" type="text/javascript"></script>
 <script type="text/javascript">
-    var selectObjList = [];
-    var webRoot = G_WEB_ROOT;
-    var urls = {
-        getData: webRoot + '/app/answer/getData',
-        calcScore: webRoot + '/app/score/calcScore',
-    }
     hui.ready(function () {
         hui.accordion(false, false);
     });
 
     $(document).ready(function () {
+        var selectObjList = [];
+        var webRoot = G_WEB_ROOT;
+        var urls = {
+            getData: webRoot + '/app/answer/getData',
+            saveScore: webRoot + '/app/score/saveScore',
+            scoreApp: webRoot + '/app/score/toIndex?questionBankId=' + $("#questionBankId").text(),
+        }
         var transformType = ['', '单选题', '多选题', '是非题'];
         var curNo = 1;
         var questionList = [];
@@ -286,10 +287,9 @@
             var no = questionObj.no;
             var type = questionObj.type;
             var answerArr = questionObj.answer;
-            var trueAnswer = "";
+            var trueAnswerABCD = questionObj.trueAnswer;
             var jieXi = questionObj.jieXi;
             var title = questionObj.title;
-            var trueAnswerABCD = "";
             var questionId = questionObj.questionId;
 
             html +=
@@ -304,23 +304,26 @@
             var answerHtml =
                 '<div class="answerZone">';
             $.each(answerArr, function (i, item) {
-                trueAnswerABCD = item.split("@")[0];
-                trueAnswer = item.split("@")[1];
-                var selectObjStr = trueAnswerABCD + "@" + questionId;
+                var answerABCD = item.split("@")[0];
+                var answer = item.split("@")[1];
+                var selectObjStr = answerABCD + "@" + questionId;
                 answerHtml +=
                     '<div class="paddingBottom"  >' +
-                    '    <div class="hui-badge myBadgeABCD ' + trueAnswerABCD + '" data-is-select="0" data-select-Obj-str=' + selectObjStr + '>' + trueAnswerABCD + '</div>' + trueAnswer +
+                    '    <div class="hui-badge myBadgeABCD ' + answerABCD + '" data-is-select="0" data-select-Obj-str=' + selectObjStr + '>' + answerABCD + '</div>' + answer +
                     '</div>'
             });
             answerHtml += '</div>';
             html += answerHtml;
 
+            var trueAnswerABCDHtml = "";
+            $.each(trueAnswerABCD, function (i, item) {
+                trueAnswerABCDHtml += '<div class="hui-badge hui-danger">' + item + '</div>';
+            });
             var trueAnswerHtml = "";
             trueAnswerHtml +=
                 '<div class="trueAnswerZone hui-accordion">' +
                 '    <div class="hui-accordion-title">答案</div>' +
-                '    <div class="hui-accordion-content">' +
-                '        <div class="hui-badge hui-danger">' + trueAnswerABCD + '</div>' +
+                '    <div class="hui-accordion-content">' + trueAnswerABCDHtml +
                 '        <br/>' +
                 '        <br/>' +
                 '        <div class="">解析</div>' +
@@ -468,34 +471,38 @@
         }
 
         function paper() {
-            var no = $(".questionZone .hui-fr").data("questionNo");
-            saveSelectObj(no);
-
-            var selectAnswer = [];
-            if (selectObjList.length > 0) {
-                $.each(selectObjList, function (i, item) {
-                    $.each(item.answer, function (j, jItem) {
-                        selectAnswer.push(jItem + "@" + item.questionId);
+            hui.confirm('您确认要交卷吗？', ['取消', '确定'], function () {
+                var no = $(".questionZone .hui-fr").data("questionNo");
+                saveSelectObj(no);
+                var selectAnswer = [];
+                if (selectObjList.length > 0) {
+                    $.each(selectObjList, function (i, item) {
+                        $.each(item.answer, function (j, jItem) {
+                            selectAnswer.push(jItem + "@" + item.questionId);
+                        });
                     });
+                }
+                $.ajax({
+                    type: "POST",
+                    url: urls.saveScore,
+                    dataType: 'json',
+                    data: {
+                        "idList": selectAnswer, "questionBankId": $("#questionBankId").text()
+                    },
+                    success: function (rs) {
+                        if (rs) {
+                            window.location.href = urls.scoreApp;
+                        }
+                    },
+                    error: function (res) {
+                    }
                 });
-            }
+                console.log(selectAnswer);
+            }, function () {
+                console.log('取消后执行...');
+            });
 
-            $.ajax({
-                type: "POST",
-                url: urls.calcScore,
-                dataType: 'json',
-                data: {
-                    "idList": selectAnswer, "questionBankId": $("#questionBankId").text()
-                },
-                success: function (rs) {
-                    console.log(rs);
-                }
-                ,
-                error: function (res) {
-                }
-            })
-            ;
-            console.log(selectAnswer);
+
         }
 
         function getData() {

@@ -87,8 +87,63 @@
 
     </div>
 </div>
+<p class="hide" id="questionBankId" th:text="${questionBankId}">(questionBankId)</p>
 
+<script type="text/javascript">
+    $(function () {
+        var webRoot = G_WEB_ROOT;
+        var urls = {
+            calcScore: webRoot + '/app/score/calcScore?questionBankId=' + $("#questionBankId").text(),
+        }
+        var transformType = ['', '单选题', '多选题', '是非题'];
 
+        function reader(rs) {
+            var v1 = 0;
+            var v2 = 0;
+            var vv = 0;
+            var html =
+                '<tr>' +
+                '    <th></th>' +
+                '    <th>做对</th>' +
+                '    <th>做错</th>' +
+                '    <th>正确率</th>' +
+                '</tr>';
+            if (rs.length > 0) {
+                $.each(rs, function (i, item) {
+                    v1 = v1 + item.right;
+                    v2 = v2 + item.wrong;
+                    html +=
+                        '<tr>' +
+                        '    <td>' + transformType[parseInt(item.type)] + '</td>' +
+                        '    <td>' + item.right + '</td>' +
+                        '    <td>' + item.wrong + '</td>' +
+                        '    <td>' + item.ratioStr + '</td>' +
+                        '</tr>';
+                });
+            }
+            $("table").empty();
+            $("table").append(html);
+            vv = (v1 / v2) * 100;
+            $(".myBadge").text(vv + '%');
+        }
+
+        function getData() {
+            hui.getJSON(
+                urls.calcScore,
+                function (rs) {
+                    reader(rs);
+                }
+            );
+        }
+
+        function main() {
+            getData();
+        }
+
+        main();
+    });
+
+</script>
 </body>
 </html>
 

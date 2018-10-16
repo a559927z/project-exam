@@ -163,7 +163,8 @@ public class QRCodeUtils {
 //    }
 
     public static void main(String[] args) throws Exception {
-        encode("http://118.190.205.193/app/login/toLogin.html",
+//        encode("http://118.190.205.193/app/login/toLogin.html",
+        encode("http://www.baitijiaoyu.vip/app/login/toLogin.html",
                 "D:\\tmp\\favicon.png",
                 "D:\\tmp", true, "baiTiVIP");
     }
