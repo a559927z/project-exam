@@ -1,5 +1,10 @@
 package com.ks.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.ks.constants.CookieConstants;
+import com.ks.utils.CookieUtils;
+import com.ks.vo.VisitorVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ResourceUtils;
 
@@ -59,6 +64,20 @@ public class BaseController {
     public String assetsImgPath() throws FileNotFoundException {
         File file = ResourceUtils.getFile("classpath:assets/img/");
         return file.getAbsolutePath();
+    }
+
+    /**
+     * 获取访问对象
+     *
+     * @param request
+     */
+    public VisitorVo getVisitor(HttpServletRequest request) {
+        String userInfoJSON = CookieUtils.getCookieValue(request, CookieConstants.USER_INFO_KEY);
+        if (StringUtils.isNotBlank(userInfoJSON)) {
+            VisitorVo visitor = JSON.parseObject(userInfoJSON, VisitorVo.class);
+            return visitor;
+        }
+        return null;
     }
 
 }

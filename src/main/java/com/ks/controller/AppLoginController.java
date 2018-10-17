@@ -9,9 +9,12 @@ import com.ks.dto.PublicUserInfo;
 import com.ks.dto.PublicUserInfoExample;
 import com.ks.util.ShiroUtils;
 import com.ks.utils.CookieUtils;
+import com.ks.utils.StringUtil;
 import com.ks.utils.cache.LoadingCacheUtil;
+import com.ks.vo.VisitorVo;
 import lombok.extern.slf4j.Slf4j;
 import net.chinahrd.utils.Identities;
+import net.chinahrd.utils.crypto.CryptUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -41,7 +44,7 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 @RequestMapping("/app/login")
 @Controller
-public class AppLoginController {
+public class AppLoginController extends BaseController {
 
     @Autowired
     private PublicUserInfoMapper publicUserInfoMapper;
@@ -60,6 +63,19 @@ public class AppLoginController {
         return REDIRECT_TO_LOGIN;
     }
 
+    /**
+     * 清空不是本版本其它cookie值
+     *
+     * @param request
+     * @param response
+     */
+    private void checkVersion(HttpServletRequest request, HttpServletResponse response) {
+        String version = CookieUtils.getCookieValue(request, CookieConstants.VERSION);
+        if (StringUtils.isBlank(version)) {
+            CookieUtils.deleteCookie(response, CookieConstants.USER_INFO_KEY);
+            CookieUtils.addCookie(response, CookieConstants.VERSION, CookieConstants.VERSION, CookieConstants.MAX_AGE);
+        }
+    }
 
     /**
      * 登录
@@ -68,14 +84,22 @@ public class AppLoginController {
      * @return
      */
     @RequestMapping("/toLogin")
-    public String toLogin(HttpServletRequest request) throws ExecutionException {
+    public String toLogin(HttpServletRequest request, HttpServletResponse response) throws ExecutionException {
+        checkVersion(request, response);
+        VisitorVo visitor = getVisitor(request);
+        String enName = "";
+        if (null != visitor) {
+            enName = visitor.getEnName();
+        }
         // cookie 已有验证通过的
-        String enName = CookieUtils.getCookieValue(request, CookieConstants.USER_INFO_KEY);
         PublicUserInfoExample example = new PublicUserInfoExample();
         // cookie 取enName
         if (StringUtils.isNotBlank(enName)) {
             // 检查用户是否已经注册过
-            example.createCriteria().andEnNameEqualTo(enName);
+            example.createCriteria()
+                    .andEnNameEqualTo(enName)
+                    .andSaltEqualTo(visitor.getPassword())
+                    .andPasswordEqualTo(ShiroUtils.shiroMd5Hash(visitor.getPassword(), visitor.getPassword(), 2));
             List<PublicUserInfo> exists = publicUserInfoMapper.selectByExample(example);
             if (CollectionUtils.isEmpty(exists)) {
                 return PAGE_TO_LOGIN;
@@ -136,6 +160,10 @@ public class AppLoginController {
      * @return
      */
     private KVItemDto<Boolean, Object> saveLogin(HttpServletResponse response, PublicUserInfo requestDto, KVItemDto<Boolean, Object> rs, List<PublicUserInfo> exists) {
+        VisitorVo vo = new VisitorVo();
+        vo.setEnName(requestDto.getEnName());
+        vo.setPassword(requestDto.getPassword());
+        String voJSON = JSON.toJSONString(vo);
         // 如果没有就走注册流程
         if (CollectionUtils.isEmpty(exists)) {
             PublicUserInfo dto = new PublicUserInfo();
@@ -147,7 +175,7 @@ public class AppLoginController {
             // 1用户被锁定，待后台激动为0
             dto.setState(UserInfoConstants.IS_LOCK);
             publicUserInfoMapper.insertSelective(dto);
-            CookieUtils.addCookie(response, CookieConstants.USER_INFO_KEY, dto.getEnName(), CookieConstants.MAX_AGE);
+            CookieUtils.addCookie(response, CookieConstants.USER_INFO_KEY, voJSON, CookieConstants.MAX_AGE);
             rs.setK(true);
             rs.setV("注册成功，等待后台激活。");
         } else if (exists.get(0).getState() == UserInfoConstants.IS_LOCK) {
@@ -156,7 +184,7 @@ public class AppLoginController {
         } else if (exists.get(0).getState() == UserInfoConstants.UN_LOCK) {
             rs.setK(true);
             rs.setV("已注册过，已激活过。只是客户端清空了cookie");
-            CookieUtils.addCookie(response, CookieConstants.USER_INFO_KEY, requestDto.getEnName(), CookieConstants.MAX_AGE);
+            CookieUtils.addCookie(response, CookieConstants.USER_INFO_KEY, voJSON, CookieConstants.MAX_AGE);
         } else {
             rs.setK(false);
             rs.setV("注册失败");
@@ -176,7 +204,7 @@ public class AppLoginController {
     @ResponseBody
     @RequestMapping("/toLogout")
     public Boolean toLogout(HttpServletRequest request, HttpServletResponse response) throws ExecutionException {
-        String enName = CookieUtils.getCookieValue(request, CookieConstants.USER_INFO_KEY);
+        String enName = getVisitor(request).getEnName();
         if (StringUtils.isBlank(enName)) {
             return false;
         }

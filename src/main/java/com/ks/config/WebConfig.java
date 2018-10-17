@@ -9,6 +9,7 @@ import com.ks.dto.PublicUserInfo;
 import com.ks.dto.PublicUserInfoExample;
 import com.ks.utils.CookieUtils;
 import com.ks.utils.cache.LoadingCacheUtil;
+import com.ks.vo.VisitorVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.filters.RemoteIpFilter;
 import org.apache.commons.collections.CollectionUtils;
@@ -118,7 +119,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 return true;
             }
 
-            String enName = CookieUtils.getCookieValue(request, CookieConstants.USER_INFO_KEY);
+            String enName = "";
+            String userInfoJSON = CookieUtils.getCookieValue(request, CookieConstants.USER_INFO_KEY);
+            if (StringUtils.isNotBlank(userInfoJSON)) {
+                VisitorVo visitor = JSON.parseObject(userInfoJSON, VisitorVo.class);
+                enName = visitor.getEnName();
+            }
+
             if (StringUtils.isBlank(enName)) {
                 log.info("不通过：cookie没值");
                 return false;

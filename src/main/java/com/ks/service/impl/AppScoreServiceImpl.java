@@ -4,6 +4,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.*;
 import com.ks.constants.QuestionBankTypeEnum;
 import com.ks.dao.ExamQuestionBankAnswerMapper;
+import com.ks.dao.ExamQuestionBankMapper;
 import com.ks.dao.ExamQuestionBankScoreMapper;
 import com.ks.dao.ExamUserAnswerYaMapper;
 import com.ks.dto.*;
@@ -42,6 +43,8 @@ public class AppScoreServiceImpl implements AppScoreService {
     @Autowired
     private ExamUserAnswerYaMapper examUserAnswerYaMapper;
 
+    @Autowired
+    private ExamQuestionBankMapper examQuestionBankMapper;
 
     /**
      * TODO throw ex
@@ -55,6 +58,11 @@ public class AppScoreServiceImpl implements AppScoreService {
         if (CollectionUtils.isEmpty(idList)) {
             log.info("没有答题");
         }
+
+        ExamQuestionBankExample qbExample = new ExamQuestionBankExample();
+        qbExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
+        String courseId = examQuestionBankMapper.selectByExample(qbExample).get(0).getCourseId();
+
         ExamUserAnswerYaExample uaYaExampl = new ExamUserAnswerYaExample();
         uaYaExampl.createCriteria().andQuestionBankIdEqualTo(questionBankId).andUserIdEqualTo(enName);
         examUserAnswerYaMapper.deleteByExample(uaYaExampl);
@@ -71,7 +79,7 @@ public class AppScoreServiceImpl implements AppScoreService {
             dto.setQuestionBankId(questionBankId);
             dto.setQuestionId(questionId);
             dto.setUserAnswer(selectAnswer);
-
+            dto.setCourseId(courseId);
             userAnswerYaList.add(dto);
             examUserAnswerYaMapper.insertSelective(dto);
         });
@@ -113,20 +121,6 @@ public class AppScoreServiceImpl implements AppScoreService {
             Collection<ExamUserAnswerYa> qUaYaList = uaYaMultiMap.get(questionId);
 
             // 每个key对应一个List, 用户答案和真答案匹配
-//            for (ExamUserAnswerYa uaYa : qUaYaList) {
-//                boolean yes = false;
-//                String uaABCD = uaYa.getUserAnswer();
-//                for (ExamQuestionBankAnswer qbAnswer : qAnswerList) {
-//                    String answerABCD = qbAnswer.getAnswerno();
-//                    if (uaABCD.equals(answerABCD)) {
-//                        yes = true;
-//                        break;
-//                    } else {
-//                        yes = false;
-//                    }
-//                }
-//                result.put(questionId, yes);
-//            }
             result.put(questionId, match(qUaYaList, qAnswerList));
         }
         return ratio(result, qbAnswerList, questionBankId);
@@ -165,10 +159,6 @@ public class AppScoreServiceImpl implements AppScoreService {
         int mRight = 0, mWrong = 0;
         int ynRight = 0, ynWrong = 0;
 
-        List<Map.Entry<String, Boolean>> sList = Lists.newArrayList();
-        List<Map.Entry<String, Boolean>> mList = Lists.newArrayList();
-        List<Map.Entry<String, Boolean>> ynList = Lists.newArrayList();
-
         List<ExamQuestionBankAnswer> trueAnswerList = Lists.newArrayList();
         for (ExamQuestionBankAnswer qbAnswer : qbAnswerList) {
             if (qbAnswer.getIsanswer()) {
@@ -186,13 +176,6 @@ public class AppScoreServiceImpl implements AppScoreService {
             for (ExamQuestionBankAnswer trueAnswer : trueAnswerList) {
                 if (questionId.equals(trueAnswer.getQuestionId())) {
                     String type = trueAnswer.getType();
-//                    if (QuestionBankTypeEnum.SINGLE_QUESTION.getCode().equals(type)) {
-//                        sList.add(entry);
-//                    } else if (QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode().equals(type) && yes) {
-//                        mList.add(entry);
-//                    } else if (QuestionBankTypeEnum.YES_NO_QUESTION.getCode().equals(type) && !yes) {
-//                        ynList.add(entry);
-//                    }
                     if (QuestionBankTypeEnum.SINGLE_QUESTION.getCode().equals(type) && yes) {
                         sRight++;
                     } else if (QuestionBankTypeEnum.SINGLE_QUESTION.getCode().equals(type) && !yes) {
@@ -208,10 +191,6 @@ public class AppScoreServiceImpl implements AppScoreService {
                     }
                 }
             }
-        }
-
-        if (sList.size() > 0) {
-
         }
 
         // 得分
@@ -239,6 +218,9 @@ public class AppScoreServiceImpl implements AppScoreService {
             ynVo.setScore(calcScore(ynVo.getRight(), QuestionBankTypeEnum.YES_NO_QUESTION.getCode(), qbScoreList));
             rs.add(ynVo);
         }
+
+        rs.add(calcRatio((sRight + mRight + ynRight), (sWrong + mWrong + ynWrong), "9999"));
+
         return rs;
     }
 

@@ -13,6 +13,11 @@ package com.ks.constants;
 public interface CookieConstants {
 
     /**
+     * 版本
+     */
+    String VERSION = "1.0";
+
+    /**
      * 三个月
      */
     int MAX_AGE = 2160 * 60 * 60;

@@ -1,5 +1,6 @@
 package com.ks.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
 import com.ks.constants.CookieConstants;
 import com.ks.dao.ExamQuestionBankYaMapper;
@@ -7,6 +8,7 @@ import com.ks.dao.ExamUserAnswerYaMapper;
 import com.ks.service.AppYaService;
 import com.ks.utils.CookieUtils;
 import com.ks.vo.ExamUserAnswerYaVo;
+import com.ks.vo.VisitorVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +30,7 @@ import java.util.Map;
  */
 @RequestMapping("/app/ya")
 @Controller
-public class AppYaController {
+public class AppYaController extends BaseController{
 
 
     @Autowired
@@ -43,7 +45,7 @@ public class AppYaController {
     @ResponseBody
     @RequestMapping(value = "/queryYaTiByUserId")
     public List<ExamUserAnswerYaVo> queryYaTiByUserId(HttpServletRequest request, String courseId) {
-        String enName = CookieUtils.getCookieValue(request, CookieConstants.USER_INFO_KEY);
+        String enName = getVisitor(request).getEnName();
         return appYaService.queryYaTiByUserId(enName, courseId);
     }
 

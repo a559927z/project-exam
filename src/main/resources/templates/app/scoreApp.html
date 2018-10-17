@@ -41,13 +41,25 @@
     td {
         text-align: center;
         height: 40px;
-        /*vertical-align: bottom;*/
+    }
+
+    .hide {
+        display: none;
+    }
+
+    .toHome {
+        width: 44px;
+        height: 44px;
+        line-height: 44px;
+        text-align: center;
+        flex-shrink: 0;
+        color: #FFF;
     }
 
 </style>
 
 <header class="hui-header">
-    <div id="yaTiBackId"></div>
+    <div class="toHome fa fa-angle-left fa-2x "></div>
     <h1>得分</h1>
 </header>
 <div class="hui-wrap">
@@ -94,12 +106,17 @@
         var webRoot = G_WEB_ROOT;
         var urls = {
             calcScore: webRoot + '/app/score/calcScore?questionBankId=' + $("#questionBankId").text(),
+            toHome: webRoot + '/app/home/toIndex'
         }
         var transformType = ['', '单选题', '多选题', '是非题'];
 
+        function event() {
+            $(".toHome").click(function () {
+                window.location.href = urls.toHome;
+            });
+        }
+
         function reader(rs) {
-            var v1 = 0;
-            var v2 = 0;
             var vv = 0;
             var html =
                 '<tr>' +
@@ -110,21 +127,22 @@
                 '</tr>';
             if (rs.length > 0) {
                 $.each(rs, function (i, item) {
-                    v1 = v1 + item.right;
-                    v2 = v2 + item.wrong;
-                    html +=
-                        '<tr>' +
-                        '    <td>' + transformType[parseInt(item.type)] + '</td>' +
-                        '    <td>' + item.right + '</td>' +
-                        '    <td>' + item.wrong + '</td>' +
-                        '    <td>' + item.ratioStr + '</td>' +
-                        '</tr>';
+                    if (item.type != "9999") {
+                        html +=
+                            '<tr>' +
+                            '    <td>' + transformType[parseInt(item.type)] + '</td>' +
+                            '    <td>' + item.right + '</td>' +
+                            '    <td>' + item.wrong + '</td>' +
+                            '    <td>' + item.ratioStr + '</td>' +
+                            '</tr>';
+                    } else {
+                        vv = item.ratioStr;
+                    }
                 });
             }
             $("table").empty();
             $("table").append(html);
-            vv = (v1 / v2) * 100;
-            $(".myBadge").text(vv + '%');
+            $(".myBadge").text(vv);
         }
 
         function getData() {
@@ -138,6 +156,7 @@
 
         function main() {
             getData();
+            event();
         }
 
         main();

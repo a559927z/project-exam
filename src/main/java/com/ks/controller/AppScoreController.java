@@ -27,7 +27,7 @@ import java.util.List;
  */
 @RequestMapping("/app/score")
 @Controller
-public class AppScoreController {
+public class AppScoreController extends BaseController {
 
     @Autowired
     private AppScoreService appScoreService;
@@ -54,7 +54,7 @@ public class AppScoreController {
     @RequestMapping("/calcScore")
     public List<ScoreVo> calcScore(String questionBankId,
                                    HttpServletRequest request) {
-        String enName = CookieUtils.getCookieValue(request, CookieConstants.USER_INFO_KEY);
+        String enName = getVisitor(request).getEnName();
         return appScoreService.calcScore(questionBankId, enName);
     }
 
@@ -67,7 +67,7 @@ public class AppScoreController {
     @RequestMapping("/saveScore")
     public Boolean saveScore(@RequestParam("idList[]") List<String> idList, String questionBankId,
                              HttpServletRequest request) {
-        String enName = CookieUtils.getCookieValue(request, CookieConstants.USER_INFO_KEY);
+        String enName = getVisitor(request).getEnName();
         if (CollectionUtils.isEmpty(idList)) {
             return false;
         }

@@ -1,6 +1,7 @@
 package com.ks.service.impl;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.ks.dao.ExamQuestionBankMapper;
 import com.ks.dao.ExamQuestionBankYaMapper;
 import com.ks.dao.ExamUserAnswerYaMapper;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Title: ${type_name} <br/>
@@ -63,6 +65,10 @@ public class AppYaServiceImpl implements AppYaService {
                     .andCourseIdEqualTo(courseId)
                     .andQuestionBankIdEqualTo(questionBankId);
             List<ExamUserAnswerYa> uaYaList = examUserAnswerYaMapper.selectByExample(uaYaExample);
+            Set<String> questionSet = Sets.newHashSet();
+            for (ExamUserAnswerYa uaYa : uaYaList) {
+                questionSet.add(uaYa.getQuestionId());
+            }
 
             long total = 0;
             long finishTotal = 0;
@@ -70,7 +76,7 @@ public class AppYaServiceImpl implements AppYaService {
                 total = qbList.size();
             }
             if (CollectionUtils.isNotEmpty(uaYaList)) {
-                total = uaYaList.size();
+                finishTotal = questionSet.size();
             }
 
             ExamUserAnswerYaVo vo = new ExamUserAnswerYaVo();
@@ -79,7 +85,7 @@ public class AppYaServiceImpl implements AppYaService {
             vo.setQuestionBankName(qbList.get(0).getQuestionBankName());
             vo.setTotal(total);
             vo.setFinishTotal(finishTotal);
-            vo.setFinishRate(ArithUtil.div(finishTotal, total, 2) + "%");
+            vo.setFinishRate(ArithUtil.mul(ArithUtil.div(finishTotal, total, 2), 100) + "%");
             voList.add(vo);
         });
         return voList;

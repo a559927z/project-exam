@@ -23,9 +23,7 @@ public class ShiroUtils {
      * @return
      */
     public static String shiroMd5Hash(String password, String salt) {
-
         return shiroMd5Hash(password, salt, null).toString();
-
     }
 
     /**
@@ -45,8 +43,8 @@ public class ShiroUtils {
     }
 
     public static void main(String[] args) {
-        String str = "sa123456";
-        String salt = "superAdminkingsing";
+        String str = "123123";
+        String salt = "123123";
         String s = ShiroUtils.shiroMd5Hash(str, salt, 2);
         System.out.println(s);
     }
