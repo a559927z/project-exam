@@ -6,6 +6,7 @@ import com.ks.constants.QuestionBankTypeEnum;
 import com.ks.dao.ExamQuestionBankMapper;
 import com.ks.dto.ExamQuestionBank;
 import com.ks.dto.ExamQuestionBankExample;
+import com.ks.dto.ExamUserInfoDto;
 import com.ks.service.UploadService;
 import groovy.util.logging.Slf4j;
 import net.chinahrd.utils.Identities;
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +45,9 @@ import java.util.regex.Pattern;
 @Controller
 @RequestMapping("/admin/upload")
 public class AdminUploadController extends BaseController {
+
+    @Value("${upload.path}")
+    private String uploadPath;
 
     @Autowired
     private UploadService uploadService;
@@ -86,9 +91,7 @@ public class AdminUploadController extends BaseController {
             throw new RuntimeException("题库名称为空");
         }
 
-        if (null == file) {
-            throw new RuntimeException("上传附件为空");
-        }
+        createFile(file);
 
         // 合并题库
         ExamQuestionBankExample example = new ExamQuestionBankExample();
@@ -98,26 +101,6 @@ public class AdminUploadController extends BaseController {
             questionBankId = examQuestionBankList.get(0).getQuestionBankId();
         }
 
-        // jar包的路径
-        String filePath = "";
-        if (!file.isEmpty()) {
-            File temp = new File("");
-            filePath = temp.getAbsolutePath() + "\\" + file.getOriginalFilename();
-            BufferedOutputStream out;
-            try {
-                out = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
-                out.write(file.getBytes());
-                out.flush();
-                out.close();
-                System.out.println("上传成功");
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                System.out.println("上传失败");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                System.out.println("上传失败");
-            }
-        }
         List<ExamQuestionBank> list = Lists.newArrayList();
         String title = "";
         String answer = "";
@@ -217,6 +200,41 @@ public class AdminUploadController extends BaseController {
         int successTotal = putStorage(list);
         model.addAttribute("successTotal", successTotal);
         return "forward:success";
+    }
+
+    /**
+     * 把上传文件写入指定的目录里
+     *
+     * @param file
+     */
+    private void createFile(MultipartFile file) {
+        if (null == file) {
+            throw new RuntimeException("上传附件为空");
+        }
+        // jar包的路径
+        String filePath = "";
+        if (!file.isEmpty()) {
+            File temp = new File("");
+            // 相对位置
+            // filePath = temp.getAbsolutePath() + "\\" + file.getOriginalFilename();
+
+            // 绝对位置
+            filePath = uploadPath + File.separator + file.getOriginalFilename();
+            BufferedOutputStream out;
+            try {
+                out = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
+                out.write(file.getBytes());
+                out.flush();
+                out.close();
+                System.out.println("上传成功");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                System.out.println("上传失败");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                System.out.println("上传失败");
+            }
+        }
     }
 
 
@@ -361,9 +379,59 @@ public class AdminUploadController extends BaseController {
     @RequestMapping(value = "/uploadUserInfo", method = {RequestMethod.GET, RequestMethod.POST})
     public String uploadUserInfo(Model model,
                                  MultipartFile file,
-                                 HttpServletRequest request, HttpServletResponse response) {
+                                 HttpServletRequest request, HttpServletResponse response) throws IOException, InvalidFormatException {
+
+        createFile(file);
+
+        List<ExamUserInfoDto> rs = Lists.newArrayList();
+        Workbook sheets = WorkbookFactory.create(file.getInputStream());
+        Sheet sheet = sheets.getSheetAt(0);
+        for (int i = 0; i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+            Cell accountCell = row.getCell(0);
+            Cell passwordCell = row.getCell(1);
+            Cell cnNameCell = row.getCell(2);
+            Cell cardIdCell = row.getCell(3);
+            Cell 银行业法律法规与综合能力Cell = row.getCell(4);
+            Cell 个人理财Cell = row.getCell(5);
+            Cell 个人贷款Cell = row.getCell(6);
+            Cell 公司信贷Cell = row.getCell(7);
+            Cell 风险管理Cell = row.getCell(8);
+            Cell 银行管理Cell = row.getCell(9);
+            Cell 基金法律法规_职业道德与业务规范Cell = row.getCell(10);
+            Cell 证券投资基金基础知识Cell = row.getCell(11);
+            Cell 私募股权投资基金基础知识Cell = row.getCell(12);
+            Cell 证券市场基本法律法规Cell = row.getCell(13);
+            Cell 金融市场基础知识Cell = row.getCell(14);
+
+            ExamUserInfoDto dto = new ExamUserInfoDto();
+            dto.setAccount(getCellValue(accountCell));
+            dto.setPassword(getCellValue(passwordCell));
+            dto.setCnName(getCellValue(cnNameCell));
+            dto.setCardId(getCellValue(cardIdCell));
+            dto.setV1(getCellValue(银行业法律法规与综合能力Cell));
+            dto.setV2(getCellValue(个人理财Cell));
+            dto.setV3(getCellValue(个人贷款Cell));
+            dto.setV4(getCellValue(公司信贷Cell));
+            dto.setV5(getCellValue(风险管理Cell));
+            dto.setV6(getCellValue(银行管理Cell));
+            dto.setV7(getCellValue(基金法律法规_职业道德与业务规范Cell));
+            dto.setV8(getCellValue(证券投资基金基础知识Cell));
+            dto.setV9(getCellValue(私募股权投资基金基础知识Cell));
+            dto.setV10(getCellValue(证券市场基本法律法规Cell));
+            dto.setV11(getCellValue(金融市场基础知识Cell));
+
+            rs.add(dto);
+        }
+
         return "forward:success";
     }
+
+    private String getCellValue(Cell cell) {
+        return trim(cell.getStringCellValue());
+    }
+
+
 }
 
 
