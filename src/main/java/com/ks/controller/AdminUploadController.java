@@ -347,6 +347,23 @@ public class AdminUploadController extends BaseController {
         int i = title.indexOf(".");
         return title.substring(i + 1, title.length());
     }
+
+
+    /**
+     * 员工上传
+     *
+     * @param model
+     * @param file
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/uploadUserInfo", method = {RequestMethod.GET, RequestMethod.POST})
+    public String uploadUserInfo(Model model,
+                                 MultipartFile file,
+                                 HttpServletRequest request, HttpServletResponse response) {
+        return "forward:success";
+    }
 }
 
 
