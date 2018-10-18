@@ -222,19 +222,6 @@ public class AdminUploadController extends BaseController {
 
     private String processType(String trueAnswer) {
         int i = appearNumber(trueAnswer, QuestionBankConstants.ANSWER_TRUE_PATTERN);
-//        if (i > 1) {
-//            // 多选题
-//            return "2";
-//        } else if (
-//                StringUtils.equals(trueAnswer, QuestionBankConstants.SHI_FEI_PATTERN1)
-//                        || StringUtils.equals(trueAnswer, QuestionBankConstants.SHI_FEI_PATTERN2)
-//                ) {
-//            // 是非选题
-//            return "3";
-//        } else {
-//            // 单选题
-//            return "1";
-//        }
         if (i > 1) {
             // 多选题
             return QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode();
