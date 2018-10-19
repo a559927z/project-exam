@@ -5,6 +5,7 @@ require(['jquery', 'bootstrap', 'dataTable', 'datatables.net', 'utils', 'layer']
         list: webRoot + '/admin/user/list',
         delete: webRoot + '/admin/user/delete',
         uploadStatus: webRoot + '/admin/user/uploadStatus',
+        userInfoUpload: webRoot + '/admin/upload/userInfoUpload'
     }
     layer.config({
         path: webRoot + '/layer-v3.0.3/layer/' // layer.js所在的目录，可以是绝对目录，也可以是相对目录
@@ -241,6 +242,14 @@ require(['jquery', 'bootstrap', 'dataTable', 'datatables.net', 'utils', 'layer']
             });
         } else {
             layer.msg("请先选中要操作的行", {icon: 1});
+        }
+    }
+
+    function reader() {
+        var text = $("#isSuccess").text();
+        var total = $("#total").text();
+        if (text != "no") {
+            alert(total);
         }
     }
 

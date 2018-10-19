@@ -12,6 +12,21 @@
                 <h1 class="page-header">用户管理</h1>
             </div>
         </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <form th:action="@{/admin/upload/userInfoUpload}" enctype="multipart/form-data" method="post"
+                      onsubmit="return toVaild()">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>上传文件：</label>
+                            <input type="file" name="file"/>
+                        </div>
+                        <br/>
+                        <input type="submit" value="提交"/>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-lg-12">
@@ -36,11 +51,14 @@
         </div>
     </div>
 </div>
+<p class="hide" id="isSuccess" th:text="${isSuccess}">(no)</p>
+<p class="hide" id="total" th:text="${total}">(no)</p>
 
 <!-- jQuery -->
 <script th:src="@{/webjars/jquery/2.0.3/jquery.min.js}"></script>
 <!-- Bootstrap Core JavaScript -->
-<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!--<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+<script th:src="@{/bootstrap-3.3.7-dist/js/bootstrap.js}"></script>
 <!-- Metis Menu Plugin JavaScript -->
 <script th:src="@{/sbAdmin/vendor/metisMenu/metisMenu.min.js}"></script>
 <!-- Custom Theme JavaScript -->

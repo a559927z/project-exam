@@ -2,9 +2,15 @@ package com.ks.dao;
 
 import com.ks.dto.ExamUserInfo;
 import com.ks.dto.ExamUserInfoExample;
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+@Mapper
+@Repository("examUserInfoMapper")
 public interface ExamUserInfoMapper {
     long countByExample(ExamUserInfoExample example);
 

@@ -4,16 +4,18 @@ import com.google.common.collect.Lists;
 import com.ks.constants.QuestionBankConstants;
 import com.ks.constants.QuestionBankTypeEnum;
 import com.ks.dao.ExamQuestionBankMapper;
-import com.ks.dto.ExamQuestionBank;
-import com.ks.dto.ExamQuestionBankExample;
-import com.ks.dto.ExamUserInfoDto;
+import com.ks.dao.ExamUserAnswerYaMapper;
+import com.ks.dao.ExamUserInfoMapper;
+import com.ks.dto.*;
 import com.ks.service.UploadService;
 import groovy.util.logging.Slf4j;
 import net.chinahrd.utils.Identities;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -54,6 +56,10 @@ public class AdminUploadController extends BaseController {
 
     @Autowired
     private ExamQuestionBankMapper examQuestionBankMapper;
+
+    @Autowired
+    private ExamUserInfoMapper examUserInfoMapper;
+
 
     /**
      * http://localhost:8080/exam/admin/upload/index
@@ -367,6 +373,11 @@ public class AdminUploadController extends BaseController {
     }
 
 
+    @RequestMapping("/userInfoIndex")
+    public String userInfoIndex(Locale locale, Model model) {
+        return "admin/userInfoUploadAdmin";
+    }
+
     /**
      * 员工上传
      *
@@ -376,8 +387,8 @@ public class AdminUploadController extends BaseController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/uploadUserInfo", method = {RequestMethod.GET, RequestMethod.POST})
-    public String uploadUserInfo(Model model,
+    @RequestMapping(value = "/userInfoUpload", method = {RequestMethod.GET, RequestMethod.POST})
+    public String userInfoUpload(Model model,
                                  MultipartFile file,
                                  HttpServletRequest request, HttpServletResponse response) throws IOException, InvalidFormatException {
 
@@ -386,7 +397,7 @@ public class AdminUploadController extends BaseController {
         List<ExamUserInfoDto> rs = Lists.newArrayList();
         Workbook sheets = WorkbookFactory.create(file.getInputStream());
         Sheet sheet = sheets.getSheetAt(0);
-        for (int i = 0; i <= sheet.getLastRowNum(); i++) {
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
             Row row = sheet.getRow(i);
             Cell accountCell = row.getCell(0);
             Cell passwordCell = row.getCell(1);
@@ -423,11 +434,41 @@ public class AdminUploadController extends BaseController {
 
             rs.add(dto);
         }
+        int i = saveUserInfo(rs);
 
-        return "forward:success";
+        if (i > 0) {
+            model.addAttribute("isSuccess",true);
+        } else {
+            model.addAttribute("isSuccess", false);
+        }
+        model.addAttribute("total",i);
+        return "forward:userInfoIndex";
     }
 
+    /**
+     * 入库
+     *
+     * @param list
+     * @return 入库条数
+     */
+    private int saveUserInfo(List<ExamUserInfoDto> list) {
+        int rs = 0;
+        for (ExamUserInfoDto dto : list) {
+            ExamUserInfo examDto = new ExamUserInfo();
+            BeanUtils.copyProperties(dto, examDto);
+            rs += examUserInfoMapper.insertSelective(examDto);
+        }
+        return rs;
+    }
+
+    @RequestMapping("/userInfoSuccess")
+    public String userInfoSuccess(Model model, HttpServletRequest request) {
+        return "admin/userInfoSuccessAdmin";
+    }
+
+
     private String getCellValue(Cell cell) {
+        cell.setCellType(HSSFCell.CELL_TYPE_STRING);
         return trim(cell.getStringCellValue());
     }
 
