@@ -16,4 +16,9 @@
         <include refid="com.ks.dao.PublicUserInfoMapper.Base_Column_List"/>
         from public_user_info
     </select>
+
+
+
+
+
 </mapper>

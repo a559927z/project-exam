@@ -1,7 +1,11 @@
 package com.ks.service;
 
 import com.github.pagehelper.Page;
+import com.ks.dto.ExamUserInfo;
+import com.ks.dto.ExamUserInfoExample;
 import com.ks.dto.PublicUserInfo;
+
+import java.util.List;
 
 /**
  * Title: ${type_name} <br/>
@@ -23,4 +27,6 @@ public interface PublicPermissionService {
      * @return
      */
     Page<PublicUserInfo> queryByPage(int pageNo, int pageSize);
+
+    List<ExamUserInfo> queryByPage2(ExamUserInfoExample uiExample);
 }

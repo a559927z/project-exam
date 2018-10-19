@@ -8,6 +8,7 @@ import com.ks.dao.ExamUserAnswerYaMapper;
 import com.ks.dao.ExamUserInfoMapper;
 import com.ks.dto.*;
 import com.ks.service.UploadService;
+import com.ks.utils.StringUtil;
 import groovy.util.logging.Slf4j;
 import net.chinahrd.utils.Identities;
 import org.apache.commons.collections.CollectionUtils;
@@ -372,12 +373,6 @@ public class AdminUploadController extends BaseController {
         return title.substring(i + 1, title.length());
     }
 
-
-    @RequestMapping("/userInfoIndex")
-    public String userInfoIndex(Locale locale, Model model) {
-        return "admin/userInfoUploadAdmin";
-    }
-
     /**
      * 员工上传
      *
@@ -437,12 +432,12 @@ public class AdminUploadController extends BaseController {
         int i = saveUserInfo(rs);
 
         if (i > 0) {
-            model.addAttribute("isSuccess",true);
+            model.addAttribute("isSuccess", true);
         } else {
             model.addAttribute("isSuccess", false);
         }
-        model.addAttribute("total",i);
-        return "forward:userInfoIndex";
+        model.addAttribute("total", i);
+        return "forward:/admin/user/index";
     }
 
     /**
@@ -452,18 +447,32 @@ public class AdminUploadController extends BaseController {
      * @return 入库条数
      */
     private int saveUserInfo(List<ExamUserInfoDto> list) {
+
+        List<ExamUserInfo> examUserInfoList = examUserInfoMapper.selectByExample(null);
+
         int rs = 0;
         for (ExamUserInfoDto dto : list) {
+
+            String account = dto.getAccount();
+            boolean exist = false;
+            for (ExamUserInfo n : examUserInfoList) {
+                if (StringUtils.equals(account, n.getAccount())) {
+                    exist = true;
+                }
+            }
+
             ExamUserInfo examDto = new ExamUserInfo();
             BeanUtils.copyProperties(dto, examDto);
-            rs += examUserInfoMapper.insertSelective(examDto);
+            if (exist) {
+                // 存在就更新
+                ExamUserInfoExample uiExample = new ExamUserInfoExample();
+                uiExample.createCriteria().andAccountEqualTo(dto.getAccount());
+                rs += examUserInfoMapper.updateByExample(examDto, uiExample);
+            } else {
+                rs += examUserInfoMapper.insertSelective(examDto);
+            }
         }
         return rs;
-    }
-
-    @RequestMapping("/userInfoSuccess")
-    public String userInfoSuccess(Model model, HttpServletRequest request) {
-        return "admin/userInfoSuccessAdmin";
     }
 
 

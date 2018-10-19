@@ -55,7 +55,7 @@ require(['jquery', 'bootstrap', 'dataTable', 'datatables.net', 'utils', 'layer']
 
     function showDetails() {
         defaultoption.searching = true;
-        var tableOption = $.extend(true, defaultoption, {
+        var tableOption = $.extend(true, {}, defaultoption, {
             ajax: function (data, callback, settings) {
                 var param = dtMgr.getQueryCondition(data);
                 $.ajax({
@@ -88,64 +88,20 @@ require(['jquery', 'bootstrap', 'dataTable', 'datatables.net', 'utils', 'layer']
             columns: [
                 CONSTANT.DATA_TABLES.COLUMN.CHECKBOX, {
                     className: "ellipsis",
-                    data: "account",
-                    width: "150px"
-                }, {
-                    className: "ellipsis",
-                    data: "password",
+                    data: "enName",
                     width: "150px"
                 }, {
                     className: "ellipsis",
                     data: "cnName",
-                    width: "80px"
-                }, {
-                    className: "ellipsis",
-                    data: "cardId",
                     width: "150px"
                 }, {
                     className: "ellipsis",
-                    data: "v1",
-                    width: "100px"
+                    data: "salt",
+                    width: "150px"
                 }, {
                     className: "ellipsis",
-                    data: "v2",
-                    width: "100px"
-                }, {
-                    className: "ellipsis",
-                    data: "v3",
-                    width: "100px"
-                }, {
-                    className: "ellipsis",
-                    data: "v4",
-                    width: "100px"
-                }, {
-                    className: "ellipsis",
-                    data: "v5",
-                    width: "100px"
-                }, {
-                    className: "ellipsis",
-                    data: "v6",
-                    width: "100px"
-                }, {
-                    className: "ellipsis",
-                    data: "v7",
-                    width: "100px"
-                }, {
-                    className: "ellipsis",
-                    data: "v8",
-                    width: "100px"
-                }, {
-                    className: "ellipsis",
-                    data: "v9",
-                    width: "100px"
-                }, {
-                    className: "ellipsis",
-                    data: "v10",
-                    width: "100px"
-                }, {
-                    className: "ellipsis",
-                    data: "v11",
-                    width: "100px"
+                    data: "state",
+                    width: "150px"
                 }, {
                     className: "td-operation",
                     data: null,
@@ -153,21 +109,15 @@ require(['jquery', 'bootstrap', 'dataTable', 'datatables.net', 'utils', 'layer']
                     orderable: false,
                     width: "220px"
                 }],
-            render: function (data, type, row) {
-                console.log(data);
-                console.log(type);
-                if (data == "1") {
-                    return  btnHtml.lock;
-                } else if (data == "0") {
-                    return  btnHtml.unlock;
-                }
-            },
             createdRow: function (row, data, index) {
                 //行渲染回调,在这里可以对该行dom元素进行任何操作
                 //给当前行加样式
                 if (data.role) {
                     $(row).addClass("info");
                 }
+                //给当前行某列加样式 eq从0开始
+                // $('td', row).eq(2).addClass(data.userKey == 'dcli' ? "text-danger" : "text-success");
+
                 //不使用render，改用jquery文档操作呈现单元格
                 var $btnLock = "";
                 if (data.state == 0) {
@@ -175,7 +125,7 @@ require(['jquery', 'bootstrap', 'dataTable', 'datatables.net', 'utils', 'layer']
                 } else {
                     $btnLock = btnHtml.unlock;
                 }
-                $('td', row).eq(16).append("    ").append(btnHtml.del);
+                $('td', row).eq(5).append($btnLock).append("    ").append(btnHtml.del);
             },
             drawCallback: function (settings) {
                 //渲染完毕后的回调
@@ -186,17 +136,24 @@ require(['jquery', 'bootstrap', 'dataTable', 'datatables.net', 'utils', 'layer']
 
                 var jsonData = settings.aoData;
                 $.each(jsonData, function (index, item) {
+                    // var obj = item._aData;
+                    // console.log(obj.isLock)
+                    // if (obj.isLock == 0) {
+                    //     $("tbody tr", $table).eq(index).find("td").eq(4).text("解锁中").append(' <span class="' + style.iconColor + '"><i class="fa fa-unlock"></i></span>');
+                    //     $("tbody tr", $table).eq(index).find("td").eq(5).find(".btn-lock").text('加锁').append(' <span class="' + style.iconColor + '"><i class="fa fa-lock"></i></span>');
+                    // } else {
+                    //     $("tbody tr", $table).eq(index).find("td").eq(4).text("加锁中").append(' <span class="' + style.iconColor + '"><i class="fa fa-lock"></i></span>');
+                    //     $("tbody tr", $table).eq(index).addClass("text-danger");
+                    //     $("tbody tr", $table).eq(index).find("td").eq(5).find(".btn-lock").text('解锁').append(' <span class="' + style.iconColor + '"><i class="fa fa-unlock"></i></span>');
+                    // }
+
                 });
             },
             //http://www.datatables.club/reference/option/dom.html
             dom:
-            "<'row'<'col-sm-6 col-md-6'><'col-sm-6 col-md-6'<'pull-right'f>>>" +
+            "<'row'<'col-sm-6 col-md-6'l><'col-sm-6 col-md-6'<'pull-right'f>>>" +
             "<'row'<'col-sm-12  col-md-12'tr>>" +
-            "<'row'<'col-sm-5 col-md-5'><'col-sm-7  col-md-7'<'pull-right'>>>",
-            // dom:
-            // "<'row'<'col-sm-6 col-md-6'l><'col-sm-6 col-md-6'<'pull-right'f>>>" +
-            // "<'row'<'col-sm-12  col-md-12'tr>>" +
-            // "<'row'<'col-sm-5 col-md-5'i><'col-sm-7  col-md-7'<'pull-right'p>>>",
+            "<'row'<'col-sm-5 col-md-5'i><'col-sm-7  col-md-7'<'pull-right'p>>>",
             initComplete: function () {
                 $("#bar").append('<button id="batch-btn-del" type="button" class="btn ' + style.btnColor + ' btn-sm">批量删除   <span class="glyphicon glyphicon-remove ' + style.iconColor + '"></span></button>&nbsp');
                 $("#searchRs").append('<div style="background-color: orangered; text-align: center; font-weight: bold;" ><span>没有查询结果</span></div>');

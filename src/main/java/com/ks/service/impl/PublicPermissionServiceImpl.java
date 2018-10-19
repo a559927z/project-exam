@@ -27,6 +27,8 @@ import java.util.List;
 public class PublicPermissionServiceImpl implements PublicPermissionService {
 
     @Autowired
+    private ExamUserInfoMapper examUserInfoMapper;
+    @Autowired
     private PublicUserInfoMapperExt publicUserInfoMapperExt;
 
     @Autowired
@@ -143,6 +145,14 @@ public class PublicPermissionServiceImpl implements PublicPermissionService {
         PageHelper.startPage(pageNo, pageSize);
         return publicUserInfoMapperExt.queryByPage();
     }
+
+
+    @Override
+    public List<ExamUserInfo> queryByPage2(ExamUserInfoExample uiExample) {
+
+        return examUserInfoMapper.selectByExample(uiExample);
+    }
+
 
     public static void main(String[] args) {
         String str = "123456";

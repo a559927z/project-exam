@@ -8,8 +8,10 @@ import com.ks.constants.QuestionBankCourseEnum;
 import com.ks.dao.PublicUserInfoMapper;
 import com.ks.dto.*;
 import com.ks.service.PublicPermissionService;
+import com.ks.utils.StringUtil;
 import net.chinahrd.utils.CollectionKit;
 import net.didion.jwnl.data.Exc;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -80,12 +82,53 @@ public class AdminUserController {
             orderColumn = "search";
         }
 
+        ExamUserInfoExample uiExample = new ExamUserInfoExample();
+        if(StringUtils.isNotBlank(search)){
+            uiExample.createCriteria().andCnNameEqualTo(search);
+        }
+        List<ExamUserInfo> userInfoList = publicPermissionService.queryByPage2(uiExample);
+
+        // 结果集
+        List<ExamUserInfo> list = userInfoList;
+        // 总记录数
+        long total = list.size();
+
+        Map<String, Object> rsMap = CollectionKit.newMap();
+        rsMap.put("data", list);
+        rsMap.put("total", total);
+        rsMap.put("draw", draw);
+        return rsMap;
+    }
+
+    /**
+     * http://localhost:8080/exam/admin/user/list
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    @Deprecated
+    @ResponseBody
+    @RequestMapping(value = "/list2")
+    public Map<String, Object> queryUserList2(
+            HttpServletRequest request,
+            HttpServletResponse response) throws UnsupportedEncodingException {
+
+        String draw = request.getParameter("draw");
+        Integer startIndex = Integer.parseInt(request.getParameter("startIndex"));
+        Integer pageSize = Integer.parseInt(request.getParameter("pageSize"));
+        String search = request.getParameter("search");
+        String questionBankId = request.getParameter("questionBankId");
+        String orderColumn = request.getParameter("orderColumn");
+        if (orderColumn == null) {
+            orderColumn = "search";
+        }
 
         PublicUserInfoExample example = new PublicUserInfoExample();
         example.createCriteria().andEnNameEqualTo(search);
 
         Page<PublicUserInfo> publicUserInfoList = publicPermissionService.queryByPage(startIndex, pageSize);
-
 
         // 需要把Page包装成PageInfo对象才能序列化。该插件也默认实现了一个PageInfo
         PageInfo<PublicUserInfo> pageInfo = new PageInfo<>(publicUserInfoList);
@@ -96,7 +139,6 @@ public class AdminUserController {
         long total = pageInfo.getTotal();
         // 每页的数量
         pageInfo.getPageSize();
-
 
         Map<String, Object> rsMap = CollectionKit.newMap();
         rsMap.put("data", list);
