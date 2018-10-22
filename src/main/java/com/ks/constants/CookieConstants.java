@@ -26,4 +26,9 @@ public interface CookieConstants {
      * 用户信息
      */
     String USER_INFO_KEY = "userInfo";
+
+    /**
+     * 单点登录key
+     */
+    String USER_LOGIN_KEY = "user_login_key_";
 }

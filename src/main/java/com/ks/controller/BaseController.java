@@ -2,6 +2,7 @@ package com.ks.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.ks.constants.CookieConstants;
+import com.ks.util.ShiroUtils;
 import com.ks.utils.CookieUtils;
 import com.ks.vo.VisitorVo;
 import org.apache.commons.lang3.StringUtils;

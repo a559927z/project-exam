@@ -398,6 +398,11 @@ public class AdminUploadController extends BaseController {
             Cell passwordCell = row.getCell(1);
             Cell cnNameCell = row.getCell(2);
             Cell cardIdCell = row.getCell(3);
+
+            if (null == accountCell) {
+                continue;
+            }
+
             Cell 银行业法律法规与综合能力Cell = row.getCell(4);
             Cell 个人理财Cell = row.getCell(5);
             Cell 个人贷款Cell = row.getCell(6);
@@ -409,6 +414,7 @@ public class AdminUploadController extends BaseController {
             Cell 私募股权投资基金基础知识Cell = row.getCell(12);
             Cell 证券市场基本法律法规Cell = row.getCell(13);
             Cell 金融市场基础知识Cell = row.getCell(14);
+
 
             ExamUserInfoDto dto = new ExamUserInfoDto();
             dto.setAccount(getCellValue(accountCell));
@@ -477,8 +483,12 @@ public class AdminUploadController extends BaseController {
 
 
     private String getCellValue(Cell cell) {
-        cell.setCellType(HSSFCell.CELL_TYPE_STRING);
-        return trim(cell.getStringCellValue());
+        if (null != cell) {
+            cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+            return trim(cell.getStringCellValue());
+        }
+        return "";
+
     }
 
 

@@ -82,9 +82,16 @@ public class AdminUserController {
             orderColumn = "search";
         }
 
+        // select * from t WHERE ( card_id like ? ) or( account like ? )
         ExamUserInfoExample uiExample = new ExamUserInfoExample();
-        if(StringUtils.isNotBlank(search)){
-            uiExample.createCriteria().andCnNameEqualTo(search);
+        if (StringUtils.isNotBlank(search)) {
+            ExamUserInfoExample.Criteria criteria1 = uiExample.createCriteria();
+            criteria1.andCardIdLike("%" + search + "%");
+
+            ExamUserInfoExample.Criteria criteria2 = uiExample.createCriteria();
+            criteria2.andAccountLike("%" + search + "%");
+
+            uiExample.or(criteria2);
         }
         List<ExamUserInfo> userInfoList = publicPermissionService.queryByPage2(uiExample);
 

@@ -3,10 +3,9 @@ package com.ks.controller;
 import com.alibaba.fastjson.JSON;
 import com.ks.constants.CookieConstants;
 import com.ks.constants.UserInfoConstants;
+import com.ks.dao.ExamUserInfoMapper;
 import com.ks.dao.PublicUserInfoMapper;
-import com.ks.dto.KVItemDto;
-import com.ks.dto.PublicUserInfo;
-import com.ks.dto.PublicUserInfoExample;
+import com.ks.dto.*;
 import com.ks.util.ShiroUtils;
 import com.ks.utils.CookieUtils;
 import com.ks.utils.StringUtil;
@@ -14,6 +13,7 @@ import com.ks.utils.cache.LoadingCacheUtil;
 import com.ks.vo.VisitorVo;
 import lombok.extern.slf4j.Slf4j;
 import net.chinahrd.utils.Identities;
+import net.chinahrd.utils.RemoteUtil;
 import net.chinahrd.utils.crypto.CryptUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import sun.net.util.IPAddressUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,6 +49,9 @@ public class AppLoginController extends BaseController {
 
     @Autowired
     private PublicUserInfoMapper publicUserInfoMapper;
+
+    @Autowired
+    private ExamUserInfoMapper examUserInfoMapper;
 
     /**
      * 重定向
@@ -85,17 +89,87 @@ public class AppLoginController extends BaseController {
      */
     @RequestMapping("/toLogin")
     public String toLogin(HttpServletRequest request, HttpServletResponse response) throws ExecutionException {
+        return PAGE_TO_LOGIN;
+    }
+
+    /**
+     * 登录
+     * http://localhost:8080/exam/app/login/toLogin
+     *
+     * @return
+     */
+    @RequestMapping("/doLogin")
+    public KVItemDto<Boolean, Object> doLogin(HttpServletRequest request, HttpServletResponse response,
+                                              VisitorVo vo) throws ExecutionException {
+
+        KVItemDto<Boolean, Object> rs = new KVItemDto<Boolean, Object>();
+        checkVersion(request, response);
+
+        String enName = vo.getEnName();
+        String password = vo.getPassword();
+
+        String userIpKey = LoadingCacheUtil.getInstance().get(CookieConstants.USER_LOGIN_KEY + enName, String.class);
+        if (userIpKey != null) {
+            rs.setK(false);
+            rs.setV("别的客端已登录");
+            return rs;
+        }
+
+        // 通过cookie 取enName，去数据库找是否合法
+        if (StringUtils.isNotBlank(enName)) {
+            ExamUserInfoExample example = new ExamUserInfoExample();
+            example.createCriteria().andAccountEqualTo(enName).andPasswordEqualTo(password);
+            List<ExamUserInfo> exists = examUserInfoMapper.selectByExample(example);
+            if (CollectionUtils.isEmpty(exists)) {
+                rs.setK(false);
+                rs.setV("用户不存在");
+                return rs;
+            } else {
+                ExamUserInfo userInfo = exists.get(0);
+                VisitorVo visitor = getVisitor(request);
+                if (null != visitor) {
+                    if (StringUtils.equals(visitor.getEnName(), userInfo.getAccount())
+                            && StringUtils.equals(visitor.getPassword(), userInfo.getPassword())) {
+                        log.info("伪造cookie");
+                        rs.setK(false);
+                        rs.setV("非法用户");
+                        return rs;
+                    }
+                }
+                String ip = RemoteUtil.getIp(request);
+                LoadingCacheUtil.getInstance().save(CookieConstants.USER_LOGIN_KEY + enName, ip);
+                CookieUtils.addCookie(response, CookieConstants.USER_INFO_KEY, JSON.toJSONString(visitor), CookieConstants.MAX_AGE);
+                rs.setK(true);
+                rs.setV("合法用户");
+                return rs;
+            }
+        }
+        rs.setK(false);
+        rs.setV("账号为空");
+        return rs;
+    }
+
+
+    /**
+     * 登录
+     * http://localhost:8080/exam/app/login/toLogin
+     *
+     * @return
+     */
+    @Deprecated
+    @RequestMapping("/toLogin2")
+    public String toLogin2(HttpServletRequest request, HttpServletResponse response) throws ExecutionException {
         checkVersion(request, response);
         VisitorVo visitor = getVisitor(request);
         String enName = "";
         if (null != visitor) {
             enName = visitor.getEnName();
         }
-        // cookie 已有验证通过的
-        PublicUserInfoExample example = new PublicUserInfoExample();
+
         // cookie 取enName
         if (StringUtils.isNotBlank(enName)) {
             // 检查用户是否已经注册过
+            PublicUserInfoExample example = new PublicUserInfoExample();
             example.createCriteria()
                     .andEnNameEqualTo(enName)
                     .andSaltEqualTo(visitor.getPassword())
@@ -128,11 +202,12 @@ public class AppLoginController extends BaseController {
      * @param requestDto
      * @return
      */
+    @Deprecated
     @PostMapping
     @ResponseBody
-    @RequestMapping("/doLogin")
+    @RequestMapping("/doLogin2")
     @Transactional(rollbackFor = Exception.class)
-    public KVItemDto<Boolean, Object> doLogin(HttpServletRequest request, HttpServletResponse response, PublicUserInfo requestDto) {
+    public KVItemDto<Boolean, Object> doLogin2(HttpServletRequest request, HttpServletResponse response, PublicUserInfo requestDto) {
         KVItemDto<Boolean, Object> rs = new KVItemDto<>();
         try {
             PublicUserInfoExample example = new PublicUserInfoExample();

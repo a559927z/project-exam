@@ -12,11 +12,13 @@ require(['jquery', 'bootstrap', 'dataTable', 'datatables.net', 'utils', 'layer']
     });
     var style = {
         btnColor: "btn-default",
-        iconColor: "glyphiconColor"
+        iconColor: "glyphiconColor",
+        iconGreenColor: "icon-green-color",
+        iconRedColor: "icon-red-color"
     }
     var btnHtml = {
-        lock: '<button type="button" class="btn btn-default btn-small btn-lock"> 加锁 <span class="' + style.iconColor + '"><i class="fa fa-lock"></i></span>',
-        unlock: '<button type="button" class="btn btn-default btn-small btn-lock"> 激活 <span class="' + style.iconColor + '"><i class="fa fa-unlock"></i></span>',
+        lock: '<button type="button" class="btn btn-default btn-small btn-lock">  <span class="' + style.iconRedColor + '"><i class="fa fa-lock"></i></span>',
+        unlock: '<button type="button" class="btn btn-default btn-small btn-lock">  <span class="' + style.iconGreenColor + '"><i class="fa fa-unlock"></i></span>',
         del: '<button type="button" class="btn btn-default btn-small btn-del"> 删除 <span class="' + style.iconColor + '"><i class="fa fa-times"></i></span>'
     }
     var dtMgr = {
@@ -101,67 +103,142 @@ require(['jquery', 'bootstrap', 'dataTable', 'datatables.net', 'utils', 'layer']
                 }, {
                     className: "ellipsis",
                     data: "cardId",
-                    width: "150px"
+                    width: "250px"
                 }, {
+                    render: function (data, type, row) {
+                        if (data == "1") {
+                            return btnHtml.unlock;
+                        } else if (data == "0") {
+                            return btnHtml.lock;
+                        }
+                    },
                     className: "ellipsis",
                     data: "v1",
-                    width: "100px"
+                    width: "50px"
                 }, {
+                    render: function (data, type, row) {
+                        if (data == "1") {
+                            return btnHtml.unlock;
+                        } else if (data == "0") {
+                            return btnHtml.lock;
+                        }
+                    },
                     className: "ellipsis",
                     data: "v2",
-                    width: "100px"
+                    width: "50px"
                 }, {
+                    render: function (data, type, row) {
+                        if (data == "1") {
+                            return btnHtml.unlock;
+                        } else if (data == "0") {
+                            return btnHtml.lock;
+                        }
+                    },
                     className: "ellipsis",
                     data: "v3",
-                    width: "100px"
+                    width: "50px"
                 }, {
+                    render: function (data, type, row) {
+                        if (data == "1") {
+                            return btnHtml.unlock;
+                        } else if (data == "0") {
+                            return btnHtml.lock;
+                        }
+                    },
                     className: "ellipsis",
                     data: "v4",
-                    width: "100px"
+                    width: "50px"
                 }, {
+                    render: function (data, type, row) {
+                        if (data == "1") {
+                            return btnHtml.unlock;
+                        } else if (data == "0") {
+                            return btnHtml.lock;
+                        }
+                    },
                     className: "ellipsis",
                     data: "v5",
-                    width: "100px"
+                    width: "50px"
                 }, {
+                    render: function (data, type, row) {
+                        if (data == "1") {
+                            return btnHtml.unlock;
+                        } else if (data == "0") {
+                            return btnHtml.lock;
+                        }
+                    },
                     className: "ellipsis",
                     data: "v6",
-                    width: "100px"
+                    width: "50px"
                 }, {
+                    render: function (data, type, row) {
+                        if (data == "1") {
+                            return btnHtml.unlock;
+                        } else if (data == "0") {
+                            return btnHtml.lock;
+                        }
+                    },
                     className: "ellipsis",
                     data: "v7",
-                    width: "100px"
+                    width: "50px"
                 }, {
+                    render: function (data, type, row) {
+                        if (data == "1") {
+                            return btnHtml.unlock;
+                        } else if (data == "0") {
+                            return btnHtml.lock;
+                        }
+                    },
                     className: "ellipsis",
                     data: "v8",
-                    width: "100px"
+                    width: "50px"
                 }, {
+                    render: function (data, type, row) {
+                        if (data == "1") {
+                            return btnHtml.unlock;
+                        } else if (data == "0") {
+                            return btnHtml.lock;
+                        }
+                    },
                     className: "ellipsis",
                     data: "v9",
-                    width: "100px"
+                    width: "50px"
                 }, {
+                    render: function (data, type, row) {
+                        if (data == "1") {
+                            return btnHtml.unlock;
+                        } else if (data == "0") {
+                            return btnHtml.lock;
+                        }
+                    },
                     className: "ellipsis",
                     data: "v10",
-                    width: "100px"
+                    width: "50px"
                 }, {
+                    render: function (data, type, row) {
+                        if (data == "1") {
+                            return btnHtml.unlock;
+                        } else if (data == "0") {
+                            return btnHtml.lock;
+                        }
+                    },
                     className: "ellipsis",
                     data: "v11",
-                    width: "100px"
+                    width: "50px"
                 }, {
+                    render: function (data, type, row) {
+                        if (data == "1") {
+                            return btnHtml.unlock;
+                        } else if (data == "0") {
+                            return btnHtml.lock;
+                        }
+                    },
                     className: "td-operation",
                     data: null,
                     defaultContent: "",
                     orderable: false,
-                    width: "220px"
+                    width: "100px"
                 }],
-            render: function (data, type, row) {
-                console.log(data);
-                console.log(type);
-                if (data == "1") {
-                    return  btnHtml.lock;
-                } else if (data == "0") {
-                    return  btnHtml.unlock;
-                }
-            },
             createdRow: function (row, data, index) {
                 //行渲染回调,在这里可以对该行dom元素进行任何操作
                 //给当前行加样式
