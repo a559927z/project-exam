@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.ks.constants.QuestionBankConstants;
 import com.ks.dao.ExamQuestionBankAnswerMapper;
 import com.ks.dao.ExamQuestionBankMapper;
+import com.ks.dao.ExamUserAnswerYaMapper;
 import com.ks.dto.*;
 import com.ks.service.AppAnswerService;
 import com.ks.utils.StringUtil;
@@ -38,10 +39,11 @@ public class AppAnswerServiceImpl implements AppAnswerService {
     @Autowired
     private ExamQuestionBankAnswerMapper examQuestionBankAnswerMapper;
 
+    @Autowired
+    private ExamUserAnswerYaMapper examUserAnswerYaMapper;
+
     @Override
     public List<AnswerVo> getData(ScreenTiDto screenTiDto) {
-        //TODO
-        boolean notDo = screenTiDto.isNotDo();
         String questionBankId = screenTiDto.getQuestionBankId();
 
         // query qbList
@@ -82,7 +84,20 @@ public class AppAnswerServiceImpl implements AppAnswerService {
                     voList.add(vo);
                 });
 
-        // TODO cach
+        // TODO filter notDo
+        boolean notDo = screenTiDto.isNotDo();
+        if (notDo) {
+            ExamUserAnswerYaExample uaYaExample = new ExamUserAnswerYaExample();
+            uaYaExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
+            List<ExamUserAnswerYa> userAnswerYaList = examUserAnswerYaMapper.selectByExample(uaYaExample);
+
+            userAnswerYaList.forEach(n -> {
+//                if(n.getQuestionId().equals())
+            });
+        }
+
+
+        // TODO catch
 //        voList;
 
         // filter type
@@ -112,6 +127,7 @@ public class AppAnswerServiceImpl implements AppAnswerService {
         if (total == All) {
             rsList = filterList;
         } else {
+            total = total > filterList.size() ? filterList.size() : total;
             for (int i = 0; i < total; i++) {
                 rsList.add(filterList.get(i));
             }

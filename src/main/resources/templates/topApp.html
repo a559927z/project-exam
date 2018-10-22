@@ -6,8 +6,7 @@
     <title th:text="${title}">(title)</title>
     <link rel="shortcut icon" type="image/png" th:href="@{/images/favicon.png}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/huiAdmin/css/hui.css}"/>
-    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
-
+    <link rel="stylesheet" type="text/css" th:href="@{/font-awesome-4.7.0/css/font-awesome.css}"/>
     <!-- Bootstrap grid CSS -->
     <!--<link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap-grid.min.css" rel="stylesheet">-->
     <!-- Custom CSS -->
@@ -46,7 +45,7 @@
 
             /*<![CDATA[*/
             var G_WEB_ROOT = /*[[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]]*/;
-        /*]]>*/
+            /*]]>*/
             Array.prototype.remove = function (val) {
                 var index = this.indexOf(val);
                 if (index > -1) {
@@ -55,7 +54,7 @@
             };
 
     </script>
-    <script th:src="@{/huiAdmin/js/hui.js}" type="text/javascript" charset="utf-8"/>
+    <script type="text/javascript" charset="utf-8" th:src="@{/huiAdmin/js/hui.js}"/>
     <style type="text/css">
         body {
             background: #f1f1f1;

@@ -194,7 +194,6 @@
             scoreApp: webRoot + '/app/score/toIndex?questionBankId=' + $("#questionBankId").text(),
         }
         var transformType = ['', '单选题', '多选题', '是非题'];
-        var curNo = 1;
         var questionList = [];
 
         var param = {
@@ -210,21 +209,27 @@
             var html3 = "<p>是非题</p>";
             $.each(rs, function (i, item) {
                 var type = item.type;
+                var no = item.no;
                 if (type == "1") {
-                    html1 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + i + '>' + i + '</div>';
+                    html1 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + no + '>' + no + '</div>';
                 } else if (type == "2") {
-                    html2 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + i + '>' + i + '</div>';
+                    html2 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + no + '>' + no + '</div>';
                 } else if (type == "3") {
-                    html3 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + i + '>' + i + '</div>';
+                    html3 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + no + '>' + no + '</div>';
                 }
             });
             $(".panel").empty();
             $(".panel").append(html1 + html2 + html3);
         }
 
-        function pageReader(questionList) {
+        function pageReader(questionList, no) {
             var total = questionList.length;
-            var questionObj = questionList[curNo - 1];
+            var questionObj = null;
+            $.each(questionList, function (i, item) {
+                if (item.no == no) {
+                    questionObj = item;
+                }
+            });
             var html = "";
             var no = questionObj.no;
             var type = questionObj.type;
@@ -279,6 +284,7 @@
             $("#answerZone").append(html);
 
             answerEvent(type, no);
+            fooerEvent(questionList, no - 1, no, no + 1);
         }
 
         function selectReader(no) {
@@ -299,46 +305,56 @@
 
         function reader(rs) {
             cardReader(rs);
-            pageReader(rs);
-            fooerEvent(rs);
+            pageReader(rs, 1);
+            fooerEvent(rs, 0, 1, 2);
+            cardEvent(rs);
+            paperEvent();
+        }
+
+        function paperEvent() {
             $(".paper").click(function () {
                 paper();
             });
         }
 
-        function fooerEvent(rs) {
+
+        function fooerEvent(rs, preNo, curNo, nextNo) {
+            $("#nav-previous").unbind().click(function () {
+                if (preNo == 0) {
+                    hui.alert("第一题了");
+                } else {
+                    // 先保存已选答案（包括没选中）
+                    saveSelectObj(curNo);
+                    // 画页面
+                    pageReader(rs, preNo);
+                    // 上一次结果回显
+                    selectReader(preNo);
+                }
+            });
+            $("#nav-next").unbind().click(function () {
+                if (nextNo > rs.length) {
+                    hui.alert("最后一题了");
+                } else {
+                    // 先保存已选答案（包括没选中）
+                    saveSelectObj(curNo);
+                    // 画页面
+                    pageReader(rs, nextNo);
+                    // 上一次结果回显
+                    selectReader(nextNo);
+                }
+            });
+        }
+
+        function cardEvent(rs) {
             $("#nav-card").click(function () {
                 $(".panel").slideToggle("slow");
             });
-            $("#nav-previous").click(function () {
-                if (curNo == 1) {
-                    hui.alert("第一题了");
-                } else {
-                    saveSelectObj(curNo);
-                    curNo = (curNo - 1);
-                    pageReader(rs);
-                    selectReader(curNo);
-                }
-            });
-            $("#nav-next").click(function () {
-                if (curNo == rs.length) {
-                    hui.alert("最后一题了");
-                } else {
-                    saveSelectObj(curNo);
-                    // 下一题curNo
-                    curNo = (curNo + 1);
-                    pageReader(rs);
-                    selectReader(curNo);
-                }
-
-            });
-
             $(".questionNo").click(function () {
                 var $this = $(this);
-                var questionNo = $this.attr("data-questionNo");
-                curNo = questionNo;
-                pageReader(rs);
+                var no = $this.attr("data-questionNo");
+                pageReader(rs, no);
                 $(".panel").css("display", "none");
+                fooerEvent(rs, no - 1, no, no + 1);
             });
         }
 
