@@ -27,8 +27,14 @@ public interface CookieConstants {
      */
     String USER_INFO_KEY = "userInfo";
 
+    //================================== localCatch
     /**
      * 单点登录key
      */
     String USER_LOGIN_KEY = "user_login_key_";
+
+    /**
+     * 用户信息
+     */
+    String USER_INFO_OBJ = "user_info_obj_";
 }

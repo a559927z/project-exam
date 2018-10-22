@@ -21,13 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class AppMyController {
 
-
-    @Autowired
-    private ExamQuestionBankYaMapper examQuestionBankYaMapper;
-    @Autowired
-    private ExamUserAnswerYaMapper examUserAnswerYaMapper;
-
-
     /**
      * http://localhost:8080/exam/app/my/toIndex
      *

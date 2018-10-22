@@ -98,7 +98,10 @@ public class AppLoginController extends BaseController {
      *
      * @return
      */
+    @PostMapping
+    @ResponseBody
     @RequestMapping("/doLogin")
+    @Transactional(rollbackFor = Exception.class)
     public KVItemDto<Boolean, Object> doLogin(HttpServletRequest request, HttpServletResponse response,
                                               VisitorVo vo) throws ExecutionException {
 
@@ -107,12 +110,16 @@ public class AppLoginController extends BaseController {
 
         String enName = vo.getEnName();
         String password = vo.getPassword();
+        String ip = RemoteUtil.getIp(request);
 
         String userIpKey = LoadingCacheUtil.getInstance().get(CookieConstants.USER_LOGIN_KEY + enName, String.class);
+
         if (userIpKey != null) {
-            rs.setK(false);
-            rs.setV("别的客端已登录");
-            return rs;
+            if (!userIpKey.equals(ip)) {
+                rs.setK(false);
+                rs.setV("别的客端已登录");
+                return rs;
+            }
         }
 
         // 通过cookie 取enName，去数据库找是否合法
@@ -128,17 +135,17 @@ public class AppLoginController extends BaseController {
                 ExamUserInfo userInfo = exists.get(0);
                 VisitorVo visitor = getVisitor(request);
                 if (null != visitor) {
-                    if (StringUtils.equals(visitor.getEnName(), userInfo.getAccount())
-                            && StringUtils.equals(visitor.getPassword(), userInfo.getPassword())) {
+                    if (!StringUtils.equals(visitor.getEnName(), userInfo.getAccount())
+                            && !StringUtils.equals(visitor.getPassword(), userInfo.getPassword())) {
                         log.info("伪造cookie");
                         rs.setK(false);
                         rs.setV("非法用户");
                         return rs;
                     }
                 }
-                String ip = RemoteUtil.getIp(request);
+
                 LoadingCacheUtil.getInstance().save(CookieConstants.USER_LOGIN_KEY + enName, ip);
-                CookieUtils.addCookie(response, CookieConstants.USER_INFO_KEY, JSON.toJSONString(visitor), CookieConstants.MAX_AGE);
+                CookieUtils.addCookie(response, CookieConstants.USER_INFO_KEY, JSON.toJSONString(vo), CookieConstants.MAX_AGE);
                 rs.setK(true);
                 rs.setV("合法用户");
                 return rs;
@@ -287,8 +294,10 @@ public class AppLoginController extends BaseController {
         if (null == loadingCacheUtil) {
             return false;
         }
-        loadingCacheUtil.delete(enName);
         CookieUtils.deleteCookie(response, CookieConstants.USER_INFO_KEY);
+
+        loadingCacheUtil.delete(CookieConstants.USER_LOGIN_KEY + enName);
+        loadingCacheUtil.delete(CookieConstants.USER_INFO_OBJ + enName);
         return true;
     }
 

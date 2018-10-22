@@ -4,7 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.ks.constants.CookieConstants;
 import com.ks.constants.UrlConstants;
 import com.ks.constants.UserInfoConstants;
+import com.ks.dao.ExamUserInfoMapper;
 import com.ks.dao.PublicUserInfoMapper;
+import com.ks.dto.ExamUserInfo;
+import com.ks.dto.ExamUserInfoExample;
 import com.ks.dto.PublicUserInfo;
 import com.ks.dto.PublicUserInfoExample;
 import com.ks.utils.CookieUtils;
@@ -37,6 +40,9 @@ public class AppHomeController extends BaseController {
     @Autowired
     private PublicUserInfoMapper publicUserInfoMapper;
 
+    @Autowired
+    private ExamUserInfoMapper examUserInfoMapper;
+
 
     /**
      * 重定向
@@ -66,14 +72,15 @@ public class AppHomeController extends BaseController {
         if (null == loadingCacheUtil) {
             return UrlConstants.PAGE_TO_LOGIN;
         }
-        String userInfo = loadingCacheUtil.get(enName, String.class);
+        String userInfo = loadingCacheUtil.get(CookieConstants.USER_INFO_OBJ + enName, String.class);
         if (null == userInfo) {
             // 缓存没，再去数据检查一次，正常缓存是在/app/login/toLogin里就设置的，防止客户端2天没有退出，缓存没了。
-            PublicUserInfoExample example = new PublicUserInfoExample();
-            example.createCriteria().andEnNameEqualTo(enName).andStateEqualTo(UserInfoConstants.UN_LOCK);
-            List<PublicUserInfo> exists = publicUserInfoMapper.selectByExample(example);
+            ExamUserInfoExample example = new ExamUserInfoExample();
+            example.createCriteria().andAccountEqualTo(enName);
+            List<ExamUserInfo> exists = examUserInfoMapper.selectByExample(example);
+
             if (CollectionUtils.isNotEmpty(exists)) {
-                LoadingCacheUtil.getInstance().save(enName, JSON.toJSONString(exists.get(0)));
+                LoadingCacheUtil.getInstance().save(CookieConstants.USER_INFO_OBJ + enName, JSON.toJSONString(exists.get(0)));
                 return UrlConstants.PAGE_TO_HOME;
             } else {
                 return UrlConstants.PAGE_TO_LOGIN;

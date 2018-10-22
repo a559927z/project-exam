@@ -4,7 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.ks.constants.CookieConstants;
 import com.ks.constants.UrlConstants;
 import com.ks.constants.UserInfoConstants;
+import com.ks.dao.ExamUserInfoMapper;
 import com.ks.dao.PublicUserInfoMapper;
+import com.ks.dto.ExamUserInfo;
+import com.ks.dto.ExamUserInfoExample;
 import com.ks.dto.PublicUserInfo;
 import com.ks.dto.PublicUserInfoExample;
 import com.ks.utils.CookieUtils;
@@ -45,6 +48,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private PublicUserInfoMapper publicUserInfoMapper;
+
+    @Autowired
+    private ExamUserInfoMapper examUserInfoMapper;
 
     /**
      * 配置静态访问资源
@@ -150,12 +156,12 @@ public class WebConfig extends WebMvcConfigurerAdapter {
          * @return
          */
         private boolean saveCache(String enName) {
-            PublicUserInfoExample example = new PublicUserInfoExample();
-            example.createCriteria().andEnNameEqualTo(enName).andStateEqualTo(UserInfoConstants.UN_LOCK);
+            ExamUserInfoExample example = new ExamUserInfoExample();
+            example.createCriteria().andAccountEqualTo(enName);
             try {
-                List<PublicUserInfo> exists = publicUserInfoMapper.selectByExample(example);
+                List<ExamUserInfo> exists = examUserInfoMapper.selectByExample(example);
                 if (CollectionUtils.isNotEmpty(exists)) {
-                    LoadingCacheUtil.getInstance().save(enName, JSON.toJSONString(exists.get(0)));
+                    LoadingCacheUtil.getInstance().save(CookieConstants.USER_INFO_OBJ + enName, JSON.toJSONString(exists.get(0)));
                     log.info("通过：缓存没有，从数据库里带出，正常缓存是在/app/login/toLogin里就设置的，防止客户端2天没有退出，缓存没了。");
                     return true;
                 } else {
