@@ -6,45 +6,45 @@
         <div id="hui-header-menu" onclick="hui.showSlideMenu();"></div>
     </header>
     <div class="hui-slide-menu">
-        <div class="hui-accordion">
+        <div class="hui-accordion v1-6">
             <div class="hui-accordion-title">银行从业</div>
             <div class="hui-accordion-content hui-list">
-                <a class="courseZone" data-courseId="1,银行业法律法规与综合能力">
+                <a class="courseZone v1" data-courseId="1,银行业法律法规与综合能力">
                     <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
                     <div class="hui-list-text">
                         银行业法律法规与综合能力
                         <div class="hui-list-info hui-icons hui-icons-right"></div>
                     </div>
                 </a>
-                <a class="courseZone" data-courseId="2,个人理财">
+                <a class="courseZone v2" data-courseId="2,个人理财">
                     <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
                     <div class="hui-list-text">
                         个人理财
                         <div class="hui-list-info hui-icons hui-icons-right"></div>
                     </div>
                 </a>
-                <a class="courseZone" data-courseId="3,个人贷款">
+                <a class="courseZone v3" data-courseId="3,个人贷款">
                     <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
                     <div class="hui-list-text">
                         个人贷款
                         <div class="hui-list-info hui-icons hui-icons-right"></div>
                     </div>
                 </a>
-                <a class="courseZone" data-courseId="4,公司信贷">
+                <a class="courseZone v4" data-courseId="4,公司信贷">
                     <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
                     <div class="hui-list-text">
                         公司信贷
                         <div class="hui-list-info hui-icons hui-icons-right"></div>
                     </div>
                 </a>
-                <a class="courseZone" data-courseId="5,风险管理">
+                <a class="courseZone v5" data-courseId="5,风险管理">
                     <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
                     <div class="hui-list-text">
                         风险管理
                         <div class="hui-list-info hui-icons hui-icons-right"></div>
                     </div>
                 </a>
-                <a class="courseZone" data-courseId="6,银行管">
+                <a class="courseZone v6" data-courseId="6,银行管">
                     <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
                     <div class="hui-list-text">
                         银行管
@@ -53,24 +53,24 @@
                 </a>
             </div>
         </div>
-        <div class="hui-accordion">
+        <div class="hui-accordion v7-9">
             <div class="hui-accordion-title">基金从业</div>
             <div class="hui-accordion-content hui-list">
-                <a class="courseZone" data-courseId="7,基金法律法规、职业道德与业务规范">
+                <a class="courseZone v7" data-courseId="7,基金法律法规、职业道德与业务规范">
                     <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
                     <div class="hui-list-text">
                         基金法律法规、职业道德与业务规范
                         <div class="hui-list-info hui-icons hui-icons-right"></div>
                     </div>
                 </a>
-                <a class="courseZone" data-courseId="8,证券投资基金基础知识">
+                <a class="courseZone v8" data-courseId="8,证券投资基金基础知识">
                     <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
                     <div class="hui-list-text">
                         证券投资基金基础知识
                         <div class="hui-list-info hui-icons hui-icons-right"></div>
                     </div>
                 </a>
-                <a class="courseZone" data-courseId="9,私募股权投资基金基础知识">
+                <a class="courseZone v9" data-courseId="9,私募股权投资基金基础知识">
                     <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
                     <div class="hui-list-text">
                         私募股权投资基金基础知识
@@ -79,17 +79,17 @@
                 </a>
             </div>
         </div>
-        <div class="hui-accordion">
+        <div class="hui-accordion v10-11">
             <div class="hui-accordion-title">证券从业</div>
             <div class="hui-accordion-content hui-list">
-                <a class="courseZone" data-courseId="10,证券市场基本法律法规">
+                <a class="courseZone v10" data-courseId="10,证券市场基本法律法规">
                     <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
                     <div class="hui-list-text">
                         证券市场基本法律法规
                         <div class="hui-list-info hui-icons hui-icons-right"></div>
                     </div>
                 </a>
-                <a class="courseZone" data-courseId="11,金融市场基础知识">
+                <a class="courseZone v11" data-courseId="11,金融市场基础知识">
                     <div class="hui-list-icons"><img th:src="@{/huiAdmin/img/index/base.png}"/></div>
                     <div class="hui-list-text">
                         金融市场基础知识
@@ -112,7 +112,47 @@
         <!--</ul>-->
     </div>
     <script type="text/javascript">
-        hui.slideMenu();
+        var webRoot = G_WEB_ROOT;
+        var urls = {
+            getData: webRoot + '/app/home/getData',
+        }
+        hui.getJSON(
+            urls.getData,
+            function (rs) {
+                console.log(rs);
+                reader(rs);
+                hui.slideMenu();
+            }
+        );
+
+        function reader(rs) {
+            if (rs.v1 == "0" && rs.v2 == "0" && rs.v3 == "0" &&
+                rs.v4 == "0" && rs.v5 == "0" && rs.v6 == "0") {
+                $(".v1-6").remove();
+            } else {
+                if (rs.v1 == "0") $(".v1").remove();
+                if (rs.v2 == "0") $(".v2").remove();
+                if (rs.v3 == "0") $(".v3").remove();
+                if (rs.v4 == "0") $(".v4").remove();
+                if (rs.v5 == "0") $(".v5").remove();
+                if (rs.v6 == "0") $(".v6").remove();
+            }
+            if (rs.v7 == "0" && rs.v8 == "0" && rs.v9 == "0") {
+                $(".v7-9").remove();
+            } else {
+                if (rs.v7 == "0") $(".v7").remove();
+                if (rs.v8 == "0") $(".v8").remove();
+                if (rs.v9 == "0") $(".v9").remove();
+            }
+            if (
+                rs.v10 == "0" && rs.v11 == "0") {
+                $(".v10-11").remove();
+            } else {
+                if (rs.v10 == "0") $(".v10").remove();
+                if (rs.v11 == "0") $(".v11").remove();
+            }
+        }
+
         $(function () {
             /**
              * 1：通过点事获取值
@@ -144,6 +184,7 @@
                 init();
                 event();
             }
+
             main();
         });
     </script>

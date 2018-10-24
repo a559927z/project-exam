@@ -15,7 +15,7 @@ public interface CookieConstants {
     /**
      * 版本
      */
-    String VERSION = "1.0";
+    String VERSION = "20181024";
 
     /**
      * 三个月

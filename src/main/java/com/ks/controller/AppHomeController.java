@@ -6,18 +6,18 @@ import com.ks.constants.UrlConstants;
 import com.ks.constants.UserInfoConstants;
 import com.ks.dao.ExamUserInfoMapper;
 import com.ks.dao.PublicUserInfoMapper;
-import com.ks.dto.ExamUserInfo;
-import com.ks.dto.ExamUserInfoExample;
-import com.ks.dto.PublicUserInfo;
-import com.ks.dto.PublicUserInfoExample;
+import com.ks.dto.*;
 import com.ks.utils.CookieUtils;
 import com.ks.utils.cache.LoadingCacheUtil;
+import com.ks.vo.AnswerVo;
 import com.ks.vo.VisitorVo;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -38,9 +38,6 @@ import java.util.concurrent.ExecutionException;
 public class AppHomeController extends BaseController {
 
     @Autowired
-    private PublicUserInfoMapper publicUserInfoMapper;
-
-    @Autowired
     private ExamUserInfoMapper examUserInfoMapper;
 
 
@@ -56,7 +53,7 @@ public class AppHomeController extends BaseController {
 
 
     /**
-     * http://localhost:8080/exam/app/toHome
+     * http://localhost:8080/exam/app/home/toIndex
      *
      * @return
      */
@@ -89,5 +86,19 @@ public class AppHomeController extends BaseController {
         return UrlConstants.PAGE_TO_HOME;
     }
 
+    /**
+     * http://localhost:8080/exam/app/home/getData
+     *
+     * @return
+     */
+    @ResponseBody
+    @PostMapping
+    @RequestMapping("/getData")
+    public ExamUserInfo getData(HttpServletRequest request) {
+        String enName = getVisitor(request).getEnName();
+        ExamUserInfoExample example = new ExamUserInfoExample();
+        example.createCriteria().andAccountEqualTo(enName);
+        return examUserInfoMapper.selectByExample(example).get(0);
+    }
 
 }
