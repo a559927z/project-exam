@@ -82,7 +82,7 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
             return val;
         }
 
-        int i = 0, j = 0, k = 0;
+        int i = 0, j = 0, k = 0, l = 0;
         try {
             ExamQuestionBankExample example = new ExamQuestionBankExample();
             example.createCriteria().andQuestionBankIdEqualTo(questionBankId);
@@ -97,10 +97,14 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
             answerExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
             k = examQuestionBankScoreMapper.deleteByExample(scoreExample);
 
+            ExamUserAnswerYaExample uaYaExample = new ExamUserAnswerYaExample();
+            uaYaExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
+            l = examUserAnswerYaMapper.deleteByExample(uaYaExample);
+
         } catch (Exception e) {
             throw new RuntimeException();
         }
-        return i + j + k;
+        return i + j + k + l;
     }
 
     /**
@@ -110,13 +114,13 @@ public class ExamQuestionBankServiceImpl implements ExamQuestionBankService {
      * @return
      */
     private Integer checkUseing(String questionBankId) {
-        ExamUserAnswerYaExample uaYaExample = new ExamUserAnswerYaExample();
-        uaYaExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
-        List<ExamUserAnswerYa> uaYaList = examUserAnswerYaMapper.selectByExample(uaYaExample);
-        if (uaYaList.size() > 0) {
-            // 学员在“考前押题里”有操作记录
-            return QuestionBankConstants.USER_ANSWER_YA_USEING;
-        }
+//        ExamUserAnswerYaExample uaYaExample = new ExamUserAnswerYaExample();
+//        uaYaExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
+//        List<ExamUserAnswerYa> uaYaList = examUserAnswerYaMapper.selectByExample(uaYaExample);
+//        if (uaYaList.size() > 0) {
+//            // 学员在“考前押题里”有操作记录
+//            return QuestionBankConstants.USER_ANSWER_YA_USEING;
+//        }
 
         ExamQuestionBankYaExample qbYaExample = new ExamQuestionBankYaExample();
         qbYaExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
