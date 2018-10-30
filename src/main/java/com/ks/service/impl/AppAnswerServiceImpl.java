@@ -142,4 +142,15 @@ public class AppAnswerServiceImpl implements AppAnswerService {
         return rsList2;
     }
 
+    @Override
+    public List<ExamUserAnswerYa> queryUserAnswer(String questionBankId, String userId) {
+
+        ExamUserAnswerYaExample uaYaExample = new ExamUserAnswerYaExample();
+        uaYaExample.createCriteria()
+                .andQuestionBankIdEqualTo(questionBankId)
+                .andUserIdEqualTo(userId);
+
+        return examUserAnswerYaMapper.selectByExample(uaYaExample);
+    }
+
 }

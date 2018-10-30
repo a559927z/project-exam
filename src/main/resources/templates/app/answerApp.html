@@ -190,6 +190,7 @@
         var webRoot = G_WEB_ROOT;
         var urls = {
             getData: webRoot + '/app/answer/getData',
+            queryUserAnswer: webRoot + '/app/answer/queryUserAnswer?questionBankId=' + $("#questionBankId").text(),
             saveScore: webRoot + '/app/score/saveScore',
             scoreApp: webRoot + '/app/score/toIndex?questionBankId=' + $("#questionBankId").text(),
         }
@@ -204,6 +205,17 @@
         }
 
         function cardReader(rs) {
+            $.ajax({
+                type: "GET",
+                url: urls.queryUserAnswer,
+                dataType: 'json',
+                success: function (rs) {
+                    console.log(rs);
+                },
+                error: function (res) {
+                }
+            });
+
             var html1 = "<p>单选题</p>";
             var html2 = "<p>多选题</p>";
             var html3 = "<p>是非题</p>";
@@ -347,6 +359,7 @@
 
         function cardEvent(rs) {
             $("#nav-card").click(function () {
+                cardReader(rs);
                 $(".panel").slideToggle("slow");
             });
             $(".questionNo").click(function () {

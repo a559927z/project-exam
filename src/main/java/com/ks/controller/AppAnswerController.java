@@ -1,11 +1,14 @@
 package com.ks.controller;
 
+import com.ks.dto.ExamUserAnswerYa;
+import com.ks.dto.ExamUserInfo;
 import com.ks.dto.ScreenTiDto;
 import com.ks.service.AppAnswerService;
 import com.ks.vo.AnswerVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,7 +27,7 @@ import java.util.List;
  */
 @RequestMapping("/app/answer")
 @Controller
-public class AppAnswerController {
+public class AppAnswerController extends BaseController {
 
     @Autowired
     private AppAnswerService appAnswerService;
@@ -45,9 +48,12 @@ public class AppAnswerController {
         return "app/answerApp";
     }
 
+
     /**
-     * http://localhost:8080/exam/app/answer/getData
+     * 获取押题库
+     * 考前押题 --> 选题 --> 押题库
      *
+     * @param screenTiDto
      * @return
      */
     @ResponseBody
@@ -56,5 +62,20 @@ public class AppAnswerController {
     public List<AnswerVo> getData(ScreenTiDto screenTiDto) {
         return appAnswerService.getData(screenTiDto);
     }
+
+    /**
+     * 考前押题 --> 选题 --> 押题库 --> 用户已答题答案
+     *
+     * @param questionBankId
+     * @return
+     */
+    @ResponseBody
+    @GetMapping
+    @RequestMapping("/queryUserAnswer")
+    public List<ExamUserAnswerYa> queryUserAnswer(String questionBankId) {
+        String userId = getUserInfo().getAccount();
+        return appAnswerService.queryUserAnswer(questionBankId, userId);
+    }
+
 
 }

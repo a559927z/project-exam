@@ -1,5 +1,6 @@
 package com.ks.service;
 
+import com.ks.dto.ExamUserAnswerYa;
 import com.ks.dto.ScreenTiDto;
 import com.ks.vo.AnswerVo;
 
@@ -22,4 +23,13 @@ public interface AppAnswerService {
      * @return
      */
     List<AnswerVo> getData(ScreenTiDto screenTiDto);
+
+    /**
+     * 获取用户答案
+     *
+     * @param questionBankId
+     * @param userId
+     * @return
+     */
+    List<ExamUserAnswerYa> queryUserAnswer(String questionBankId, String userId);
 }

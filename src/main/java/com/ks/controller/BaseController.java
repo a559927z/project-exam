@@ -2,17 +2,19 @@ package com.ks.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.ks.constants.CookieConstants;
-import com.ks.util.ShiroUtils;
+import com.ks.dto.ExamUserInfo;
 import com.ks.utils.CookieUtils;
+import com.ks.utils.cache.LoadingCacheUtil;
 import com.ks.vo.VisitorVo;
+import net.chinahrd.utils.WebUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ResourceUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.concurrent.ExecutionException;
 
 public class BaseController {
 
@@ -77,6 +79,24 @@ public class BaseController {
         if (StringUtils.isNotBlank(userInfoJSON)) {
             VisitorVo visitor = JSON.parseObject(userInfoJSON, VisitorVo.class);
             return visitor;
+        }
+        return null;
+    }
+
+    /**
+     * 获取当前登录对象
+     *
+     * @return
+     */
+    public ExamUserInfo getUserInfo() {
+        HttpServletRequest request = WebUtils.getRequest();
+        String enName = getVisitor(request).getEnName();
+        LoadingCacheUtil loadingCacheUtil = LoadingCacheUtil.getInstance();
+        try {
+            String userInfo = loadingCacheUtil.get(CookieConstants.USER_INFO_OBJ + enName, String.class);
+            return JSON.parseObject(userInfo, ExamUserInfo.class);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
         return null;
     }
