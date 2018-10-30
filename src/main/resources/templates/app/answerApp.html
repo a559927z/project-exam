@@ -204,34 +204,57 @@
             "notDo": $("#notDo").text()
         }
 
-        function cardReader(rs) {
+        function cardReader(list) {
+            $(".panel").empty();
             $.ajax({
                 type: "GET",
                 url: urls.queryUserAnswer,
                 dataType: 'json',
                 success: function (rs) {
-                    console.log(rs);
-                },
-                error: function (res) {
+
+                    var html1 = "<p>单选题</p>";
+                    var html2 = "<p>多选题</p>";
+                    var html3 = "<p>是非题</p>";
+                    $.each(list, function (i, item) {
+                        var type = item.type;
+                        var no = item.no;
+                        var qId = item.questionId;
+
+                        var answerEd = false;
+                        $.each(rs, function (j, jitem) {
+                            if (jitem.questionId == qId) {
+                                answerEd = true;
+                                return;
+                            }
+                        });
+
+                        if (type == "1") {
+                            if (answerEd) {
+                                html1 += '<div class="hui-badge myBadge questionNo hui-primary" data-questionNo=' + no + '>' + no + '</div>';
+                            } else {
+                                html1 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + no + '>' + no + '</div>';
+                            }
+                        } else if (type == "2") {
+                            if (answerEd) {
+                                html2 += '<div class="hui-badge myBadge questionNo hui-primary" data-questionNo=' + no + '>' + no + '</div>';
+                            }
+                            else {
+                                html2 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + no + '>' + no + '</div>';
+                            }
+                        } else if (type == "3") {
+                            if (answerEd) {
+                                html3 += '<div class="hui-badge myBadge questionNo hui-primary" data-questionNo=' + no + '>' + no + '</div>';
+                            }
+                            else {
+                                html3 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + no + '>' + no + '</div>';
+                            }
+                        }
+                    });
+                    $(".panel").append(html1 + html2 + html3);
+                    cardEvent(list);
                 }
             });
 
-            var html1 = "<p>单选题</p>";
-            var html2 = "<p>多选题</p>";
-            var html3 = "<p>是非题</p>";
-            $.each(rs, function (i, item) {
-                var type = item.type;
-                var no = item.no;
-                if (type == "1") {
-                    html1 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + no + '>' + no + '</div>';
-                } else if (type == "2") {
-                    html2 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + no + '>' + no + '</div>';
-                } else if (type == "3") {
-                    html3 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + no + '>' + no + '</div>';
-                }
-            });
-            $(".panel").empty();
-            $(".panel").append(html1 + html2 + html3);
         }
 
         function pageReader(questionList, no) {
@@ -355,7 +378,6 @@
             $("#nav-card").unbind().click(function () {
                 $(".panel").slideToggle("slow");
                 cardReader(rs);
-                cardEvent(rs);
             });
         }
 
