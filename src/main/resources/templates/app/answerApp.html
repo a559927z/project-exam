@@ -316,10 +316,8 @@
 
 
         function reader(rs) {
-            cardReader(rs);
             pageReader(rs, 1);
             fooerEvent(rs, 0, 1, 2);
-            cardEvent(rs);
             paperEvent();
         }
 
@@ -328,7 +326,6 @@
                 paper();
             });
         }
-
 
         function fooerEvent(rs, preNo, curNo, nextNo) {
             $("#nav-previous").unbind().click(function () {
@@ -355,13 +352,14 @@
                     selectReader(nextNo);
                 }
             });
+            $("#nav-card").unbind().click(function () {
+                $(".panel").slideToggle("slow");
+                cardReader(rs);
+                cardEvent(rs);
+            });
         }
 
         function cardEvent(rs) {
-            $("#nav-card").click(function () {
-                cardReader(rs);
-                $(".panel").slideToggle("slow");
-            });
             $(".questionNo").click(function () {
                 var $this = $(this);
                 var no = $this.attr("data-questionNo");
