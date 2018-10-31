@@ -47,7 +47,7 @@
         display: none;
     }
 
-    .toHome {
+    .toYa {
         width: 44px;
         height: 44px;
         line-height: 44px;
@@ -59,7 +59,7 @@
 </style>
 
 <header class="hui-header">
-    <div class="toHome fa fa-angle-left fa-2x "></div>
+    <div class="toYa fa fa-angle-left fa-2x "></div>
     <h1>得分</h1>
 </header>
 <div class="hui-wrap">
@@ -106,13 +106,13 @@
         var webRoot = G_WEB_ROOT;
         var urls = {
             calcScore: webRoot + '/app/score/calcScore?questionBankId=' + $("#questionBankId").text(),
-            toHome: webRoot + '/app/home/toIndex'
+            toYa: webRoot + '/app/ya/toIndex'
         }
         var transformType = ['', '单选题', '多选题', '是非题'];
 
         function event() {
-            $(".toHome").click(function () {
-                window.location.href = urls.toHome;
+            $(".toYa").click(function () {
+                window.location.href = urls.toYa;
             });
         }
 

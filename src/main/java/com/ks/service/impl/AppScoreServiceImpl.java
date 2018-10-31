@@ -65,9 +65,9 @@ public class AppScoreServiceImpl implements AppScoreService {
         List<ExamQuestionBank> examQuestionBankList = examQuestionBankMapper.selectByExample(qbExample);
         String courseId = examQuestionBankList.get(0).getCourseId();
 
-        ExamUserAnswerYaExample uaYaExampl = new ExamUserAnswerYaExample();
-        uaYaExampl.createCriteria().andQuestionBankIdEqualTo(questionBankId).andUserIdEqualTo(enName);
-        examUserAnswerYaMapper.deleteByExample(uaYaExampl);
+//        ExamUserAnswerYaExample uaYaExampl = new ExamUserAnswerYaExample();
+//        uaYaExampl.createCriteria().andQuestionBankIdEqualTo(questionBankId).andUserIdEqualTo(enName);
+//        examUserAnswerYaMapper.deleteByExample(uaYaExampl);
 
         List<ExamUserAnswerYa> userAnswerYaList = Lists.newArrayList();
         idList.forEach(i -> {

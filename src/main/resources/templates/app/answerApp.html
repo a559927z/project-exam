@@ -69,8 +69,8 @@
 
     .paper {
         width: 100px;
-        font-size: 25px;
-        line-height: 40px;
+        font-size: 16px;
+        line-height: 44px;
         color: #fff;
     }
 
@@ -84,18 +84,28 @@
         text-align: center;
     }
 
+    .toYa {
+        width: 44px;
+        height: 44px;
+        line-height: 44px;
+        text-align: center;
+        flex-shrink: 0;
+        color: #FFF;
+    }
 
 </style>
 
 
 <header class="hui-header">
-    <div id="hui-back"></div>
+    <!--<div id="hui-back"></div>-->
+    <div class="toYa fa fa-angle-left fa-2x "></div>
     <h1>答题</h1>
     <div class="paper">交卷</div>
 </header>
 
 <div class="hui-wrap">
 
+    <!--答题卡-->
     <div class="panel">
         <p>单选题</p>
         <div class="hui-badge hui-primary myBadge">1</div>
@@ -113,6 +123,7 @@
         <div class="hui-badge hui-primary myBadge">1</div>
     </div>
 
+    <!--题目-->
     <div id="answerZone">
         <div class="questionZone">
             <div class="hui-badge hui-danger hui-fl">单选题</div>
@@ -187,6 +198,9 @@
 
     $(document).ready(function () {
         var selectObjList = [];
+        var userAnswerData = [];
+        var questionList = [];
+
         var webRoot = G_WEB_ROOT;
         var urls = {
             getData: webRoot + '/app/answer/getData',
@@ -195,8 +209,6 @@
             scoreApp: webRoot + '/app/score/toIndex?questionBankId=' + $("#questionBankId").text(),
         }
         var transformType = ['', '单选题', '多选题', '是非题'];
-        var questionList = [];
-
         var param = {
             "questionBankId": $("#questionBankId").text(),
             "type": $("#type").text(),
@@ -211,7 +223,6 @@
                 url: urls.queryUserAnswer,
                 dataType: 'json',
                 success: function (rs) {
-
                     var html1 = "<p>单选题</p>";
                     var html2 = "<p>多选题</p>";
                     var html3 = "<p>是非题</p>";
@@ -337,15 +348,32 @@
             console.log(selectObjList);
         }
 
+        function getUserAnswer() {
+            $.ajax({
+                type: "GET",
+                url: urls.queryUserAnswer,
+                dataType: 'json',
+                async: false,//使用同步的方式,true为异步方式
+                success: function (rs) {
+                    userAnswerData = rs;
+                }
+            });
+        }
 
         function reader(rs) {
             pageReader(rs, 1);
+            getUserAnswer();
+            console.log(userAnswerData);
             fooerEvent(rs, 0, 1, 2);
+            console.log(1111);
             paperEvent();
         }
 
         function paperEvent() {
             $(".paper").click(function () {
+                paper();
+            });
+            $(".toYa").click(function () {
                 paper();
             });
         }
@@ -461,6 +489,9 @@
             return rs;
         }
 
+        /**
+         * 交卷
+         */
         function paper() {
             hui.confirm('您确认要交卷吗？', ['取消', '确定'], function () {
                 var no = $(".questionZone .hui-fr").data("questionNo");
@@ -484,16 +515,12 @@
                         if (rs) {
                             window.location.href = urls.scoreApp;
                         }
-                    },
-                    error: function (res) {
                     }
                 });
                 console.log(selectAnswer);
             }, function () {
                 console.log('取消后执行...');
             });
-
-
         }
 
         function getData() {
@@ -515,8 +542,6 @@
         }
 
         main();
-
-
     });
 
 </script>
