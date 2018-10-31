@@ -65,13 +65,13 @@ public class AppScoreController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/saveScore")
-    public Boolean saveScore(@RequestParam("idList[]") List<String> idList, String questionBankId,
+    public Boolean saveScore(@RequestParam(value = "idList[]", required = false) List<String> idList, String questionBankId,
                              HttpServletRequest request) {
         String enName = getVisitor(request).getEnName();
+        // 没答题，返回true，后台不处理，前台跳转页面。
         if (CollectionUtils.isEmpty(idList)) {
-            return false;
+            return true;
         }
-
         try {
             appScoreService.saveScore(idList, questionBankId, enName);
             return true;

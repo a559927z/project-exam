@@ -216,56 +216,47 @@
             "notDo": $("#notDo").text()
         }
 
+        function cardReaderYesNo(answerEd, no) {
+            if (answerEd) {
+                return cardReaderHtml("hui-primary", no);
+            } else {
+                return cardReaderHtml("", no);
+            }
+        }
+
+        function cardReaderHtml(huiPrimary, no) {
+            return '<div class="hui-badge myBadge questionNo ' + huiPrimary + '" data-questionNo=' + no + '>' + no + '</div>';
+        }
+
         function cardReader(list) {
             $(".panel").empty();
-            $.ajax({
-                type: "GET",
-                url: urls.queryUserAnswer,
-                dataType: 'json',
-                success: function (rs) {
-                    var html1 = "<p>单选题</p>";
-                    var html2 = "<p>多选题</p>";
-                    var html3 = "<p>是非题</p>";
-                    $.each(list, function (i, item) {
-                        var type = item.type;
-                        var no = item.no;
-                        var qId = item.questionId;
-
-                        var answerEd = false;
-                        $.each(rs, function (j, jitem) {
-                            if (jitem.questionId == qId) {
-                                answerEd = true;
-                                return;
-                            }
-                        });
-
-                        if (type == "1") {
-                            if (answerEd) {
-                                html1 += '<div class="hui-badge myBadge questionNo hui-primary" data-questionNo=' + no + '>' + no + '</div>';
-                            } else {
-                                html1 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + no + '>' + no + '</div>';
-                            }
-                        } else if (type == "2") {
-                            if (answerEd) {
-                                html2 += '<div class="hui-badge myBadge questionNo hui-primary" data-questionNo=' + no + '>' + no + '</div>';
-                            }
-                            else {
-                                html2 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + no + '>' + no + '</div>';
-                            }
-                        } else if (type == "3") {
-                            if (answerEd) {
-                                html3 += '<div class="hui-badge myBadge questionNo hui-primary" data-questionNo=' + no + '>' + no + '</div>';
-                            }
-                            else {
-                                html3 += '<div class="hui-badge myBadge questionNo" data-questionNo=' + no + '>' + no + '</div>';
-                            }
+            var html1 = "<p>单选题</p>";
+            var html2 = "<p>多选题</p>";
+            var html3 = "<p>是非题</p>";
+            $.each(list, function (i, item) {
+                var type = item.type;
+                var no = item.no;
+                var qId = item.questionId;
+                var answerEd = false;
+                if (userAnswerData.length > 0) {
+                    $.each(userAnswerData, function (j, jitem) {
+                        if (jitem.questionId == qId) {
+                            answerEd = true;
+                            return;
                         }
                     });
-                    $(".panel").append(html1 + html2 + html3);
-                    cardEvent(list);
+                }
+
+                if (type == "1") {
+                    html1 += cardReaderYesNo(answerEd, no);
+                } else if (type == "2") {
+                    html2 += cardReaderYesNo(answerEd, no);
+                } else if (type == "3") {
+                    html3 += cardReaderYesNo(answerEd, no);
                 }
             });
-
+            $(".panel").append(html1 + html2 + html3);
+            cardEvent(list);
         }
 
         function pageReader(questionList, no) {
@@ -345,7 +336,6 @@
                     }
                 });
             }
-            console.log(selectObjList);
         }
 
         function getUserAnswer() {
@@ -363,9 +353,7 @@
         function reader(rs) {
             pageReader(rs, 1);
             getUserAnswer();
-            console.log(userAnswerData);
             fooerEvent(rs, 0, 1, 2);
-            console.log(1111);
             paperEvent();
         }
 
@@ -442,6 +430,10 @@
             });
         }
 
+        /**
+         * 保存选择答案，在selectAnswer集合对象里。
+         * 通过 .hui-primary样式获取
+         **/
         function saveSelectObj(no) {
             var questionId = "";
             var selectAnswer = [];
@@ -463,7 +455,6 @@
                     answer: selectAnswer
                 };
                 selectObjList.push(selectObj);
-
             } else {
                 selectObj.answer = selectAnswer;
                 selectObj.questionId = questionId;
@@ -504,22 +495,34 @@
                         });
                     });
                 }
-                $.ajax({
-                    type: "POST",
-                    url: urls.saveScore,
-                    dataType: 'json',
-                    data: {
-                        "idList": selectAnswer, "questionBankId": $("#questionBankId").text()
-                    },
-                    success: function (rs) {
-                        if (rs) {
-                            window.location.href = urls.scoreApp;
-                        }
-                    }
-                });
-                console.log(selectAnswer);
+                if (selectAnswer.length == 0) {
+                    hui.confirm('您没有答题确认要交卷吗？', ['取消', '确定'],
+                        function () {
+                            paperSave(selectAnswer);
+                        }, function () {
+                            console.log('取消后执行...');
+                        });
+                } else {
+                    paperSave(selectAnswer);
+                }
             }, function () {
                 console.log('取消后执行...');
+            });
+        }
+
+        function paperSave(selectAnswer) {
+            $.ajax({
+                type: "POST",
+                url: urls.saveScore,
+                dataType: 'json',
+                data: {
+                    "idList": selectAnswer, "questionBankId": $("#questionBankId").text()
+                },
+                success: function (rs) {
+                    if (rs) {
+                        window.location.href = urls.scoreApp;
+                    }
+                }
             });
         }
 
