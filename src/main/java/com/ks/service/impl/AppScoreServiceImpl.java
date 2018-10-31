@@ -48,7 +48,7 @@ public class AppScoreServiceImpl implements AppScoreService {
     private ExamQuestionBankMapper examQuestionBankMapper;
 
     /**
-     * TODO throw ex
+     * TODO idList 相同题目合拼，save时，计算答对还是错。
      *
      * @param idList
      * @param questionBankId

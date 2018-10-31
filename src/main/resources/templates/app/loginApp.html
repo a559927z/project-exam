@@ -56,8 +56,8 @@
                 <!--checktype="reg"-->
                 <!--checkdata="^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$"-->
                 <!--checkmsg="身分证号15位或18位"/>-->
-                <input id="cnName" type="text" tabindex="2" placeholder="用户名" autocomplete="off"
-                       checktype="string" checkdata="2,5" checkmsg="用户名应为2-5个字符"/>
+                <!--<input id="cnName" type="text" tabindex="2" placeholder="用户名" autocomplete="off"-->
+                       <!--checktype="string" checkdata="2,5" checkmsg="用户名应为2-5个字符"/>-->
                 <input id="password" type="password" tabindex="3" placeholder="密码" autocomplete="off"
                        checktype="string" checkdata="6,20" checkmsg="密码应为6-20个字符"/>
             </div>
@@ -81,7 +81,7 @@
         var res = huiFormCheck('#form1');
         var param = {
             enName: hui('#enName').val(),
-            cnName: hui('#cnName').val(),
+            // cnName: hui('#cnName').val(),
             password: hui('#password').val()
         }
         //提交

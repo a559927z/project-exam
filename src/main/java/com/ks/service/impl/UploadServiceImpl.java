@@ -92,6 +92,7 @@ public class UploadServiceImpl implements UploadService {
                 String trueAnswer = trueAnswerList.get(j);
                 if (StringUtil.equals(answer, trueAnswer)) {
                     qbAnswer.setIsanswer(true);
+                    break;
                 } else {
                     qbAnswer.setIsanswer(false);
                 }
