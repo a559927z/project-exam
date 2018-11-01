@@ -93,6 +93,11 @@
         color: #FFF;
     }
 
+    .isYesBtn {
+        background: #4cd964 !important;
+        color: #FFFFFF !important;
+    }
+
 </style>
 
 
@@ -216,9 +221,14 @@
             "notDo": $("#notDo").text()
         }
 
-        function cardReaderYesNo(answerEd, no) {
+        function cardReaderYesNo(answerEd, isYes, no) {
             if (answerEd) {
-                return cardReaderHtml("hui-primary", no);
+                if (isYes) {
+                    return cardReaderHtml(" isYesBtn", no);
+                } else {
+                    return cardReaderHtml("hui-danger", no);
+                }
+
             } else {
                 return cardReaderHtml("", no);
             }
@@ -238,21 +248,25 @@
                 var no = item.no;
                 var qId = item.questionId;
                 var answerEd = false;
+                var isYes = false;
                 if (userAnswerData.length > 0) {
                     $.each(userAnswerData, function (j, jitem) {
                         if (jitem.questionId == qId) {
                             answerEd = true;
+                            if (jitem.isYes) {
+                                isYes = true;
+                            }
                             return;
                         }
                     });
                 }
 
                 if (type == "1") {
-                    html1 += cardReaderYesNo(answerEd, no);
+                    html1 += cardReaderYesNo(answerEd, isYes, no);
                 } else if (type == "2") {
-                    html2 += cardReaderYesNo(answerEd, no);
+                    html2 += cardReaderYesNo(answerEd, isYes, no);
                 } else if (type == "3") {
-                    html3 += cardReaderYesNo(answerEd, no);
+                    html3 += cardReaderYesNo(answerEd, isYes, no);
                 }
             });
             $(".panel").append(html1 + html2 + html3);
