@@ -59,7 +59,7 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="exam_user_info" domainObjectName="ExamUserInfo"></table>
+        <!--<table tableName="exam_user_info" domainObjectName="ExamUserInfo"></table>-->
         <!--<table tableName="exam_question_bank_answer" domainObjectName="ExamQuestionBankAnswer"></table>-->
         <!--<table tableName="public_sys_permission" domainObjectName="PublicSysPermission"></table>-->
         <!--<table tableName="public_sys_role" domainObjectName="PublicSysRole"></table>-->
@@ -67,8 +67,8 @@
         <!--<table tableName="public_sys_user_role" domainObjectName="PublicSysUserRole"></table>-->
         <!--<table tableName="public_user_info" domainObjectName="PublicUserInfo"></table>-->
         <!--<table tableName="public_login" domainObjectName="PublicLogin">-->
-            <!--<property name="useActualColumnNames" value="false"/>-->
-            <!--<property name="rootClass" value="com.ks.dto.BaseDto"/>-->
+        <!--<property name="useActualColumnNames" value="false"/>-->
+        <!--<property name="rootClass" value="com.ks.dto.BaseDto"/>-->
         <!--</table>-->
         <!--<table tableName="exam_question_bank" domainObjectName="ExamQuestionBank">-->
         <!--<property name="useActualColumnNames" value="false"/>-->
@@ -90,9 +90,9 @@
         <!--<property name="useActualColumnNames" value="false"/>-->
         <!--<property name="rootClass" value="com.ks.dto.BaseDto"/>-->
         <!--</table>-->
-        <!--<table tableName="exam_user_answer_ya" domainObjectName="ExamUserAnswerYa">-->
-        <!--<property name="useActualColumnNames" value="false"/>-->
-        <!--<property name="rootClass" value="com.ks.dto.BaseDto"/>-->
-        <!--</table>-->
+        <table tableName="exam_user_answer_ya" domainObjectName="ExamUserAnswerYa">
+            <property name="useActualColumnNames" value="false"/>
+            <property name="rootClass" value="com.ks.dto.BaseDto"/>
+        </table>
     </context>
 </generatorConfiguration>

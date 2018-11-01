@@ -10,6 +10,7 @@
     <result column="user_answer" jdbcType="VARCHAR" property="userAnswer" />
     <result column="true_answer" jdbcType="VARCHAR" property="trueAnswer" />
     <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="is_yes" jdbcType="BIT" property="isYes" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -71,7 +72,7 @@
   </sql>
   <sql id="Base_Column_List">
     user_answer_id, user_id, course_id, question_bank_id, question_id, user_answer, true_answer, 
-    type
+    type, is_yes
   </sql>
   <select id="selectByExample" parameterType="com.ks.dto.ExamUserAnswerYaExample" resultMap="BaseResultMap">
     select
@@ -106,10 +107,12 @@
   <insert id="insert" parameterType="com.ks.dto.ExamUserAnswerYa">
     insert into exam_user_answer_ya (user_answer_id, user_id, course_id, 
       question_bank_id, question_id, user_answer, 
-      true_answer, type)
+      true_answer, type, is_yes
+      )
     values (#{userAnswerId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{courseId,jdbcType=VARCHAR}, 
       #{questionBankId,jdbcType=VARCHAR}, #{questionId,jdbcType=VARCHAR}, #{userAnswer,jdbcType=VARCHAR}, 
-      #{trueAnswer,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR})
+      #{trueAnswer,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{isYes,jdbcType=BIT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.ks.dto.ExamUserAnswerYa">
     insert into exam_user_answer_ya
@@ -138,6 +141,9 @@
       <if test="type != null">
         type,
       </if>
+      <if test="isYes != null">
+        is_yes,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userAnswerId != null">
@@ -163,6 +169,9 @@
       </if>
       <if test="type != null">
         #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="isYes != null">
+        #{isYes,jdbcType=BIT},
       </if>
     </trim>
   </insert>
@@ -199,6 +208,9 @@
       <if test="record.type != null">
         type = #{record.type,jdbcType=VARCHAR},
       </if>
+      <if test="record.isYes != null">
+        is_yes = #{record.isYes,jdbcType=BIT},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -213,7 +225,8 @@
       question_id = #{record.questionId,jdbcType=VARCHAR},
       user_answer = #{record.userAnswer,jdbcType=VARCHAR},
       true_answer = #{record.trueAnswer,jdbcType=VARCHAR},
-      type = #{record.type,jdbcType=VARCHAR}
+      type = #{record.type,jdbcType=VARCHAR},
+      is_yes = #{record.isYes,jdbcType=BIT}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -242,6 +255,9 @@
       <if test="type != null">
         type = #{type,jdbcType=VARCHAR},
       </if>
+      <if test="isYes != null">
+        is_yes = #{isYes,jdbcType=BIT},
+      </if>
     </set>
     where user_answer_id = #{userAnswerId,jdbcType=VARCHAR}
   </update>
@@ -253,7 +269,8 @@
       question_id = #{questionId,jdbcType=VARCHAR},
       user_answer = #{userAnswer,jdbcType=VARCHAR},
       true_answer = #{trueAnswer,jdbcType=VARCHAR},
-      type = #{type,jdbcType=VARCHAR}
+      type = #{type,jdbcType=VARCHAR},
+      is_yes = #{isYes,jdbcType=BIT}
     where user_answer_id = #{userAnswerId,jdbcType=VARCHAR}
   </update>
 </mapper>

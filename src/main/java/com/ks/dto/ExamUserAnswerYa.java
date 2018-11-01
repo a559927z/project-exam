@@ -19,6 +19,8 @@ public class ExamUserAnswerYa extends BaseDto implements Serializable {
 
     private String type;
 
+    private Boolean isYes;
+
     private static final long serialVersionUID = 1L;
 
     public String getUserAnswerId() {
@@ -83,5 +85,13 @@ public class ExamUserAnswerYa extends BaseDto implements Serializable {
 
     public void setType(String type) {
         this.type = type == null ? null : type.trim();
+    }
+
+    public Boolean getIsYes() {
+        return isYes;
+    }
+
+    public void setIsYes(Boolean isYes) {
+        this.isYes = isYes;
     }
 }

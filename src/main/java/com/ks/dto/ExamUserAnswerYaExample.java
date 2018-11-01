@@ -663,6 +663,66 @@ public class ExamUserAnswerYaExample {
             addCriterion("type not between", value1, value2, "type");
             return (Criteria) this;
         }
+
+        public Criteria andIsYesIsNull() {
+            addCriterion("is_yes is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsYesIsNotNull() {
+            addCriterion("is_yes is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsYesEqualTo(Boolean value) {
+            addCriterion("is_yes =", value, "isYes");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsYesNotEqualTo(Boolean value) {
+            addCriterion("is_yes <>", value, "isYes");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsYesGreaterThan(Boolean value) {
+            addCriterion("is_yes >", value, "isYes");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsYesGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("is_yes >=", value, "isYes");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsYesLessThan(Boolean value) {
+            addCriterion("is_yes <", value, "isYes");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsYesLessThanOrEqualTo(Boolean value) {
+            addCriterion("is_yes <=", value, "isYes");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsYesIn(List<Boolean> values) {
+            addCriterion("is_yes in", values, "isYes");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsYesNotIn(List<Boolean> values) {
+            addCriterion("is_yes not in", values, "isYes");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsYesBetween(Boolean value1, Boolean value2) {
+            addCriterion("is_yes between", value1, value2, "isYes");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsYesNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("is_yes not between", value1, value2, "isYes");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
