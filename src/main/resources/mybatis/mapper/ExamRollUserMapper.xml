@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ks.dao.ExamRollUserMapper">
+  <resultMap id="BaseResultMap" type="com.ks.dto.ExamRollUser">
+    <id column="roll_id" jdbcType="VARCHAR" property="rollId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="question_id" jdbcType="VARCHAR" property="questionId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="answer" jdbcType="VARCHAR" property="answer" />
+    <result column="true_answer" jdbcType="VARCHAR" property="trueAnswer" />
+    <result column="jie_xi" jdbcType="VARCHAR" property="jieXi" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
+    <result column="course_id" jdbcType="VARCHAR" property="courseId" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="is_lock" jdbcType="INTEGER" property="isLock" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+    <result column="updated_date" jdbcType="TIMESTAMP" property="updatedDate" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    roll_id, user_id, question_id, title, answer, true_answer, jie_xi, note, category_id, 
+    course_id, type, is_lock, created_by, created_date, updated_by, updated_date
+  </sql>
+  <select id="selectByExample" parameterType="com.ks.dto.ExamRollUserExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from exam_roll_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from exam_roll_user
+    where roll_id = #{rollId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from exam_roll_user
+    where roll_id = #{rollId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ks.dto.ExamRollUserExample">
+    delete from exam_roll_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ks.dto.ExamRollUser">
+    insert into exam_roll_user (roll_id, user_id, question_id, 
+      title, answer, true_answer, 
+      jie_xi, note, category_id, 
+      course_id, type, is_lock, 
+      created_by, created_date, updated_by, 
+      updated_date)
+    values (#{rollId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{questionId,jdbcType=VARCHAR}, 
+      #{title,jdbcType=VARCHAR}, #{answer,jdbcType=VARCHAR}, #{trueAnswer,jdbcType=VARCHAR}, 
+      #{jieXi,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{categoryId,jdbcType=VARCHAR}, 
+      #{courseId,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{isLock,jdbcType=INTEGER}, 
+      #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR}, 
+      #{updatedDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ks.dto.ExamRollUser">
+    insert into exam_roll_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="rollId != null">
+        roll_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="questionId != null">
+        question_id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="answer != null">
+        answer,
+      </if>
+      <if test="trueAnswer != null">
+        true_answer,
+      </if>
+      <if test="jieXi != null">
+        jie_xi,
+      </if>
+      <if test="note != null">
+        note,
+      </if>
+      <if test="categoryId != null">
+        category_id,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="isLock != null">
+        is_lock,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdDate != null">
+        created_date,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedDate != null">
+        updated_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="rollId != null">
+        #{rollId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="questionId != null">
+        #{questionId,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null">
+        #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="trueAnswer != null">
+        #{trueAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="jieXi != null">
+        #{jieXi,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null">
+        #{categoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="isLock != null">
+        #{isLock,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null">
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedDate != null">
+        #{updatedDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ks.dto.ExamRollUserExample" resultType="java.lang.Long">
+    select count(*) from exam_roll_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update exam_roll_user
+    <set>
+      <if test="record.rollId != null">
+        roll_id = #{record.rollId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.questionId != null">
+        question_id = #{record.questionId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.title != null">
+        title = #{record.title,jdbcType=VARCHAR},
+      </if>
+      <if test="record.answer != null">
+        answer = #{record.answer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.trueAnswer != null">
+        true_answer = #{record.trueAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jieXi != null">
+        jie_xi = #{record.jieXi,jdbcType=VARCHAR},
+      </if>
+      <if test="record.note != null">
+        note = #{record.note,jdbcType=VARCHAR},
+      </if>
+      <if test="record.categoryId != null">
+        category_id = #{record.categoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.courseId != null">
+        course_id = #{record.courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.type != null">
+        type = #{record.type,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isLock != null">
+        is_lock = #{record.isLock,jdbcType=INTEGER},
+      </if>
+      <if test="record.createdBy != null">
+        created_by = #{record.createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createdDate != null">
+        created_date = #{record.createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updatedBy != null">
+        updated_by = #{record.updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updatedDate != null">
+        updated_date = #{record.updatedDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update exam_roll_user
+    set roll_id = #{record.rollId,jdbcType=VARCHAR},
+      user_id = #{record.userId,jdbcType=VARCHAR},
+      question_id = #{record.questionId,jdbcType=VARCHAR},
+      title = #{record.title,jdbcType=VARCHAR},
+      answer = #{record.answer,jdbcType=VARCHAR},
+      true_answer = #{record.trueAnswer,jdbcType=VARCHAR},
+      jie_xi = #{record.jieXi,jdbcType=VARCHAR},
+      note = #{record.note,jdbcType=VARCHAR},
+      category_id = #{record.categoryId,jdbcType=VARCHAR},
+      course_id = #{record.courseId,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=VARCHAR},
+      is_lock = #{record.isLock,jdbcType=INTEGER},
+      created_by = #{record.createdBy,jdbcType=VARCHAR},
+      created_date = #{record.createdDate,jdbcType=TIMESTAMP},
+      updated_by = #{record.updatedBy,jdbcType=VARCHAR},
+      updated_date = #{record.updatedDate,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ks.dto.ExamRollUser">
+    update exam_roll_user
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="questionId != null">
+        question_id = #{questionId,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null">
+        answer = #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="trueAnswer != null">
+        true_answer = #{trueAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="jieXi != null">
+        jie_xi = #{jieXi,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null">
+        category_id = #{categoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="isLock != null">
+        is_lock = #{isLock,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null">
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedDate != null">
+        updated_date = #{updatedDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where roll_id = #{rollId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ks.dto.ExamRollUser">
+    update exam_roll_user
+    set user_id = #{userId,jdbcType=VARCHAR},
+      question_id = #{questionId,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      answer = #{answer,jdbcType=VARCHAR},
+      true_answer = #{trueAnswer,jdbcType=VARCHAR},
+      jie_xi = #{jieXi,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR},
+      category_id = #{categoryId,jdbcType=VARCHAR},
+      course_id = #{courseId,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      is_lock = #{isLock,jdbcType=INTEGER},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=VARCHAR},
+      updated_date = #{updatedDate,jdbcType=TIMESTAMP}
+    where roll_id = #{rollId,jdbcType=VARCHAR}
+  </update>
+</mapper>

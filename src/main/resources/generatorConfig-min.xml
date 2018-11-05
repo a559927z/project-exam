@@ -59,6 +59,9 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
+        <table tableName="exam_roll_user" domainObjectName="ExamRollUser"></table>
+        <table tableName="exam_roll_answer" domainObjectName="ExamRollAnswer"></table>
+        <table tableName="exam_roll_user_answer" domainObjectName="ExamRollUserAnswer"></table>
         <!--<table tableName="exam_user_info" domainObjectName="ExamUserInfo"></table>-->
         <!--<table tableName="exam_question_bank_answer" domainObjectName="ExamQuestionBankAnswer"></table>-->
         <!--<table tableName="public_sys_permission" domainObjectName="PublicSysPermission"></table>-->
@@ -90,9 +93,9 @@
         <!--<property name="useActualColumnNames" value="false"/>-->
         <!--<property name="rootClass" value="com.ks.dto.BaseDto"/>-->
         <!--</table>-->
-        <table tableName="exam_user_answer_ya" domainObjectName="ExamUserAnswerYa">
-            <property name="useActualColumnNames" value="false"/>
-            <property name="rootClass" value="com.ks.dto.BaseDto"/>
-        </table>
+        <!--<table tableName="exam_user_answer_ya" domainObjectName="ExamUserAnswerYa">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<property name="rootClass" value="com.ks.dto.BaseDto"/>-->
+        <!--</table>-->
     </context>
 </generatorConfiguration>

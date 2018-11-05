@@ -1,0 +1,107 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="topApp :: copy" th:with="title='随机组卷'"></head>
+
+<body>
+<style type="text/css">
+
+    #randomZone {
+        height: calc(100vh - 100px);
+        background: #fff;
+    }
+
+    #randomZone .body {
+        position: absolute;
+        top: 30%;
+        left: 30%;
+    }
+
+    .bgImg {
+        background: url('../../img/app/random.png');
+        height: 130px;
+        width: 158px;
+    }
+
+    .hui-header h1 {
+        padding: 0px 0px 0px 48px;
+    }
+
+
+</style>
+
+<div th:replace="menuApp::copy"></div>
+<div class="hui-wrap">
+    <div id="randomZone">
+        <div class="body">
+            <div class="bgImg"></div>
+            <br/>
+            <div class="hui-button">随机组卷</div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="footApp::copy"></div>
+
+
+<script type="text/javascript">
+    var webRoot = G_WEB_ROOT;
+    var urls = {
+        queryYaTiByUserId: webRoot + '/app/ya/queryYaTiByUserId?courseId=',
+        toScreen: webRoot + '/app/screen/toIndex?questionBankId='
+    }
+
+    function resetPage(courseId) {
+        getData(courseId);
+    }
+
+    function event() {
+        $(".hui-button").click(function () {
+
+        });
+
+    }
+
+    function render() {
+        var html = "";
+        var contentHeight = getContentHeight();
+        console.log(contentHeight);
+
+        event();
+    }
+
+    function init() {
+        var courseId = "";
+        var C_EXAM_COURSE = getCookie("C_EXAM_COURSE");
+        if (C_EXAM_COURSE != "") {
+            courseId = C_EXAM_COURSE.split(",")[0];
+        }
+        if (courseId != "") {
+            getData(courseId);
+        }
+    }
+
+    function getData(courseId) {
+        hui.getJSON(
+            urls.queryYaTiByUserId + courseId,
+            function (rs) {
+                if (rs) {
+                    render(rs);
+                }
+            },
+            function (e) {
+            }
+        );
+    }
+
+    function main() {
+        init();
+    }
+
+    main();
+
+</script>
+
+
+</body>
+
+</html>
+
