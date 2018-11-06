@@ -2,9 +2,12 @@ package com.ks.dao;
 
 import com.ks.dto.ExamRollUser;
 import com.ks.dto.ExamRollUserExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Repository
 public interface ExamRollUserMapper {
     long countByExample(ExamRollUserExample example);
 

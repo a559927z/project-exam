@@ -45,17 +45,18 @@
 <script type="text/javascript">
     var webRoot = G_WEB_ROOT;
     var urls = {
-        queryYaTiByUserId: webRoot + '/app/ya/queryYaTiByUserId?courseId=',
-        toScreen: webRoot + '/app/screen/toIndex?questionBankId='
+        randomRoll: webRoot + '/app/roll/randomRoll?courseId=',
     }
 
     function resetPage(courseId) {
-        getData(courseId);
+        event(courseId);
     }
 
-    function event() {
+    function event(courseId) {
         $(".hui-button").click(function () {
-
+            if (courseId != null) {
+                getData(courseId);
+            }
         });
 
     }
@@ -64,8 +65,7 @@
         var html = "";
         var contentHeight = getContentHeight();
         console.log(contentHeight);
-
-        event();
+        event(courseId);
     }
 
     function init() {
@@ -75,19 +75,17 @@
             courseId = C_EXAM_COURSE.split(",")[0];
         }
         if (courseId != "") {
-            getData(courseId);
+            event(courseId);
         }
     }
 
     function getData(courseId) {
         hui.getJSON(
-            urls.queryYaTiByUserId + courseId,
+            urls.randomRoll + courseId,
             function (rs) {
-                if (rs) {
-                    render(rs);
+                if (rs.k) {
+                    console.log(rs.v);
                 }
-            },
-            function (e) {
             }
         );
     }
