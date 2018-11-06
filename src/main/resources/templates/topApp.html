@@ -20,6 +20,9 @@
 
     <!-- 全局js控制 -->
     <script type="text/javascript" th:inline="javascript">
+        /********************
+         * cookie
+         ******************/
         function setCookie(c_name, value, expiredays) {
             var exdate = new Date()
             exdate.setDate(exdate.getDate() + expiredays)
@@ -41,20 +44,62 @@
             return ""
         }
 
-        //获取项目访问路径名称
+        /********************
+         * 取窗口滚动条滚动高度
+         ******************/
+        function getScrollTop() {
+            var scrollTop = 0;
+            if (document.documentElement && document.documentElement.scrollTop) {
+                scrollTop = document.documentElement.scrollTop;
+            }
+            else if (document.body) {
+                scrollTop = document.body.scrollTop;
+            }
+            return scrollTop;
+        }
+
+        /********************
+         * 取内容可视范围的高度
+         *******************/
+        function getContentHeight() {
+            return getClientHeight() - 44;
+        }
+
+        /********************
+         * 取窗口可视范围的高度
+         *******************/
+        function getClientHeight() {
+            var clientHeight = 0;
+            if (document.body.clientHeight && document.documentElement.clientHeight) {
+                var clientHeight = (document.body.clientHeight < document.documentElement.clientHeight) ? document.body.clientHeight : document.documentElement.clientHeight;
+            }
+            else {
+                var clientHeight = (document.body.clientHeight > document.documentElement.clientHeight) ? document.body.clientHeight : document.documentElement.clientHeight;
+            }
+            return clientHeight;
+        }
+
+        /********************
+         * 取文档内容实际高度
+         *******************/
+        function getScrollHeight() {
+            return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+        }
+
+        /********************
+         * 获取项目访问路径名称
+         *******************/
+        /*<![CDATA[*/
+        var G_WEB_ROOT = /*[[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]]*/;
+        /*]]>*/
+        Array.prototype.remove = function (val) {
+            var index = this.indexOf(val);
+            if (index > -1) {
+                this.splice(index, 1);
+            }
+        };
         var ctx = [[@{
             /}]];
-
-            /*<![CDATA[*/
-            var G_WEB_ROOT = /*[[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]]*/;
-            /*]]>*/
-            Array.prototype.remove = function (val) {
-                var index = this.indexOf(val);
-                if (index > -1) {
-                    this.splice(index, 1);
-                }
-            };
-
     </script>
     <script type="text/javascript" charset="utf-8" th:src="@{/huiAdmin/js/hui.js}"/>
     <style type="text/css">

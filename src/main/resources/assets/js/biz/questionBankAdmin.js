@@ -244,6 +244,7 @@ require(['jquery', 'bootstrap', 'spinJs', 'dataTable', 'datatables.net', 'utils'
                 console.info(rs);
                 if (rs.success) {
                     layer.msg(rs.msg, {icon: 1});
+                    window.location.href = urls.index;
                 } else {
                     layer.msg(rs.msg, {icon: 5});
                 }
