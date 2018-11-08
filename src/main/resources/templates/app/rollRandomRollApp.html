@@ -21,10 +21,6 @@
         width: 158px;
     }
 
-    .hui-header h1 {
-        padding: 0px 0px 0px 48px;
-    }
-
 
 </style>
 
@@ -48,38 +44,16 @@
         randomRoll: webRoot + '/app/roll/randomRoll?courseId=',
     }
 
+    /**
+     * menuApp.html调用
+     * @param courseId
+     */
     function resetPage(courseId) {
         event(courseId);
     }
 
-    function event(courseId) {
-        $(".hui-button").click(function () {
-            if (courseId != null) {
-                getData(courseId);
-            }
-        });
-
-    }
-
-    function render() {
-        var html = "";
-        var contentHeight = getContentHeight();
-        console.log(contentHeight);
-        event(courseId);
-    }
-
-    function init() {
-        var courseId = "";
-        var C_EXAM_COURSE = getCookie("C_EXAM_COURSE");
-        if (C_EXAM_COURSE != "") {
-            courseId = C_EXAM_COURSE.split(",")[0];
-        }
-        if (courseId != "") {
-            event(courseId);
-        }
-    }
-
     function getData(courseId) {
+        console.log(courseId);
         hui.getJSON(
             urls.randomRoll + courseId,
             function (rs) {
@@ -88,6 +62,23 @@
                 }
             }
         );
+    }
+
+    function event(courseId) {
+        $(".hui-button").unbind().bind("click", function () {
+            if (courseId != null) {
+                getData(courseId);
+            }
+        });
+    }
+
+
+    function init() {
+        console.log(C_EXAM_COURSE);
+        if (C_EXAM_COURSE != null) {
+            var courseId = C_EXAM_COURSE.split(",")[0]
+            event(courseId);
+        }
     }
 
     function main() {

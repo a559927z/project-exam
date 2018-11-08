@@ -48,6 +48,10 @@ public class AppRollServiceImpl implements AppRollService {
     @Override
     public String randomRoll(String courseId, String userId) {
 
+        if (StringUtils.isBlank(courseId)) {
+            return null;
+        }
+
         List<ExamQuestionBank> qbSList = this.queryQbListByYaQbId(courseId, "1");
         List<ExamQuestionBank> qbMList = this.queryQbListByYaQbId(courseId, "2");
         List<ExamQuestionBank> qbYnList = this.queryQbListByYaQbId(courseId, "3");
@@ -58,6 +62,7 @@ public class AppRollServiceImpl implements AppRollService {
         int yesNoSize = qbEnum.getYesNo();
 
         HashSet<Integer> sQuestionIndex = Sets.newHashSet();
+
 
         int maxNumberNo = qbSList.size() - 1;
         RandomUtil.randomSet(0, maxNumberNo, singleSize, sQuestionIndex);
@@ -94,11 +99,18 @@ public class AppRollServiceImpl implements AppRollService {
     private List<ExamQuestionBank> queryQbListByYaQbId(String courseId, String type) {
         List<ExamQuestionBank> rs = Lists.newArrayList();
         List<ExamQuestionBankYa> qbYaList = this.queryQbYa(courseId);
-        qbYaList.forEach(i -> {
-            String questionBankId = i.getQuestionBankId();
-            rs.addAll(this.queryQb(questionBankId, type));
-        });
-        return rs;
+        if (CollectionUtils.isNotEmpty(qbYaList)) {
+            for (ExamQuestionBankYa qbYa : qbYaList) {
+                String questionBankId = qbYa.getQuestionBankId();
+                List<ExamQuestionBank> qbList = this.queryQb(questionBankId, type);
+                if (CollectionUtils.isNotEmpty(qbList)) {
+                    rs.addAll(qbList);
+                }
+            }
+            return rs;
+        }
+//        log.error("找不到指定题目,courseId:{}, type:{}", courseId, type);
+        return null;
     }
 
 

@@ -26,7 +26,8 @@
         function setCookie(c_name, value, expiredays) {
             var exdate = new Date()
             exdate.setDate(exdate.getDate() + expiredays)
-            document.cookie = c_name + "=" + escape(value) +
+            document.cookie = c_name + "=" +
+                escape(value) +
                 ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString()) +
                 ";path=/"
         }
@@ -42,6 +43,42 @@
                 }
             }
             return ""
+        }
+
+        function delCookie(c_name) {
+            var exdate = new Date();
+            exdate.setTime(exdate.getTime() - 1);
+            var value = getCookie(c_name);
+            if (value != null)
+                document.cookie = c_name + "=" +
+                    escape(value) +
+                    ";expires=" + exdate.toGMTString() +
+                    ";path=/"
+        }
+
+        /********************
+         * Storage
+         ******************/
+        function getStorage(name) {
+            return JSON.parse(localStorage.getItem(name))
+        }
+
+        function setStorage(name, val) {
+            localStorage.setItem(name, JSON.stringify(val))
+        }
+
+        function addStorage(name, addVal) {
+            var oldVal = Storage.get(name)
+            var newVal = oldVal.concat(addVal)
+            setStorage(name, newVal)
+        }
+
+        function delStorage(name) {
+            localStorage.removeItem(name);
+        }
+
+        function clearStorage() {
+            localStorage.clear();
         }
 
         /********************
@@ -86,6 +123,10 @@
             return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
         }
 
+        /**
+         *  在menuApp.html设值
+         */
+        var C_EXAM_COURSE = "";
         /********************
          * 获取项目访问路径名称
          *******************/
