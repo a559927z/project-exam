@@ -3,8 +3,13 @@ package com.ks.dao;
 import com.ks.dto.ExamRollAnswer;
 import com.ks.dto.ExamRollAnswerExample;
 import java.util.List;
-import org.apache.ibatis.annotations.Param;
 
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+@Mapper
+@Repository("examRollAnswerMapper")
 public interface ExamRollAnswerMapper {
     long countByExample(ExamRollAnswerExample example);
 

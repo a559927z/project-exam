@@ -4,9 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.ks.constants.EisWebContext;
 import com.ks.constants.QuestionBankCourseEnum;
-import com.ks.dao.ExamQuestionBankMapper;
-import com.ks.dao.ExamQuestionBankYaMapper;
-import com.ks.dao.ExamRollUserMapper;
+import com.ks.dao.*;
 import com.ks.dto.*;
 import com.ks.service.AppRollService;
 import com.ks.service.CommonService;
@@ -45,10 +43,16 @@ public class AppRollServiceImpl implements AppRollService {
     private ExamRollUserMapper examRollUserMapper;
 
     @Autowired
+    private ExamRollAnswerMapper examRollAnswerMapper;
+
+    @Autowired
     private ExamQuestionBankMapper examQuestionBankMapper;
 
     @Autowired
     private ExamQuestionBankYaMapper examQuestionBankYaMapper;
+
+    @Autowired
+    private ExamQuestionBankAnswerMapper examQuestionBankAnswerMapper;
 
     private final String module = "随机组卷Service";
 
@@ -107,8 +111,39 @@ public class AppRollServiceImpl implements AppRollService {
      */
     private void saveRoll(List<ExamRollUser> rollList) {
         rollList.forEach(i -> {
+            // 卷
             examRollUserMapper.insert(i);
+            String questionId = i.getQuestionId();
+            List<ExamQuestionBankAnswer> qbAnswer = this.queryTrueAnswer(questionId);
+            if (CollectionUtils.isNotEmpty(qbAnswer)) {
+                qbAnswer.forEach(n -> {
+                    ExamRollAnswer dto = new ExamRollAnswer();
+                    BeanUtils.copyProperties(n, dto);
+                    dto.setRollId(i.getRollId());
+                    examRollAnswerMapper.insertSelective(dto);
+                });
+            }
         });
+    }
+
+
+    /**
+     * 正确答案
+     *
+     * @param questionId
+     * @return
+     */
+    private List<ExamQuestionBankAnswer> queryTrueAnswer(String questionId) {
+        ExamQuestionBankAnswerExample qbAnswerExample = new ExamQuestionBankAnswerExample();
+        qbAnswerExample.createCriteria()
+                .andQuestionIdEqualTo(questionId)
+                .andIsanswerEqualTo(true);
+        List<ExamQuestionBankAnswer> trueAnswerList = examQuestionBankAnswerMapper.selectByExample(qbAnswerExample);
+        if (CollectionUtils.isNotEmpty(trueAnswerList)) {
+            return trueAnswerList;
+        }
+        commonService.saveLog("随机组卷时，找不到正确答案", module, "");
+        return null;
     }
 
 
