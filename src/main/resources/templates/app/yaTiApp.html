@@ -111,11 +111,10 @@
 
     function init() {
         var courseId = "";
-        var C_EXAM_COURSE = getCookie("C_EXAM_COURSE");
-        if (C_EXAM_COURSE != "") {
-            courseId = C_EXAM_COURSE.split(",")[0];
-        }
-        if (courseId != "") {
+        // var C_EXAM_COURSE = getCookie("C_EXAM_COURSE");
+        // var C_EXAM_COURSE = getStorage("C_EXAM_COURSE");
+        if (C_EXAM_COURSE != null) {
+            var courseId = C_EXAM_COURSE.split(",")[0]
             getData(courseId);
         }
     }

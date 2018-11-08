@@ -5,6 +5,7 @@ import com.ks.dto.KVItemDto;
 import com.ks.service.AppRollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -41,6 +42,7 @@ public class AppRollController extends BaseController {
      * @param courseId 科目类别
      * @return
      */
+    @GetMapping
     @RequestMapping("/randomRoll")
     public KVItemDto<Boolean, String> randomRoll(String courseId) {
         KVItemDto<Boolean, String> rs = new KVItemDto<>();

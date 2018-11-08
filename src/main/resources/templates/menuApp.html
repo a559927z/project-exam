@@ -1,5 +1,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div style="margin-bottom: 44px;" th:fragment="copy">
+    <style type="text/css">
+        .hui-header h1 {
+            padding: 0px 0px 0px 48px;
+        }
+    </style>
     <header class="hui-header">
         <!--<div id="hui-back"></div>-->
         <h1 id="menuValueZone"></h1>
@@ -164,7 +169,10 @@
                     var val = $this.attr("data-courseId");
                     var courseId = val.split(",")[0];
                     var courseName = val.split(",")[1];
-                    setCookie("C_EXAM_COURSE", val, 1);
+                    // delCookie("C_EXAM_COURSE");
+                    // setCookie("C_EXAM_COURSE", val, 1);
+                    delStorage("C_EXAM_COURSE");
+                    setStorage("C_EXAM_COURSE", val);
                     $("#menuValueZone").text(courseName);
                     hui.closeSlideMenu();
                     resetPage(courseId);
@@ -172,9 +180,12 @@
             }
 
             function init() {
-                var C_EXAM_COURSE = getCookie("C_EXAM_COURSE");
-                if (C_EXAM_COURSE != "") {
+                // var C_EXAM_COURSE = getCookie("C_EXAM_COURSE");
+                C_EXAM_COURSE = getStorage("C_EXAM_COURSE");
+                if (C_EXAM_COURSE != null) {
+                    var courseId = C_EXAM_COURSE.split(",")[0];
                     var courseName = C_EXAM_COURSE.split(",")[1];
+                    $("#menuValueZone").data(courseId);
                     $("#menuValueZone").text(courseName);
                 }
             }
