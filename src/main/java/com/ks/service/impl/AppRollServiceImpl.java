@@ -127,6 +127,8 @@ public class AppRollServiceImpl implements AppRollService {
         HashSet<Integer> questionIndex = Sets.newHashSet();
         int maxNumberNo = qbList.size() - 1;
         RandomUtil.randomSet(0, maxNumberNo, size, questionIndex);
+
+        // XXX bug:随机生成题，可以qbList里没有这么长。例如: random 23, qbList.size == 10
         List<ExamRollUser> rollList = Lists.newArrayList();
         for (Integer i : questionIndex) {
             ExamRollUser dto = new ExamRollUser();
