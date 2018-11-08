@@ -2,12 +2,14 @@ package com.ks.service.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.ks.constants.EisWebContext;
 import com.ks.constants.QuestionBankCourseEnum;
 import com.ks.dao.ExamQuestionBankMapper;
 import com.ks.dao.ExamQuestionBankYaMapper;
 import com.ks.dao.ExamRollUserMapper;
 import com.ks.dto.*;
 import com.ks.service.AppRollService;
+import com.ks.service.CommonService;
 import com.ks.utils.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.chinahrd.utils.Identities;
@@ -37,6 +39,9 @@ import java.util.Set;
 public class AppRollServiceImpl implements AppRollService {
 
     @Autowired
+    private CommonService commonService;
+
+    @Autowired
     private ExamRollUserMapper examRollUserMapper;
 
     @Autowired
@@ -44,6 +49,8 @@ public class AppRollServiceImpl implements AppRollService {
 
     @Autowired
     private ExamQuestionBankYaMapper examQuestionBankYaMapper;
+
+    private final String module = "随机组卷Service";
 
     @Override
     public String randomRoll(String courseId, String userId) {
@@ -56,37 +63,85 @@ public class AppRollServiceImpl implements AppRollService {
         List<ExamQuestionBank> qbMList = this.queryQbListByYaQbId(courseId, "2");
         List<ExamQuestionBank> qbYnList = this.queryQbListByYaQbId(courseId, "3");
 
+        ExamUserInfo userInfo = EisWebContext.getUserInfo();
+        String account = userInfo.getAccount();
+
+        /**
+         * 单选题不可能为空
+         */
+        if (null == qbSList) {
+            commonService.saveLog("单选题不可能为空", module, account);
+            return null;
+        }
+
         QuestionBankCourseEnum qbEnum = QuestionBankCourseEnum.getEnumByCode(courseId);
         int singleSize = qbEnum.getSingle();
         int multipleSize = qbEnum.getMultiple();
         int yesNoSize = qbEnum.getYesNo();
 
         HashSet<Integer> sQuestionIndex = Sets.newHashSet();
-
-
         int maxNumberNo = qbSList.size() - 1;
         RandomUtil.randomSet(0, maxNumberNo, singleSize, sQuestionIndex);
 
         String rollId = Identities.uuid2();
         Date date = new Date();
+
+        List<ExamRollUser> sRoll = this.groupRoll(qbSList, singleSize, account, date, rollId);
+        saveRoll(sRoll);
+        if (null != qbMList) {
+            List<ExamRollUser> mRoll = this.groupRoll(qbMList, multipleSize, account, date, rollId);
+            saveRoll(mRoll);
+        }
+        if (null != qbYnList) {
+            List<ExamRollUser> ynRoll = this.groupRoll(qbYnList, yesNoSize, account, date, rollId);
+            saveRoll(ynRoll);
+        }
+        return rollId;
+    }
+
+    /**
+     * 入库
+     *
+     * @param rollList
+     * @return
+     */
+    private void saveRoll(List<ExamRollUser> rollList) {
+        rollList.forEach(i -> {
+            examRollUserMapper.insert(i);
+        });
+    }
+
+
+    /**
+     * 组卷
+     *
+     * @param qbList      题库
+     * @param size        题量
+     * @param rollId      卷号ID
+     * @param createdBy   创建人
+     * @param createdDate 创建时间
+     * @return
+     */
+    private List<ExamRollUser> groupRoll(List<ExamQuestionBank> qbList, int size, String createdBy, Date createdDate, String rollId) {
+        // 随机生成题号
+        HashSet<Integer> questionIndex = Sets.newHashSet();
+        int maxNumberNo = qbList.size() - 1;
+        RandomUtil.randomSet(0, maxNumberNo, size, questionIndex);
         List<ExamRollUser> rollList = Lists.newArrayList();
-        for (Integer i : sQuestionIndex) {
+        for (Integer i : questionIndex) {
             ExamRollUser dto = new ExamRollUser();
-            ExamQuestionBank examQuestionBank = qbSList.get(i);
+            ExamQuestionBank examQuestionBank = qbList.get(i);
             BeanUtils.copyProperties(examQuestionBank, dto);
             dto.setRollId(rollId);
-            dto.setUserId(userId);
-            dto.setCreatedBy(userId);
-            dto.setUpdatedBy(userId);
+            dto.setUserId(createdBy);
+            dto.setCreatedBy(createdBy);
+            dto.setUpdatedBy(createdBy);
 
-            dto.setCreatedDate(date);
-            dto.setUpdatedDate(date);
+            dto.setCreatedDate(createdDate);
+            dto.setUpdatedDate(createdDate);
             rollList.add(dto);
-            // TODO db rollSList
         }
-
-
-        return rollId;
+        return rollList;
     }
 
     /**

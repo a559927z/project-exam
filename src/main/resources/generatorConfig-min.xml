@@ -59,9 +59,10 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="exam_roll_user" domainObjectName="ExamRollUser"></table>
-        <table tableName="exam_roll_answer" domainObjectName="ExamRollAnswer"></table>
-        <table tableName="exam_roll_user_answer" domainObjectName="ExamRollUserAnswer"></table>
+        <table tableName="public_log" domainObjectName="PublicLog"></table>
+        <!--<table tableName="exam_roll_user" domainObjectName="ExamRollUser"></table>-->
+        <!--<table tableName="exam_roll_answer" domainObjectName="ExamRollAnswer"></table>-->
+        <!--<table tableName="exam_roll_user_answer" domainObjectName="ExamRollUserAnswer"></table>-->
         <!--<table tableName="exam_user_info" domainObjectName="ExamUserInfo"></table>-->
         <!--<table tableName="exam_question_bank_answer" domainObjectName="ExamQuestionBankAnswer"></table>-->
         <!--<table tableName="public_sys_permission" domainObjectName="PublicSysPermission"></table>-->

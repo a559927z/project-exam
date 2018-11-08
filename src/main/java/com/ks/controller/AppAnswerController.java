@@ -1,5 +1,6 @@
 package com.ks.controller;
 
+import com.ks.constants.EisWebContext;
 import com.ks.dto.ExamUserAnswerYa;
 import com.ks.dto.ExamUserInfo;
 import com.ks.dto.ScreenTiDto;
@@ -73,7 +74,7 @@ public class AppAnswerController extends BaseController {
     @GetMapping
     @RequestMapping("/queryUserAnswer")
     public List<ExamUserAnswerYa> queryUserAnswer(String questionBankId) {
-        String userId = getUserInfo().getAccount();
+        String userId = EisWebContext.getUserInfo().getAccount();
         return appAnswerService.queryUserAnswer(questionBankId, userId);
     }
 

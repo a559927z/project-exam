@@ -83,22 +83,22 @@ public class BaseController {
         return null;
     }
 
-    /**
-     * 获取当前登录对象
-     *
-     * @return
-     */
-    public ExamUserInfo getUserInfo() {
-        HttpServletRequest request = WebUtils.getRequest();
-        String enName = getVisitor(request).getEnName();
-        LoadingCacheUtil loadingCacheUtil = LoadingCacheUtil.getInstance();
-        try {
-            String userInfo = loadingCacheUtil.get(CookieConstants.USER_INFO_OBJ + enName, String.class);
-            return JSON.parseObject(userInfo, ExamUserInfo.class);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+//    /**
+//     * 获取当前登录对象
+//     *
+//     * @return
+//     */
+//    public ExamUserInfo getUserInfo() {
+//        HttpServletRequest request = WebUtils.getRequest();
+//        String enName = getVisitor(request).getEnName();
+//        LoadingCacheUtil loadingCacheUtil = LoadingCacheUtil.getInstance();
+//        try {
+//            String userInfo = loadingCacheUtil.get(CookieConstants.USER_INFO_OBJ + enName, String.class);
+//            return JSON.parseObject(userInfo, ExamUserInfo.class);
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
 }

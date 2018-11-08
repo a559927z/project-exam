@@ -104,6 +104,7 @@
             urls.toLogout,
             function (rs) {
                 if (rs) {
+                    delStorage("C_EXAM_COURSE");
                     window.location = urls.toLogin;
                 }
             },
