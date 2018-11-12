@@ -1,0 +1,93 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="topApp :: copy" th:with="title='随机组卷'"></head>
+
+<body>
+<style type="text/css">
+
+    #randomZone {
+        height: calc(100vh - 100px);
+        background: #fff;
+    }
+
+
+</style>
+
+<div th:replace="menuApp::copy"></div>
+<div class="hui-list" style="">
+    <ul>
+        <li>
+            <div class="hui-list-text">li1</div>
+        </li>
+        <li>
+            <div class="hui-list-text">li2</div>
+        </li>
+        <li>
+            <div class="hui-list-text">li3</div>
+        </li>
+        <li>
+            <div class="hui-list-text">li4</div>
+        </li>
+    </ul>
+</div>
+
+<div th:replace="footApp::copy"></div>
+
+
+<script type="text/javascript">
+    var webRoot = G_WEB_ROOT;
+    var urls = {
+        queryRecordByUserId: webRoot + '/app/roll/queryRecordByUserId',
+    }
+
+    /**
+     * menuApp.html调用
+     * @param courseId
+     */
+    function resetPage(courseId) {
+        event(courseId);
+    }
+
+
+    function event(courseId) {
+        $(".randomBtn").unbind().bind("click", function () {
+            if (courseId != null) {
+                getData(courseId);
+            }
+        });
+        $(".recadBtn").unbind().bind("click", function () {
+            window.location.href = urls.toAnswer + rs.v;
+        });
+    }
+
+    function getData() {
+        hui.getJSON(
+            urls.queryRecordByUserId,
+            function (rs) {
+                if (rs.k) {
+                    console.log(rs.v);
+                } else {
+                    alert("没有组卷记录");
+                }
+            }
+        );
+
+    }
+
+
+    function init() {
+        getData();
+    }
+
+    function main() {
+        init();
+    }
+
+    main();
+
+</script>
+
+
+</body>
+
+</html>
+

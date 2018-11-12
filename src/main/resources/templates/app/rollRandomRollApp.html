@@ -30,7 +30,8 @@
         <div class="body">
             <div class="bgImg"></div>
             <br/>
-            <div class="hui-button">随机组卷</div>
+            <div class="hui-button randomBtn">随机组卷</div>
+            <div class="hui-button recordBtn">组卷记录</div>
         </div>
     </div>
 </div>
@@ -42,6 +43,8 @@
     var webRoot = G_WEB_ROOT;
     var urls = {
         randomRoll: webRoot + '/app/roll/randomRoll?courseId=',
+        toAnswer: webRoot + '/app/roll/toAnswer?rollId=',
+        toRecord: webRoot + '/app/roll/toRecord'
     }
 
     /**
@@ -53,13 +56,14 @@
     }
 
     function getData(courseId) {
-        console.log(courseId);
         if (null != courseId) {
             hui.getJSON(
                 urls.randomRoll + courseId,
                 function (rs) {
                     if (rs.k) {
-                        console.log(rs.v);
+                        window.location.href = urls.toAnswer + rs.v;
+                    } else {
+                        alert("组卷失败，请稍候再试。");
                     }
                 }
             );
@@ -68,10 +72,13 @@
     }
 
     function event(courseId) {
-        $(".hui-button").unbind().bind("click", function () {
+        $(".randomBtn").unbind().bind("click", function () {
             if (courseId != null) {
                 getData(courseId);
             }
+        });
+        $(".recordBtn").unbind().bind("click", function () {
+            window.location.href = urls.toRecord;
         });
     }
 

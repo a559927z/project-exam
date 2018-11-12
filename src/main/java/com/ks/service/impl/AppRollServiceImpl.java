@@ -119,6 +119,7 @@ public class AppRollServiceImpl implements AppRollService {
                 qbAnswer.forEach(n -> {
                     ExamRollAnswer dto = new ExamRollAnswer();
                     BeanUtils.copyProperties(n, dto);
+                    dto.setId(Identities.uuid2());
                     dto.setRollId(i.getRollId());
                     examRollAnswerMapper.insertSelective(dto);
                 });
@@ -169,6 +170,7 @@ public class AppRollServiceImpl implements AppRollService {
             ExamRollUser dto = new ExamRollUser();
             ExamQuestionBank examQuestionBank = qbList.get(i);
             BeanUtils.copyProperties(examQuestionBank, dto);
+
             dto.setRollId(rollId);
             dto.setUserId(createdBy);
             dto.setCreatedBy(createdBy);
