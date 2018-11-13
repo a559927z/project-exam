@@ -1,5 +1,11 @@
 package com.ks.service;
 
+import com.ks.dto.ExamRollUserAnswer;
+import com.ks.dto.ScreenTiDto;
+import com.ks.vo.AnswerVo;
+
+import java.util.List;
+
 /**
  * Title: ${type_name} <br/>
  * <p>
@@ -20,4 +26,30 @@ public interface AppRollService {
      * @return
      */
     String randomRoll(String courseId, String userId);
+
+    /**
+     * 获取卷
+     *
+     * @param rollId
+     * @return
+     */
+    List<AnswerVo> getData(String rollId);
+
+    /**
+     * 用户已答题答案
+     *
+     * @param rollId
+     * @param userId
+     * @return
+     */
+    List<ExamRollUserAnswer> queryUserAnswer(String rollId, String userId);
+
+    /**
+     * 入库 用户答案
+     *
+     * @param idList
+     * @param roll
+     * @param enName
+     */
+    void saveScore(List<String> idList, String roll, String enName);
 }

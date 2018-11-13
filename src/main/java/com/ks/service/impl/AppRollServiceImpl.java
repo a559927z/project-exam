@@ -9,7 +9,9 @@ import com.ks.dto.*;
 import com.ks.service.AppRollService;
 import com.ks.service.CommonService;
 import com.ks.utils.RandomUtil;
+import com.ks.vo.AnswerVo;
 import lombok.extern.slf4j.Slf4j;
+import net.chinahrd.utils.CollectionKit;
 import net.chinahrd.utils.Identities;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -20,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Title: ${type_name} <br/>
@@ -44,6 +45,9 @@ public class AppRollServiceImpl implements AppRollService {
 
     @Autowired
     private ExamRollAnswerMapper examRollAnswerMapper;
+
+    @Autowired
+    private ExamRollUserAnswerMapper examRollUserAnswerMapper;
 
     @Autowired
     private ExamQuestionBankMapper examQuestionBankMapper;
@@ -74,7 +78,7 @@ public class AppRollServiceImpl implements AppRollService {
          * 单选题不可能为空
          */
         if (null == qbSList) {
-            commonService.saveLog("单选题不可能为空", module, account);
+            commonService.saveLog("单选题不可能为空", module + "/randomRoll", account);
             return null;
         }
 
@@ -103,8 +107,75 @@ public class AppRollServiceImpl implements AppRollService {
         return rollId;
     }
 
+    @Override
+    public List<AnswerVo> getData(String rollId) {
+        ExamRollUserExample ruExample = new ExamRollUserExample();
+        ruExample.createCriteria().andRollIdEqualTo(rollId);
+        ruExample.setOrderByClause("type asc");
+        List<ExamRollUser> ruList = examRollUserMapper.selectByExample(ruExample);
+        if (CollectionKit.isEmpty(ruList)) {
+            commonService.saveLog("没找到卷,rollId" + rollId, module + "/getData", "");
+        }
+        ExamRollAnswerExample raExample = new ExamRollAnswerExample();
+        raExample.createCriteria().andRollIdEqualTo(rollId);
+        List<ExamRollAnswer> rAnswerList = examRollAnswerMapper.selectByExample(raExample);
+        List<AnswerVo> voList = Lists.newArrayList();
+        ruList.forEach(i -> {
+            String questionId = i.getQuestionId();
+            AnswerVo vo = new AnswerVo();
+            vo.setRollId(rollId);
+            vo.setQuestionId(questionId);
+            vo.setJieXi(i.getJieXi());
+            vo.setType(i.getType());
+            vo.setTitle(i.getTitle());
+            List<String> answerList = Lists.newArrayList();
+            List<String> trueAnswerList = Lists.newArrayList();
+            rAnswerList.forEach(j -> {
+                if (questionId.equals(j.getQuestionId())) {
+                    answerList.add(j.getAnswerno() + "@" + j.getAnswer());
+                    if (j.getIsanswer()) {
+                        trueAnswerList.add(j.getAnswerno());
+                    }
+                }
+            });
+            vo.setTrueAnswer(trueAnswerList);
+            vo.setAnswer(answerList);
+            voList.add(vo);
+        });
+        List<AnswerVo> rsList = Lists.newArrayList();
+        for (int i = 0; i < voList.size(); i++) {
+            AnswerVo vo = voList.get(i);
+            vo.setNo(i + 1);
+            rsList.add(vo);
+        }
+        return rsList;
+    }
+
+    @Override
+    public List<ExamRollUserAnswer> queryUserAnswer(String rollId, String userId) {
+        ExamRollUserAnswerExample ruaExample = new ExamRollUserAnswerExample();
+        ruaExample.createCriteria()
+                .andRollIdEqualTo(rollId)
+                .andUserIdEqualTo(userId);
+
+        return examRollUserAnswerMapper.selectByExample(ruaExample);
+    }
+
     /**
-     * 入库
+     * 交卷入库
+     * TODO
+     *
+     * @param idList
+     * @param roll
+     * @param enName
+     */
+    @Override
+    public void saveScore(List<String> idList, String roll, String enName) {
+
+    }
+
+    /**
+     * 组卷入库
      *
      * @param rollList
      * @return
@@ -114,7 +185,7 @@ public class AppRollServiceImpl implements AppRollService {
             // 卷
             examRollUserMapper.insert(i);
             String questionId = i.getQuestionId();
-            List<ExamQuestionBankAnswer> qbAnswer = this.queryTrueAnswer(questionId);
+            List<ExamQuestionBankAnswer> qbAnswer = this.queryAnswer(questionId);
             if (CollectionUtils.isNotEmpty(qbAnswer)) {
                 qbAnswer.forEach(n -> {
                     ExamRollAnswer dto = new ExamRollAnswer();
@@ -129,16 +200,15 @@ public class AppRollServiceImpl implements AppRollService {
 
 
     /**
-     * 正确答案
+     * 答案
      *
      * @param questionId
      * @return
      */
-    private List<ExamQuestionBankAnswer> queryTrueAnswer(String questionId) {
+    private List<ExamQuestionBankAnswer> queryAnswer(String questionId) {
         ExamQuestionBankAnswerExample qbAnswerExample = new ExamQuestionBankAnswerExample();
         qbAnswerExample.createCriteria()
-                .andQuestionIdEqualTo(questionId)
-                .andIsanswerEqualTo(true);
+                .andQuestionIdEqualTo(questionId);
         List<ExamQuestionBankAnswer> trueAnswerList = examQuestionBankAnswerMapper.selectByExample(qbAnswerExample);
         if (CollectionUtils.isNotEmpty(trueAnswerList)) {
             return trueAnswerList;

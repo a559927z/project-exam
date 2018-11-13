@@ -109,71 +109,393 @@
 </header>
 
 <div class="hui-wrap">
-
     <!--答题卡-->
     <div class="panel">
-        <p>单选题</p>
-        <div class="hui-badge hui-primary myBadge">1</div>
-        <div class="hui-badge  myBadge">1</div>
-        <div class="hui-badge hui-primary myBadge">1</div>
-        <div class="hui-badge  myBadge">1</div>
-        <div class="hui-badge hui-primary myBadge">1</div>
-        <p>多选题</p>
-        <div class="hui-badge hui-primary myBadge">1</div>
-        <div class="hui-badge hui-primary myBadge">1</div>
-        <div class="hui-badge hui-primary myBadge">2</div>
-        <div class="hui-badge  myBadge">1</div>
-        <p>是非题</p>
-        <div class="hui-badge  myBadge">1</div>
-        <div class="hui-badge hui-primary myBadge">1</div>
     </div>
 
     <!--题目-->
     <div id="answerZone">
-        <div class="questionZone">
-            <div class="hui-badge hui-danger hui-fl">单选题</div>
-            <div class="hui-fr">1/7</div>
-            <div style="clear: both"></div>
-            <div class="body">
-                甲与乙约定：若乙考上大学，甲将其小提琴以1万元的价格卖给乙。后甲因善意第三人丙出价甚高，便将该小提琴出售于丙，且钱货两清。乙考上大学后，向甲求购小提琴未果而引发纠纷。对此，乙可以请求（）。
-            </div>
-        </div>
-        <div class="answerZone">
-            <div class="">
-                <div class="hui-badge">A</div>
-                丙承担违约责任
-            </div>
-            <div class="">
-                <div class="hui-badge hui-primary">B</div>
-                丙返还该小提琴
-            </div>
-            <div class="">
-                <div class="hui-badge">C</div>
-                甲赔偿乙所受损失
-            </div>
-            <div class="">
-                <div class="hui-badge">D</div>
-                甲和丙负连带责任
-            </div>
-        </div>
-
-        <div class="trueAnswerZone hui-accordion">
-            <div class="hui-accordion-title">答案</div>
-            <div class="hui-accordion-content">
-                <div class="hui-badge hui-danger">B</div>
-                <div class="">解析</div>
-                <br/>
-                <div class="">丙是善意第三人，不承担责任。</div>
-            </div>
-        </div>
     </div>
 </div>
-<p class="" id="rollId" th:text="${rollId}">(questionBankId)</p>
+<p class="hide" id="rollId" th:text="${rollId}">(questionBankId)</p>
 
 
-<div th:replace="footApp::copy"></div>
+<div class="hui-fooer-line"></div>
+<div id="hui-footer">
+    <a href="javascript:void(0);" id="nav-previous">
+        <i class="fa fa-angle-left fa-2x hui-footer-icons"></i>
+        <div class="hui-footer-text">上一题</div>
+    </a>
+
+    <a href="javascript:void(0);" id="nav-card" class="flip">
+        <div class="hui-footer-icons hui-icons-news"></div>
+        <div class="hui-footer-text">答题卡</div>
+    </a>
+    <a th:href="@{/app/my/toIndex}" id="nav-my">
+        <div class="fa fa-star-o fa-2x hui-footer-icons"></div>
+        <div class="hui-footer-text">收藏</div>
+    </a>
+    <a href="javascript:void(0);" id="nav-next">
+        <i class="fa fa-angle-right fa-2x hui-footer-icons"></i>
+        <div class="hui-footer-text">下一题</div>
+    </a>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        var selectObjList = [];
+        var userAnswerData = [];
+        var questionList = [];
+
+        var webRoot = G_WEB_ROOT;
+        var urls = {
+            getData: webRoot + '/app/roll/getData',
+            queryUserAnswer: webRoot + '/app/roll/queryUserAnswer?rollId=' + $("#rollId").text(),
+            saveScore: webRoot + '/app/roll/saveScore',
+            scoreApp: webRoot + '/app/roll/toIndex?rollId=' + $("#rollId").text(),
+        }
+        var transformType = ['', '单选题', '多选题', '是非题'];
+        var param = {
+            "rollId": $("#rollId").text()
+        }
+
+        /*****************
+         *    选择答案    *
+         *****************/
+        function cardEvent(rs) {
+            $(".questionNo").click(function () {
+                var $this = $(this);
+                var no = $this.attr("data-questionNo");
+                pageReader(rs, no);
+                $(".panel").css("display", "none");
+                fooerEvent(rs, no - 1, no, no + 1);
+            });
+        }
+
+        function cardReaderYesNo(answerEd, isYes, no) {
+            if (answerEd) {
+                if (isYes) {
+                    return cardReaderHtml(" isYesBtn", no);
+                } else {
+                    return cardReaderHtml("hui-danger", no);
+                }
+
+            } else {
+                return cardReaderHtml("", no);
+            }
+        }
+
+        function cardReaderHtml(huiPrimary, no) {
+            return '<div class="hui-badge myBadge questionNo ' + huiPrimary + '" data-questionNo=' + no + '>' + no + '</div>';
+        }
+
+        function cardReader(list) {
+            $(".panel").empty();
+            var html1 = "<p>单选题</p>";
+            var html2 = "<p>多选题</p>";
+            var html3 = "<p>是非题</p>";
+            $.each(list, function (i, item) {
+                var type = item.type;
+                var no = item.no;
+                var qId = item.questionId;
+                var answerEd = false;
+                var isYes = false;
+                if (userAnswerData.length > 0) {
+                    $.each(userAnswerData, function (j, jitem) {
+                        if (jitem.questionId == qId) {
+                            answerEd = true;
+                            if (jitem.isYes) {
+                                isYes = true;
+                            }
+                            return;
+                        }
+                    });
+                }
+
+                if (type == "1") {
+                    html1 += cardReaderYesNo(answerEd, isYes, no);
+                } else if (type == "2") {
+                    html2 += cardReaderYesNo(answerEd, isYes, no);
+                } else if (type == "3") {
+                    html3 += cardReaderYesNo(answerEd, isYes, no);
+                }
+            });
+            $(".panel").append(html1 + html2 + html3);
+            cardEvent(list);
+        }
+
+        function selectReader(no) {
+            if (selectObjList.length > 0) {
+                $.each(selectObjList, function (i, item) {
+                    if (no == item.no) {
+                        $.each(item.answer, function (j, jItem) {
+                            var newVar = $("." + jItem);
+                            newVar.addClass("hui-primary");
+                            newVar.data("isSelect", 1);
+                        });
+                    }
+                });
+            }
+        }
+
+        function getSelectObj(no) {
+            var rs = null;
+            $.each(selectObjList, function (i, item) {
+                var _questionNo = item.no;
+                if (no == _questionNo) {
+                    rs = item;
+                    return;
+                }
+            });
+            return rs;
+        }
+
+        /**
+         * 保存选择答案，在selectAnswer集合对象里。
+         * 通过 .hui-primary样式获取
+         **/
+        function saveSelectObj(no) {
+            var questionId = "";
+            var selectAnswer = [];
+            var $answerZone = $(".answerZone .paddingBottom .hui-primary");
+            $.each($answerZone, function (i, item) {
+                var selectObjStr = $(item).data("selectObjStr");
+                var split = selectObjStr.split("@");
+                var _answer = split[0];
+                var _questionId = split[1];
+                selectAnswer.push(_answer);
+                questionId = _questionId
+            });
+
+            var selectObj = getSelectObj(no);
+            if (selectObj == null) {
+                selectObj = {
+                    no: no,
+                    questionId: questionId,
+                    answer: selectAnswer
+                };
+                selectObjList.push(selectObj);
+            } else {
+                selectObj.answer = selectAnswer;
+                selectObj.questionId = questionId;
+                $.each(selectObjList, function (i, item) {
+                    var _questionNo = item.no;
+                    if (_questionNo == no) {
+                        selectObjList.remove(item);
+                        selectObjList.push(selectObj);
+                    }
+                });
+            }
+        }
 
 
+        /*****************
+         *    事件        *
+         *****************/
+        function fooerEvent(rs, preNo, curNo, nextNo) {
+            $("#nav-previous").unbind().click(function () {
+                if (preNo == 0) {
+                    hui.alert("第一题了");
+                } else {
+                    // 先保存已选答案（包括没选中）
+                    saveSelectObj(curNo);
+                    // 画页面
+                    pageReader(rs, preNo);
+                    // 上一次结果回显
+                    selectReader(preNo);
+                }
+            });
+            $("#nav-next").unbind().click(function () {
+                if (nextNo > rs.length) {
+                    hui.alert("最后一题了");
+                } else {
+                    // 先保存已选答案（包括没选中）
+                    saveSelectObj(curNo);
+                    // 画页面
+                    pageReader(rs, nextNo);
+                    // 上一次结果回显
+                    selectReader(nextNo);
+                }
+            });
+            $("#nav-card").unbind().click(function () {
+                $(".panel").slideToggle("slow");
+                cardReader(rs);
+            });
+        }
+
+        function answerEvent(type, no) {
+            // hui.accordion(false, false);
+            $(".answerZone .paddingBottom").on("click", function () {
+                var $this = $(this);
+                var $children = $this.children();
+                var isSelect = $children.data("isSelect");
+
+                // 多选题
+                if (type == "2") {
+                    if (isSelect == 1) {
+                        $children.data("isSelect", 0);
+                        $children.removeClass("hui-primary");
+                    } else {
+                        $children.data("isSelect", 1);
+                        $children.addClass("hui-primary");
+                    }
+                } else {
+                    $(".answerZone .paddingBottom .hui-badge").removeClass("hui-primary");
+                    $children.addClass("hui-primary");
+                }
+            });
+        }
+
+        /*****************
+         *    画板       *
+         *****************/
+        function pageReader(questionList, no) {
+            var total = questionList.length;
+            var questionObj = null;
+            $.each(questionList, function (i, item) {
+                if (item.no == no) {
+                    questionObj = item;
+                }
+            });
+            var html = "";
+            var no = questionObj.no;
+            var type = questionObj.type;
+            var answerArr = questionObj.answer;
+            var trueAnswerABCD = questionObj.trueAnswer;
+            var jieXi = questionObj.jieXi;
+            var title = questionObj.title;
+            var questionId = questionObj.questionId;
+
+            html +=
+                '<div class="questionZone">' +
+                '            <div class="hui-badge hui-danger hui-fl">' + transformType[type] + '</div>' +
+                '            <div class="hui-fr" data-question-no="' + no + '">' + no + '/' + total + '</div>' +
+                '            <div style="clear: both"></div>' +
+                '            <div class="body">' + title +
+                '    </div>' +
+                ' </div>';
+
+            var answerHtml =
+                '<div class="answerZone">';
+            $.each(answerArr, function (i, item) {
+                var answerABCD = item.split("@")[0];
+                var answer = item.split("@")[1];
+                var selectObjStr = answerABCD + "@" + questionId;
+                answerHtml +=
+                    '<div class="paddingBottom"  >' +
+                    '    <div class="hui-badge myBadgeABCD ' + answerABCD + '" data-is-select="0" data-select-Obj-str=' + selectObjStr + '>' + answerABCD + '</div>' + answer +
+                    '</div>'
+            });
+            answerHtml += '</div>';
+            html += answerHtml;
+
+            $("#answerZone").empty();
+            $("#answerZone").append(html);
+
+            answerEvent(type, no);
+            fooerEvent(questionList, no - 1, no, no + 1);
+        }
+
+
+        function getUserAnswer() {
+            $.ajax({
+                type: "GET",
+                url: urls.queryUserAnswer,
+                dataType: 'json',
+                async: false,//使用同步的方式,true为异步方式
+                success: function (rs) {
+                    userAnswerData = rs;
+                }
+            });
+        }
+
+        /*****************
+         *    交卷       *
+         *****************/
+        function paper() {
+            hui.confirm('您确认要交卷吗？', ['取消', '确定'], function () {
+                var no = $(".questionZone .hui-fr").data("questionNo");
+                saveSelectObj(no);
+                var selectAnswer = [];
+                if (selectObjList.length > 0) {
+                    $.each(selectObjList, function (i, item) {
+                        $.each(item.answer, function (j, jItem) {
+                            selectAnswer.push(jItem + "@" + item.questionId);
+                        });
+                    });
+                }
+                if (selectAnswer.length == 0) {
+                    hui.confirm('您没有答题确认要交卷吗？', ['取消', '确定'],
+                        function () {
+                            paperSave(selectAnswer);
+                        }, function () {
+                            console.log('取消后执行...');
+                        });
+                } else {
+                    paperSave(selectAnswer);
+                }
+            }, function () {
+                console.log('取消后执行...');
+            });
+        }
+
+        function paperSave(selectAnswer) {
+            $.ajax({
+                type: "POST",
+                url: urls.saveScore,
+                dataType: 'json',
+                data: {
+                    "idList": selectAnswer, "rollId": $("#rollId").text()
+                },
+                success: function (rs) {
+                    if (rs) {
+                        window.location.href = urls.scoreApp;
+                    }
+                }
+            });
+        }
+
+        function paperEvent() {
+            $(".paper").click(function () {
+                paper();
+            });
+            $(".toYa").click(function () {
+                paper();
+            });
+        }
+
+
+        /*****************
+         *    主框架      *
+         *****************/
+        function reader(rs) {
+            pageReader(rs, 1);
+            getUserAnswer();
+            fooerEvent(rs, 0, 1, 2);
+            // paperEvent();
+        }
+
+        function getData() {
+            hui.postJSON(
+                urls.getData,
+                param,
+                function (rs) {
+                    questionList = rs;
+                    reader(rs);
+                },
+                function (e) {
+                    hui.iconToast('读取消息失败', 'warn');
+                }
+            );
+        }
+
+        function main() {
+            getData();
+        }
+
+        main();
+    });
+</script>
 
 </body>
 

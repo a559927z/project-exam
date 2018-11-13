@@ -27,7 +27,8 @@ public class AnswerVo {
     private List<String> answer;
     private List<String> trueAnswer;
     private String jieXi;
-
     private String type;
+
+    private String rollId;
 
 }

@@ -3,20 +3,18 @@ package com.ks.controller;
 import com.ks.constants.EisWebContext;
 import com.ks.dao.ExamRollUserMapper;
 import com.ks.dao.ExamRollUserMapperExt;
-import com.ks.dto.ExamRollUser;
-import com.ks.dto.ExamUserInfo;
-import com.ks.dto.KVItemDto;
+import com.ks.dto.*;
 import com.ks.service.AppRollService;
 import com.ks.service.CommonService;
+import com.ks.vo.AnswerVo;
 import net.chinahrd.utils.CollectionKit;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -130,4 +128,57 @@ public class AppRollController extends BaseController {
         }
         return rs;
     }
+
+
+    /**
+     * 获取卷
+     *
+     * @param rollId
+     * @return
+     */
+    @ResponseBody
+    @PostMapping
+    @RequestMapping("/getData")
+    public List<AnswerVo> getData(String rollId) {
+        return appRollService.getData(rollId);
+    }
+
+
+    /**
+     * 用户已答题答案
+     *
+     * @param rollId
+     * @return
+     */
+    @ResponseBody
+    @GetMapping
+    @RequestMapping("/queryUserAnswer")
+    public List<ExamRollUserAnswer> queryUserAnswer(String rollId) {
+        String userId = EisWebContext.getUserInfo().getAccount();
+        return appRollService.queryUserAnswer(rollId, userId);
+    }
+
+    /**
+     * 交卷-保存
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/saveScore")
+    public Boolean saveScore(@RequestParam(value = "idList[]", required = false) List<String> idList, String roll,
+                             HttpServletRequest request) {
+        String enName = getVisitor(request).getEnName();
+        // 没答题，返回true，后台不处理，前台跳转页面。
+        if (CollectionUtils.isEmpty(idList)) {
+            return true;
+        }
+        try {
+            appRollService.saveScore(idList, roll, enName);
+            return true;
+        } catch (Exception e) {
+            commonService.saveLog(e.toString(), module + "/saveScore", enName);
+            return false;
+        }
+    }
+
 }

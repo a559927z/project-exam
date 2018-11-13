@@ -2,15 +2,21 @@ package com.ks.dao;
 
 import com.ks.dto.ExamRollUserAnswer;
 import com.ks.dto.ExamRollUserAnswerExample;
+import com.ks.dto.ExamRollUserAnswerKey;
 import java.util.List;
-import org.apache.ibatis.annotations.Param;
 
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+@Mapper
+@Repository("examRollUserAnswerMapper")
 public interface ExamRollUserAnswerMapper {
     long countByExample(ExamRollUserAnswerExample example);
 
     int deleteByExample(ExamRollUserAnswerExample example);
 
-    int deleteByPrimaryKey(String userAnswerId);
+    int deleteByPrimaryKey(ExamRollUserAnswerKey key);
 
     int insert(ExamRollUserAnswer record);
 
@@ -18,7 +24,7 @@ public interface ExamRollUserAnswerMapper {
 
     List<ExamRollUserAnswer> selectByExample(ExamRollUserAnswerExample example);
 
-    ExamRollUserAnswer selectByPrimaryKey(String userAnswerId);
+    ExamRollUserAnswer selectByPrimaryKey(ExamRollUserAnswerKey key);
 
     int updateByExampleSelective(@Param("record") ExamRollUserAnswer record, @Param("example") ExamRollUserAnswerExample example);
 

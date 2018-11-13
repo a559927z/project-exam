@@ -314,73 +314,73 @@ public class ExamRollUserAnswerExample {
             return (Criteria) this;
         }
 
-        public Criteria andQuestionBankIdIsNull() {
-            addCriterion("question_bank_id is null");
+        public Criteria andRollIdIsNull() {
+            addCriterion("roll_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andQuestionBankIdIsNotNull() {
-            addCriterion("question_bank_id is not null");
+        public Criteria andRollIdIsNotNull() {
+            addCriterion("roll_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andQuestionBankIdEqualTo(String value) {
-            addCriterion("question_bank_id =", value, "questionBankId");
+        public Criteria andRollIdEqualTo(String value) {
+            addCriterion("roll_id =", value, "rollId");
             return (Criteria) this;
         }
 
-        public Criteria andQuestionBankIdNotEqualTo(String value) {
-            addCriterion("question_bank_id <>", value, "questionBankId");
+        public Criteria andRollIdNotEqualTo(String value) {
+            addCriterion("roll_id <>", value, "rollId");
             return (Criteria) this;
         }
 
-        public Criteria andQuestionBankIdGreaterThan(String value) {
-            addCriterion("question_bank_id >", value, "questionBankId");
+        public Criteria andRollIdGreaterThan(String value) {
+            addCriterion("roll_id >", value, "rollId");
             return (Criteria) this;
         }
 
-        public Criteria andQuestionBankIdGreaterThanOrEqualTo(String value) {
-            addCriterion("question_bank_id >=", value, "questionBankId");
+        public Criteria andRollIdGreaterThanOrEqualTo(String value) {
+            addCriterion("roll_id >=", value, "rollId");
             return (Criteria) this;
         }
 
-        public Criteria andQuestionBankIdLessThan(String value) {
-            addCriterion("question_bank_id <", value, "questionBankId");
+        public Criteria andRollIdLessThan(String value) {
+            addCriterion("roll_id <", value, "rollId");
             return (Criteria) this;
         }
 
-        public Criteria andQuestionBankIdLessThanOrEqualTo(String value) {
-            addCriterion("question_bank_id <=", value, "questionBankId");
+        public Criteria andRollIdLessThanOrEqualTo(String value) {
+            addCriterion("roll_id <=", value, "rollId");
             return (Criteria) this;
         }
 
-        public Criteria andQuestionBankIdLike(String value) {
-            addCriterion("question_bank_id like", value, "questionBankId");
+        public Criteria andRollIdLike(String value) {
+            addCriterion("roll_id like", value, "rollId");
             return (Criteria) this;
         }
 
-        public Criteria andQuestionBankIdNotLike(String value) {
-            addCriterion("question_bank_id not like", value, "questionBankId");
+        public Criteria andRollIdNotLike(String value) {
+            addCriterion("roll_id not like", value, "rollId");
             return (Criteria) this;
         }
 
-        public Criteria andQuestionBankIdIn(List<String> values) {
-            addCriterion("question_bank_id in", values, "questionBankId");
+        public Criteria andRollIdIn(List<String> values) {
+            addCriterion("roll_id in", values, "rollId");
             return (Criteria) this;
         }
 
-        public Criteria andQuestionBankIdNotIn(List<String> values) {
-            addCriterion("question_bank_id not in", values, "questionBankId");
+        public Criteria andRollIdNotIn(List<String> values) {
+            addCriterion("roll_id not in", values, "rollId");
             return (Criteria) this;
         }
 
-        public Criteria andQuestionBankIdBetween(String value1, String value2) {
-            addCriterion("question_bank_id between", value1, value2, "questionBankId");
+        public Criteria andRollIdBetween(String value1, String value2) {
+            addCriterion("roll_id between", value1, value2, "rollId");
             return (Criteria) this;
         }
 
-        public Criteria andQuestionBankIdNotBetween(String value1, String value2) {
-            addCriterion("question_bank_id not between", value1, value2, "questionBankId");
+        public Criteria andRollIdNotBetween(String value1, String value2) {
+            addCriterion("roll_id not between", value1, value2, "rollId");
             return (Criteria) this;
         }
 

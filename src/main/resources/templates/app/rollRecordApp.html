@@ -25,6 +25,7 @@
     var webRoot = G_WEB_ROOT;
     var urls = {
         queryRecordByUserId: webRoot + '/app/roll/queryRecordByUserId',
+        toAnswer: webRoot + '/app/roll/toAnswer?rollId=',
     }
 
     /**
@@ -32,13 +33,13 @@
      * @param courseId
      */
     function resetPage(courseId) {
-        // getData();
+        getData();
     }
 
     function event() {
         $(".hui-list-text").on('click', function () {
             var rollId = $(this).data("roll-id");
-            console.log(rollId);
+            window.location.href = urls.toAnswer + rollId;
         });
     }
 
@@ -59,10 +60,9 @@
             urls.queryRecordByUserId,
             function (rs) {
                 if (rs.k) {
-                    // console.log(rs.v);
                     reader(rs.v);
                 } else {
-                    alert("没有组卷记录");
+                    hui.iconToast('没有组卷记录', 'warn');
                 }
             }
         );
