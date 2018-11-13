@@ -4,7 +4,7 @@
 <body>
 <style type="text/css">
 
-    #randomZone {
+    #recordZone {
         height: calc(100vh - 100px);
         background: #fff;
     }
@@ -12,22 +12,10 @@
 
 </style>
 
+
 <div th:replace="menuApp::copy"></div>
-<div class="hui-list" style="">
-    <ul>
-        <li>
-            <div class="hui-list-text">li1</div>
-        </li>
-        <li>
-            <div class="hui-list-text">li2</div>
-        </li>
-        <li>
-            <div class="hui-list-text">li3</div>
-        </li>
-        <li>
-            <div class="hui-list-text">li4</div>
-        </li>
-    </ul>
+<div id="recordZone" class="hui-list ">
+    <ul></ul>
 </div>
 
 <div th:replace="footApp::copy"></div>
@@ -44,19 +32,26 @@
      * @param courseId
      */
     function resetPage(courseId) {
-        event(courseId);
+        // getData();
     }
 
+    function event() {
+        $(".hui-list-text").on('click', function () {
+            var rollId = $(this).data("roll-id");
+            console.log(rollId);
+        });
+    }
 
-    function event(courseId) {
-        $(".randomBtn").unbind().bind("click", function () {
-            if (courseId != null) {
-                getData(courseId);
-            }
+    function reader(list) {
+        var html = "";
+        $.each(list, function (index, item) {
+            html +=
+                '<li>' +
+                '    <div class="hui-list-text" data-roll-id="' + item.rollId + '">' + item.createdDate + '</div>' +
+                '</li>';
         });
-        $(".recadBtn").unbind().bind("click", function () {
-            window.location.href = urls.toAnswer + rs.v;
-        });
+        $("#recordZone ul").append(html);
+        event();
     }
 
     function getData() {
@@ -64,15 +59,14 @@
             urls.queryRecordByUserId,
             function (rs) {
                 if (rs.k) {
-                    console.log(rs.v);
+                    // console.log(rs.v);
+                    reader(rs.v);
                 } else {
                     alert("没有组卷记录");
                 }
             }
         );
-
     }
-
 
     function init() {
         getData();

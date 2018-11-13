@@ -121,7 +121,7 @@ public class AppRollServiceImpl implements AppRollService {
                     BeanUtils.copyProperties(n, dto);
                     dto.setId(Identities.uuid2());
                     dto.setRollId(i.getRollId());
-                    examRollAnswerMapper.insertSelective(dto);
+                    examRollAnswerMapper.insert(dto);
                 });
             }
         });

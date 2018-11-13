@@ -124,12 +124,12 @@
         hui.getJSON(
             urls.getData,
             function (rs) {
-                reader(rs);
+                readerMenu(rs);
                 hui.slideMenu();
             }
         );
 
-        function reader(rs) {
+        function readerMenu(rs) {
             if (rs.v1 == "0" && rs.v2 == "0" && rs.v3 == "0" &&
                 rs.v4 == "0" && rs.v5 == "0" && rs.v6 == "0") {
                 $(".v1-6").remove();
