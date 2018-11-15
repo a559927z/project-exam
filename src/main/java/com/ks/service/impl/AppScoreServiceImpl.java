@@ -5,16 +5,12 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.ks.constants.QuestionBankTypeEnum;
-import com.ks.dao.ExamQuestionBankAnswerMapper;
-import com.ks.dao.ExamQuestionBankMapper;
-import com.ks.dao.ExamQuestionBankScoreMapper;
-import com.ks.dao.ExamUserAnswerYaMapper;
+import com.ks.dao.*;
 import com.ks.dto.*;
 import com.ks.service.AppScoreService;
 import com.ks.vo.ScoreVo;
 import lombok.extern.slf4j.Slf4j;
 import net.chinahrd.utils.ArithUtil;
-import net.chinahrd.utils.CollectionKit;
 import net.chinahrd.utils.Identities;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +46,10 @@ public class AppScoreServiceImpl implements AppScoreService {
 
     @Autowired
     private ExamQuestionBankMapper examQuestionBankMapper;
+
+    @Autowired
+    private ExamRollUserAnswerMapper examRollUserAnswerMapper;
+
 
     /**
      * @param idList
@@ -135,53 +135,51 @@ public class AppScoreServiceImpl implements AppScoreService {
             } else {
                 readyDB.setIsYes(false);
             }
-            // TODO 插入先有的就更新
+            ExamUserAnswerYaExample delExample = new ExamUserAnswerYaExample();
+            delExample.createCriteria().andQuestionIdEqualTo(readyDB.getQuestionId()).andUserIdEqualTo(readyDB.getUserId());
+            examUserAnswerYaMapper.deleteByExample(delExample);
             examUserAnswerYaMapper.insertSelective(readyDB);
         }
     }
 
-
     @Override
-    public List<ScoreVo> calcScore(String questionBankId, String enName) {
-        ExamUserAnswerYaExample uaYaExampl = new ExamUserAnswerYaExample();
-        uaYaExampl.createCriteria()
-                .andQuestionBankIdEqualTo(questionBankId)
-                .andUserIdEqualTo(enName)
-        ;
-        List<ExamUserAnswerYa> userAnswerYaList = examUserAnswerYaMapper.selectByExample(uaYaExampl);
-        if (CollectionUtils.isEmpty(userAnswerYaList)) {
+    public List<ScoreVo> calcRollScore(String rollId, String userId) {
+        ExamRollUserAnswerExample ruaExample = new ExamRollUserAnswerExample();
+        ruaExample.createCriteria().andRollIdEqualTo(rollId).andUserIdEqualTo(userId);
+        List<ExamRollUserAnswer> ruaList = examRollUserAnswerMapper.selectByExample(ruaExample);
+        if (CollectionUtils.isEmpty(ruaList)) {
             log.info("没有答题");
         }
 
         //根据题目类型分组
-        Map<String, List<ExamUserAnswerYa>> dateListMap =
-                userAnswerYaList
+        Map<String, List<ExamRollUserAnswer>> dateListMap =
+                ruaList
                         .stream()
-                        .collect(Collectors.groupingBy(ExamUserAnswerYa::getType));
-
-        Set<Map.Entry<String, List<ExamUserAnswerYa>>> entries = dateListMap.entrySet();
-
+                        .collect(Collectors.groupingBy(ExamRollUserAnswer::getType));
+        Set<Map.Entry<String, List<ExamRollUserAnswer>>> entries = dateListMap.entrySet();
         List<ScoreVo> rs = Lists.newArrayList();
         int sRight = 0, sWrong = 0;
         int mRight = 0, mWrong = 0;
         int ynRight = 0, ynWrong = 0;
-        List<ExamUserAnswerYa> sUaYaList = dateListMap.get(QuestionBankTypeEnum.SINGLE_QUESTION.getCode());
-        List<ExamUserAnswerYa> mUaYaList = dateListMap.get(QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode());
-        List<ExamUserAnswerYa> ynUaYaList = dateListMap.get(QuestionBankTypeEnum.YES_NO_QUESTION.getCode());
+        List<ExamRollUserAnswer> sUaYaList = dateListMap.get(QuestionBankTypeEnum.SINGLE_QUESTION.getCode());
+        List<ExamRollUserAnswer> mUaYaList = dateListMap.get(QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode());
+        List<ExamRollUserAnswer> ynUaYaList = dateListMap.get(QuestionBankTypeEnum.YES_NO_QUESTION.getCode());
+
+
         if (CollectionUtils.isNotEmpty(sUaYaList)) {
-            ScoreVo vo1 = match(sUaYaList, QuestionBankTypeEnum.SINGLE_QUESTION.getCode());
+            ScoreVo vo1 = matchRoll(sUaYaList, QuestionBankTypeEnum.SINGLE_QUESTION.getCode());
             sRight = vo1.getRight();
             sWrong = vo1.getWrong();
             rs.add(vo1);
         }
         if (CollectionUtils.isNotEmpty(mUaYaList)) {
-            ScoreVo vo2 = match(mUaYaList, QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode());
+            ScoreVo vo2 = matchRoll(mUaYaList, QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode());
             mRight = vo2.getRight();
             mWrong = vo2.getWrong();
             rs.add(vo2);
         }
         if (CollectionUtils.isNotEmpty(ynUaYaList)) {
-            ScoreVo vo3 = match(ynUaYaList, QuestionBankTypeEnum.YES_NO_QUESTION.getCode());
+            ScoreVo vo3 = matchRoll(ynUaYaList, QuestionBankTypeEnum.YES_NO_QUESTION.getCode());
             ynRight = vo3.getRight();
             ynWrong = vo3.getWrong();
             rs.add(vo3);
@@ -190,7 +188,55 @@ public class AppScoreServiceImpl implements AppScoreService {
         return rs;
     }
 
-    private ScoreVo match(List<ExamUserAnswerYa> uaYaList, String type) {
+
+    @Override
+    public List<ScoreVo> calcYaScore(String questionBankId, String userId) {
+        ExamUserAnswerYaExample uaYaExample = new ExamUserAnswerYaExample();
+        uaYaExample.createCriteria()
+                .andQuestionBankIdEqualTo(questionBankId)
+                .andUserIdEqualTo(userId);
+        List<ExamUserAnswerYa> yaUserAnswerList = examUserAnswerYaMapper.selectByExample(uaYaExample);
+        if (CollectionUtils.isEmpty(yaUserAnswerList)) {
+            log.info("没有答题");
+        }
+        //根据题目类型分组
+        Map<String, List<ExamUserAnswerYa>> dateListMap =
+                yaUserAnswerList
+                        .stream()
+                        .collect(Collectors.groupingBy(ExamUserAnswerYa::getType));
+        Set<Map.Entry<String, List<ExamUserAnswerYa>>> entries = dateListMap.entrySet();
+        List<ScoreVo> rs = Lists.newArrayList();
+        int sRight = 0, sWrong = 0;
+        int mRight = 0, mWrong = 0;
+        int ynRight = 0, ynWrong = 0;
+        List<ExamUserAnswerYa> sUaYaList = dateListMap.get(QuestionBankTypeEnum.SINGLE_QUESTION.getCode());
+        List<ExamUserAnswerYa> mUaYaList = dateListMap.get(QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode());
+        List<ExamUserAnswerYa> ynUaYaList = dateListMap.get(QuestionBankTypeEnum.YES_NO_QUESTION.getCode());
+
+
+        if (CollectionUtils.isNotEmpty(sUaYaList)) {
+            ScoreVo vo1 = matchYa(sUaYaList, QuestionBankTypeEnum.SINGLE_QUESTION.getCode());
+            sRight = vo1.getRight();
+            sWrong = vo1.getWrong();
+            rs.add(vo1);
+        }
+        if (CollectionUtils.isNotEmpty(mUaYaList)) {
+            ScoreVo vo2 = matchYa(mUaYaList, QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode());
+            mRight = vo2.getRight();
+            mWrong = vo2.getWrong();
+            rs.add(vo2);
+        }
+        if (CollectionUtils.isNotEmpty(ynUaYaList)) {
+            ScoreVo vo3 = matchYa(ynUaYaList, QuestionBankTypeEnum.YES_NO_QUESTION.getCode());
+            ynRight = vo3.getRight();
+            ynWrong = vo3.getWrong();
+            rs.add(vo3);
+        }
+        rs.add(calcRatio((sRight + mRight + ynRight), (sWrong + mWrong + ynWrong), "9999"));
+        return rs;
+    }
+
+    private ScoreVo matchYa(List<ExamUserAnswerYa> uaYaList, String type) {
         int right = 0;
         int wrong = 0;
         for (ExamUserAnswerYa s : uaYaList) {
@@ -203,188 +249,19 @@ public class AppScoreServiceImpl implements AppScoreService {
         return calcRatio(right, wrong, type);
     }
 
-    /**
-     * TODO idList 相同题目合拼，save时，计算答对还是错。
-     *
-     * @param idList
-     * @param questionBankId
-     * @param enName
-     */
-//    @Override
-    @Deprecated
-    public void saveScore2(List<String> idList, String questionBankId, String enName) throws Exception {
-        if (CollectionUtils.isEmpty(idList)) {
-            log.info("没有答题");
-        }
-
-        ExamQuestionBankExample qbExample = new ExamQuestionBankExample();
-        qbExample.createCriteria().andQuestionBankIdEqualTo(questionBankId);
-        List<ExamQuestionBank> examQuestionBankList = examQuestionBankMapper.selectByExample(qbExample);
-        String courseId = examQuestionBankList.get(0).getCourseId();
-
-//        ExamUserAnswerYaExample uaYaExampl = new ExamUserAnswerYaExample();
-//        uaYaExampl.createCriteria().andQuestionBankIdEqualTo(questionBankId).andUserIdEqualTo(enName);
-//        examUserAnswerYaMapper.deleteByExample(uaYaExampl);
-
-        List<ExamUserAnswerYa> userAnswerYaList = Lists.newArrayList();
-        idList.forEach(i -> {
-            ArrayList<String> strings = Lists.newArrayList(Splitter.on("@").omitEmptyStrings().trimResults().split(i));
-            String selectAnswer = strings.get(0);
-            String questionId = strings.get(1);
-
-            ExamUserAnswerYa dto = new ExamUserAnswerYa();
-            dto.setUserAnswerId(Identities.uuid2());
-            dto.setUserId(enName);
-            dto.setQuestionBankId(questionBankId);
-            dto.setQuestionId(questionId);
-            dto.setUserAnswer(selectAnswer);
-            dto.setCourseId(courseId);
-            examQuestionBankList.forEach(j -> {
-                if (questionId.equals(j.getQuestionId())) {
-                    dto.setType(j.getType());
-                }
-            });
-            userAnswerYaList.add(dto);
-            examUserAnswerYaMapper.insertSelective(dto);
-        });
-    }
-
-
-    //    @Override
-    @Deprecated
-    public List<ScoreVo> calcScore2(String questionBankId, String enName) {
-        ExamUserAnswerYaExample uaYaExampl = new ExamUserAnswerYaExample();
-        uaYaExampl.createCriteria().andQuestionBankIdEqualTo(questionBankId).andUserIdEqualTo(enName);
-        List<ExamUserAnswerYa> userAnswerYaList = examUserAnswerYaMapper.selectByExample(uaYaExampl);
-        if (CollectionUtils.isEmpty(userAnswerYaList)) {
-            log.info("没有答题");
-        }
-
-        ExamQuestionBankAnswerExample qbAnswerExample = new ExamQuestionBankAnswerExample();
-        qbAnswerExample.createCriteria().andQuestionBankIdEqualTo(questionBankId).andIsanswerEqualTo(true);
-        List<ExamQuestionBankAnswer> qbAnswerList = examQuestionBankAnswerMapper.selectByExample(qbAnswerExample);
-
-        List<ScoreVo> rs = Lists.newArrayList();
-        //  用户答案
-        Multimap<String, String> sUaYaMultiMap = ArrayListMultimap.create();
-        Multimap<String, String> mUaYaMultiMap = ArrayListMultimap.create();
-        Multimap<String, String> yUaYaMultiMap = ArrayListMultimap.create();
-        userAnswerYaList.forEach(n -> {
-            String questionId = n.getQuestionId();
-            String userAnswer = n.getUserAnswer();
-            String type = n.getType();
-            if (QuestionBankTypeEnum.SINGLE_QUESTION.getCode().equals(type)) {
-                sUaYaMultiMap.put(questionId, userAnswer);
-            }
-            if (QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode().equals(type)) {
-                mUaYaMultiMap.put(questionId, userAnswer);
-            }
-            if (QuestionBankTypeEnum.YES_NO_QUESTION.getCode().equals(type)) {
-                yUaYaMultiMap.put(questionId, userAnswer);
-            }
-        });
-
-        //  答案
-        Multimap<String, String> sQbAnswerMultiMap = ArrayListMultimap.create();
-        Multimap<String, String> mQbAnswerMultiMap = ArrayListMultimap.create();
-        Multimap<String, String> yQbAnswerMultiMap = ArrayListMultimap.create();
-        qbAnswerList.forEach(n -> {
-            String questionId = n.getQuestionId();
-            String userAnswer = n.getAnswerno();
-            String type = n.getType();
-            if (QuestionBankTypeEnum.SINGLE_QUESTION.getCode().equals(type)) {
-                sQbAnswerMultiMap.put(questionId, userAnswer);
-            }
-            if (QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode().equals(type)) {
-                mQbAnswerMultiMap.put(questionId, userAnswer);
-            }
-            if (QuestionBankTypeEnum.YES_NO_QUESTION.getCode().equals(type)) {
-                yQbAnswerMultiMap.put(questionId, userAnswer);
-            }
-        });
-
-        int sRight = 0, sWrong = 0;
-        int mRight = 0, mWrong = 0;
-        int ynRight = 0, ynWrong = 0;
-        if (sUaYaMultiMap.size() > 0) {
-            ScoreVo vo1 = match(sUaYaMultiMap, sQbAnswerMultiMap, QuestionBankTypeEnum.SINGLE_QUESTION.getCode());
-            sRight = vo1.getRight();
-            sWrong = vo1.getWrong();
-            rs.add(vo1);
-        }
-        if (mUaYaMultiMap.size() > 0) {
-            ScoreVo vo2 = match(mUaYaMultiMap, mQbAnswerMultiMap, QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode());
-            mRight = vo2.getRight();
-            mWrong = vo2.getWrong();
-            rs.add(vo2);
-        }
-        if (yUaYaMultiMap.size() > 0) {
-            ScoreVo vo3 = match(yUaYaMultiMap, yQbAnswerMultiMap, QuestionBankTypeEnum.YES_NO_QUESTION.getCode());
-            ynRight = vo3.getRight();
-            ynWrong = vo3.getWrong();
-            rs.add(vo3);
-        }
-        rs.add(calcRatio((sRight + mRight + ynRight), (sWrong + mWrong + ynWrong), "9999"));
-        return rs;
-    }
-
-
-    /**
-     * 计算正确率
-     *
-     * @param uaYaMultiMap
-     * @param qbAnswerMultiMap
-     * @param type
-     * @return
-     */
-    @Deprecated
-    private ScoreVo match(Multimap<String, String> uaYaMultiMap, Multimap<String, String> qbAnswerMultiMap, String type) {
+    private ScoreVo matchRoll(List<ExamRollUserAnswer> uaYaList, String type) {
         int right = 0;
         int wrong = 0;
-        Set<Map.Entry<String, Collection<String>>> entries = uaYaMultiMap.asMap().entrySet();
-        for (Map.Entry<String, Collection<String>> entry : entries) {
-            String questionId = entry.getKey();
-
-            Collection<String> qAnswerList = qbAnswerMultiMap.get(questionId);
-            String trueAnswerStr = CollectionKit.convertToString(qAnswerList, "");
-            Collection<String> qUaYaList = entry.getValue();
-            boolean yes = false;
-            for (String uaAnswer : qUaYaList) {
-                if (StringUtils.containsAny(uaAnswer, trueAnswerStr)) {
-                    yes = true;
-                } else {
-                    yes = false;
-                }
-            }
-            if (yes) {
+        for (ExamRollUserAnswer s : uaYaList) {
+            if (s.getIsYes()) {
                 right++;
             } else {
                 wrong++;
             }
         }
-        ScoreVo scoreVo = calcRatio(right, wrong, type);
-        return scoreVo;
-
+        return calcRatio(right, wrong, type);
     }
 
-
-    /**
-     * 计算得分
-     *
-     * @param right
-     * @param qbScoreList
-     * @return
-     */
-    private double calcScore(int right, String type, List<ExamQuestionBankScore> qbScoreList) {
-        for (ExamQuestionBankScore qbScore : qbScoreList) {
-            String qbType = qbScore.getQuestionBankType();
-            if (qbType.equals(type)) {
-                Double score = qbScore.getScore();
-                return ArithUtil.mul(right, score);
-            }
-        }
-        return 0.0;
-    }
 
     /**
      * 计算正确率
@@ -404,4 +281,5 @@ public class AppScoreServiceImpl implements AppScoreService {
         );
         return vo;
     }
+
 }

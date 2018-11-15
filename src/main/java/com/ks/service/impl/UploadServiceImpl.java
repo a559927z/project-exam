@@ -4,10 +4,14 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.ks.constants.EisWebContext;
 import com.ks.constants.QuestionBankConstants;
+import com.ks.constants.QuestionBankCourseEnum;
+import com.ks.constants.QuestionBankTypeEnum;
 import com.ks.dao.ExamQuestionBankAnswerMapper;
 import com.ks.dao.ExamQuestionBankMapper;
+import com.ks.dao.ExamQuestionBankScoreMapper;
 import com.ks.dto.ExamQuestionBank;
 import com.ks.dto.ExamQuestionBankAnswer;
+import com.ks.dto.ExamQuestionBankScore;
 import com.ks.service.UploadService;
 import com.ks.utils.StringUtil;
 import net.chinahrd.utils.Identities;
@@ -40,6 +44,9 @@ public class UploadServiceImpl implements UploadService {
     @Autowired
     private ExamQuestionBankAnswerMapper examQuestionBankAnswerMapper;
 
+    @Autowired
+    private ExamQuestionBankScoreMapper examQuestionBankScoreMapper;
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int insertSelective(ExamQuestionBank dto) {
@@ -64,7 +71,35 @@ public class UploadServiceImpl implements UploadService {
         } catch (Exception e) {
             throw e;
         }
+
+        saveScore(dto);
         return rs;
+    }
+
+    private void saveScore(ExamQuestionBank dto) {
+        String questionBankId = dto.getQuestionBankId();
+        String courseId = dto.getCourseId();
+
+        QuestionBankCourseEnum enumByCode = QuestionBankCourseEnum.getEnumByCode(courseId);
+
+        ExamQuestionBankScore sDto = new ExamQuestionBankScore();
+        sDto.setQuestionBankId(questionBankId);
+        sDto.setQuestionBankType(QuestionBankTypeEnum.SINGLE_QUESTION.getCode());
+        sDto.setScore(enumByCode.getSScore());
+        examQuestionBankScoreMapper.insertSelective(sDto);
+
+        ExamQuestionBankScore mDto = new ExamQuestionBankScore();
+        mDto.setQuestionBankId(questionBankId);
+        mDto.setQuestionBankType(QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode());
+        mDto.setScore(enumByCode.getMScore());
+        examQuestionBankScoreMapper.insertSelective(mDto);
+
+        ExamQuestionBankScore ynDto = new ExamQuestionBankScore();
+        ynDto.setQuestionBankId(questionBankId);
+        ynDto.setQuestionBankType(QuestionBankTypeEnum.YES_NO_QUESTION.getCode());
+        ynDto.setScore(enumByCode.getYnScore());
+        examQuestionBankScoreMapper.insertSelective(ynDto);
+
     }
 
     private List<ExamQuestionBankAnswer> processTrueAnswer(ExamQuestionBank entry) {

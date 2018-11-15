@@ -152,7 +152,7 @@
             getData: webRoot + '/app/roll/getData',
             queryUserAnswer: webRoot + '/app/roll/queryUserAnswer?rollId=' + $("#rollId").text(),
             saveScore: webRoot + '/app/roll/saveScore',
-            scoreApp: webRoot + '/app/roll/toIndex?rollId=' + $("#rollId").text(),
+            scoreApp: webRoot + '/app/score/toIndexForRoll?rollId=' + $("#rollId").text(),
         }
         var transformType = ['', '单选题', '多选题', '是非题'];
         var param = {
@@ -472,7 +472,7 @@
             pageReader(rs, 1);
             getUserAnswer();
             fooerEvent(rs, 0, 1, 2);
-            // paperEvent();
+            paperEvent();
         }
 
         function getData() {

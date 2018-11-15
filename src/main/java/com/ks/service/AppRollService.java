@@ -3,6 +3,7 @@ package com.ks.service;
 import com.ks.dto.ExamRollUserAnswer;
 import com.ks.dto.ScreenTiDto;
 import com.ks.vo.AnswerVo;
+import com.ks.vo.ScoreVo;
 
 import java.util.List;
 
@@ -48,8 +49,17 @@ public interface AppRollService {
      * 入库 用户答案
      *
      * @param idList
-     * @param roll
+     * @param rollId
      * @param enName
      */
-    void saveScore(List<String> idList, String roll, String enName);
+    void saveScore(List<String> idList, String rollId, String enName);
+
+    /**
+     * 计算成绩
+     *
+     * @param rollId
+     * @param enName
+     * @return
+     */
+    List<ScoreVo> calcScore(String rollId, String enName);
 }

@@ -7,6 +7,7 @@ import com.ks.dto.*;
 import com.ks.service.AppRollService;
 import com.ks.service.CommonService;
 import com.ks.vo.AnswerVo;
+import com.ks.vo.ScoreVo;
 import net.chinahrd.utils.CollectionKit;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,7 +166,8 @@ public class AppRollController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/saveScore")
-    public Boolean saveScore(@RequestParam(value = "idList[]", required = false) List<String> idList, String roll,
+    public Boolean saveScore(@RequestParam(value = "idList[]", required = false) List<String> idList,
+                             String rollId,
                              HttpServletRequest request) {
         String enName = getVisitor(request).getEnName();
         // 没答题，返回true，后台不处理，前台跳转页面。
@@ -173,12 +175,15 @@ public class AppRollController extends BaseController {
             return true;
         }
         try {
-            appRollService.saveScore(idList, roll, enName);
+            appRollService.saveScore(idList, rollId, enName);
             return true;
         } catch (Exception e) {
             commonService.saveLog(e.toString(), module + "/saveScore", enName);
             return false;
         }
     }
+
+
+
 
 }

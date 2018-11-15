@@ -1,6 +1,9 @@
 package com.ks.service.impl;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.ks.constants.EisWebContext;
 import com.ks.constants.QuestionBankCourseEnum;
@@ -10,18 +13,17 @@ import com.ks.service.AppRollService;
 import com.ks.service.CommonService;
 import com.ks.utils.RandomUtil;
 import com.ks.vo.AnswerVo;
+import com.ks.vo.ScoreVo;
 import lombok.extern.slf4j.Slf4j;
 import net.chinahrd.utils.CollectionKit;
 import net.chinahrd.utils.Identities;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Title: ${type_name} <br/>
@@ -109,13 +111,7 @@ public class AppRollServiceImpl implements AppRollService {
 
     @Override
     public List<AnswerVo> getData(String rollId) {
-        ExamRollUserExample ruExample = new ExamRollUserExample();
-        ruExample.createCriteria().andRollIdEqualTo(rollId);
-        ruExample.setOrderByClause("type asc");
-        List<ExamRollUser> ruList = examRollUserMapper.selectByExample(ruExample);
-        if (CollectionKit.isEmpty(ruList)) {
-            commonService.saveLog("没找到卷,rollId" + rollId, module + "/getData", "");
-        }
+        List<ExamRollUser> ruList = this.queryRoll(rollId);
         ExamRollAnswerExample raExample = new ExamRollAnswerExample();
         raExample.createCriteria().andRollIdEqualTo(rollId);
         List<ExamRollAnswer> rAnswerList = examRollAnswerMapper.selectByExample(raExample);
@@ -163,15 +159,140 @@ public class AppRollServiceImpl implements AppRollService {
 
     /**
      * 交卷入库
-     * TODO
      *
      * @param idList
-     * @param roll
+     * @param rollId
      * @param enName
      */
     @Override
-    public void saveScore(List<String> idList, String roll, String enName) {
+    public void saveScore(List<String> idList, String rollId, String enName) {
+        if (CollectionUtils.isEmpty(idList)) {
+            commonService.saveLog("没有答题，交白卷,rollId" + rollId, module + "/saveScore", "");
+            log.info("没有答题");
+        }
+        List<ExamRollUser> ruList = this.queryRoll(rollId);
+        String courseId = ruList.get(0).getCourseId();
 
+        List<ExamRollUserAnswer> userAnswerList = Lists.newArrayList();
+        idList.forEach(i -> {
+            ArrayList<String> strings = Lists.newArrayList(Splitter.on("@").omitEmptyStrings().trimResults().split(i));
+            String selectAnswer = strings.get(0);
+            String questionId = strings.get(1);
+
+            ExamRollUserAnswer dto = new ExamRollUserAnswer();
+            dto.setUserAnswerId(Identities.uuid2());
+            dto.setUserId(enName);
+            dto.setRollId(rollId);
+            dto.setQuestionId(questionId);
+            dto.setUserAnswer(selectAnswer);
+            dto.setCourseId(courseId);
+            ruList.forEach(j -> {
+                if (questionId.equals(j.getQuestionId())) {
+                    dto.setType(j.getType());
+                }
+            });
+            userAnswerList.add(dto);
+        });
+
+        Multimap<String, ExamRollUserAnswer> groupByQuestionId = ArrayListMultimap.create();
+        userAnswerList.forEach(i -> {
+            String questionId = i.getQuestionId();
+            groupByQuestionId.put(questionId, i);
+        });
+
+        // 正确答案
+        List<ExamRollAnswer> trueAnswerList = this.queryTrueAnswer(rollId);
+        Set<Map.Entry<String, Collection<ExamRollUserAnswer>>> userAnswerEntries = groupByQuestionId.asMap().entrySet();
+        for (Map.Entry<String, Collection<ExamRollUserAnswer>> entry : userAnswerEntries) {
+            String questionId = entry.getKey();
+            String trueAnswerStr = "";
+            for (ExamRollAnswer trueAnswer : trueAnswerList) {
+                if (questionId.equals(trueAnswer.getQuestionId())) {
+                    trueAnswerStr += trueAnswer.getAnswerno();
+                }
+            }
+            List<ExamRollUserAnswer> tempUserAnswerList = Lists.newArrayList();
+            tempUserAnswerList.addAll(entry.getValue());
+
+            ExamRollUserAnswer readyDB = new ExamRollUserAnswer();
+            BeanUtils.copyProperties(tempUserAnswerList.get(0), readyDB);
+
+            boolean yes = false;
+            String userAnswerStr = "";
+            for (ExamRollUserAnswer uaAnswer : tempUserAnswerList) {
+                String userAnswerNo = uaAnswer.getUserAnswer();
+                userAnswerStr += userAnswerNo;
+                // 将一方变字符串后，另一方循环检查是否包含
+                if (StringUtils.containsAny(userAnswerNo, trueAnswerStr)) {
+                    yes = true;
+                } else {
+                    // 只要有一个是错，本题剩下的用户答案都不用验了
+                    yes = false;
+                    break;
+                }
+            }
+            readyDB.setTrueAnswer(trueAnswerStr);
+            readyDB.setUserAnswer(userAnswerStr);
+            if (yes) {
+                readyDB.setIsYes(yes);
+            } else {
+                readyDB.setIsYes(false);
+            }
+            ExamRollUserAnswerExample delExample = new ExamRollUserAnswerExample();
+            delExample.createCriteria().andQuestionIdEqualTo(readyDB.getQuestionId()).andUserIdEqualTo(readyDB.getUserId());
+            examRollUserAnswerMapper.deleteByExample(delExample);
+            examRollUserAnswerMapper.insertSelective(readyDB);
+        }
+    }
+
+    @Override
+    public List<ScoreVo> calcScore(String rollId, String userId) {
+        ExamRollUserAnswerExample ruaExample = new ExamRollUserAnswerExample();
+        ruaExample.createCriteria()
+                .andRollIdEqualTo(rollId)
+                .andUserIdEqualTo(userId);
+        List<ExamRollUserAnswer> ruaList = examRollUserAnswerMapper.selectByExample(ruaExample);
+        if (CollectionUtils.isEmpty(ruaList)) {
+            log.info("没有答题");
+        }
+        return null;
+    }
+
+    /**
+     * 查卷
+     *
+     * @param rollId
+     * @return
+     */
+    private List<ExamRollUser> queryRoll(String rollId) {
+        ExamRollUserExample ruExample = new ExamRollUserExample();
+        ruExample.createCriteria().andRollIdEqualTo(rollId);
+        ruExample.setOrderByClause("type asc");
+        List<ExamRollUser> ruList = examRollUserMapper.selectByExample(ruExample);
+        if (CollectionKit.isEmpty(ruList)) {
+            commonService.saveLog("没找到卷,rollId" + rollId, module + "/getData", "");
+            return null;
+        }
+        return ruList;
+    }
+
+    /**
+     * 正确答案
+     *
+     * @param rollId
+     * @return
+     */
+    private List<ExamRollAnswer> queryTrueAnswer(String rollId) {
+        ExamRollAnswerExample example = new ExamRollAnswerExample();
+        example.createCriteria()
+                .andRollIdEqualTo(rollId)
+                .andIsanswerEqualTo(true);
+        List<ExamRollAnswer> trueAnswerList = examRollAnswerMapper.selectByExample(example);
+        if (CollectionUtils.isNotEmpty(trueAnswerList)) {
+            return trueAnswerList;
+        }
+        commonService.saveLog("找不到正确答案", module + "/queryTrueAnswer", "");
+        return null;
     }
 
     /**

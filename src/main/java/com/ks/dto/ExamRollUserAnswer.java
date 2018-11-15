@@ -13,6 +13,8 @@ public class ExamRollUserAnswer extends ExamRollUserAnswerKey implements Seriali
 
     private String type;
 
+    private Boolean isYes;
+
     private static final long serialVersionUID = 1L;
 
     public String getRollId() {
@@ -53,5 +55,13 @@ public class ExamRollUserAnswer extends ExamRollUserAnswerKey implements Seriali
 
     public void setType(String type) {
         this.type = type == null ? null : type.trim();
+    }
+
+    public Boolean getIsYes() {
+        return isYes;
+    }
+
+    public void setIsYes(Boolean isYes) {
+        this.isYes = isYes;
     }
 }

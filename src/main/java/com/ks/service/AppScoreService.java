@@ -1,8 +1,6 @@
 package com.ks.service;
 
-import com.ks.dto.ExamUserAnswerYa;
 import com.ks.vo.ScoreVo;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -27,14 +25,23 @@ public interface AppScoreService {
      * @return
      * @throws ExecutionException
      */
-    void saveScore(List<String> idList, String questionBankId, String enName) throws Exception;
+    void saveScore(List<String> idList, String questionBankId, String userId) throws Exception;
 
     /**
-     * 计算成绩
+     * 计算成绩 - 卷
      *
-     * @param questionBankId
-     * @param enName
+     * @param rollId
+     * @param userId
      * @return
      */
-    List<ScoreVo> calcScore(String questionBankId, String enName);
+    List<ScoreVo> calcRollScore(String rollId, String userId);
+
+    /**
+     * 计算成绩 - 押题
+     *
+     * @param questionBankId
+     * @param userId
+     * @return
+     */
+    List<ScoreVo> calcYaScore(String questionBankId, String userId);
 }

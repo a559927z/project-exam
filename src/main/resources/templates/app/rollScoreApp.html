@@ -70,43 +70,19 @@
         <div>正确率=做对数量/已做数量</div>
         <div class="tableZone">
             <table>
-                <tr>
-                    <th></th>
-                    <th>做对</th>
-                    <th>做错</th>
-                    <th>正确率</th>
-                </tr>
-                <tr>
-                    <td>单选题</td>
-                    <td>0</td>
-                    <td>1</td>
-                    <td>40%</td>
-                </tr>
-                <tr>
-                    <td>多选题</td>
-                    <td>0</td>
-                    <td>1</td>
-                    <td>40%</td>
-                </tr>
-                <tr>
-                    <td>是非题</td>
-                    <td>0</td>
-                    <td>1</td>
-                    <td>40%</td>
-                </tr>
             </table>
         </div>
 
     </div>
 </div>
-<p class="hide" id="questionBankId" th:text="${questionBankId}">(questionBankId)</p>
+<p class="hide" id="rollId" th:text="${rollId}">(rollId)</p>
 
 <script type="text/javascript">
     $(function () {
         var webRoot = G_WEB_ROOT;
         var urls = {
-            calcYaScore: webRoot + '/app/score/calcYaScore?questionBankId=' + $("#questionBankId").text(),
-            toRoll: webRoot + '/app/ya/toIndex'
+            calcRollScore: webRoot + '/app/score/calcRollScore?rollId=' + $("#rollId").text(),
+            toRoll: webRoot + '/app/roll/toIndex'
         }
         var transformType = ['', '单选题', '多选题', '是非题'];
 
@@ -147,7 +123,7 @@
 
         function getData() {
             hui.getJSON(
-                urls.calcYaScore,
+                urls.calcRollScore,
                 function (rs) {
                     reader(rs);
                 }
