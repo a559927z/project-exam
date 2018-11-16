@@ -34,7 +34,12 @@ public class ScoreVo {
     private String ratioStr;
 
     /**
-     * 绝对值，得分
+     * 分值 = （对题数+错题数） * 题目类型分数
      */
     private double score;
+
+    /**
+     * 得分 = 对题数 * 题目类型分数
+     */
+    private double myScore;
 }

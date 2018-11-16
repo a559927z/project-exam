@@ -4,6 +4,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import com.ks.constants.QuestionBankCourseEnum;
 import com.ks.constants.QuestionBankTypeEnum;
 import com.ks.dao.*;
 import com.ks.dto.*;
@@ -165,26 +166,46 @@ public class AppScoreServiceImpl implements AppScoreService {
         List<ExamRollUserAnswer> mUaYaList = dateListMap.get(QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode());
         List<ExamRollUserAnswer> ynUaYaList = dateListMap.get(QuestionBankTypeEnum.YES_NO_QUESTION.getCode());
 
+        // 科目id
+        String courseId = ruaList.get(0).getCourseId();
+        QuestionBankCourseEnum enumByCode = QuestionBankCourseEnum.getEnumByCode(courseId);
 
+        double total = 0;
         if (CollectionUtils.isNotEmpty(sUaYaList)) {
             ScoreVo vo1 = matchRoll(sUaYaList, QuestionBankTypeEnum.SINGLE_QUESTION.getCode());
             sRight = vo1.getRight();
             sWrong = vo1.getWrong();
+            vo1.setScore(ArithUtil.mul(sRight + sWrong, enumByCode.getSScore()));
+            double mul = ArithUtil.mul(sRight, enumByCode.getSScore());
+            vo1.setMyScore(mul);
             rs.add(vo1);
+            total += mul;
+
         }
         if (CollectionUtils.isNotEmpty(mUaYaList)) {
             ScoreVo vo2 = matchRoll(mUaYaList, QuestionBankTypeEnum.MULTIPLE_QUESTION.getCode());
             mRight = vo2.getRight();
             mWrong = vo2.getWrong();
+            vo2.setScore(ArithUtil.mul(mRight + mWrong, enumByCode.getMScore()));
+            double mul = ArithUtil.mul(mWrong, enumByCode.getMScore());
+            vo2.setMyScore(mul);
             rs.add(vo2);
+            total += mul;
         }
         if (CollectionUtils.isNotEmpty(ynUaYaList)) {
             ScoreVo vo3 = matchRoll(ynUaYaList, QuestionBankTypeEnum.YES_NO_QUESTION.getCode());
             ynRight = vo3.getRight();
             ynWrong = vo3.getWrong();
+            vo3.setScore(ArithUtil.mul(ynRight + ynWrong, enumByCode.getYnScore()));
+            double mul = ArithUtil.mul(ynRight, enumByCode.getMScore());
+            vo3.setMyScore(mul);
             rs.add(vo3);
+            total += mul;
         }
-        rs.add(calcRatio((sRight + mRight + ynRight), (sWrong + mWrong + ynWrong), "9999"));
+        ScoreVo vo4 = new ScoreVo();
+        vo4.setMyScore(total);
+        vo4.setType("9999");
+        rs.add(vo4);
         return rs;
     }
 

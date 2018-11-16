@@ -65,9 +65,8 @@
 <div class="hui-wrap">
     <div id="scoreZone">
         <div class="rateZone">
-            <div class="myBadge">20%</div>
+            <div class="myBadge"></div>
         </div>
-        <div>正确率=做对数量/已做数量</div>
         <div class="tableZone">
             <table>
             </table>
@@ -99,7 +98,8 @@
                 '    <th></th>' +
                 '    <th>做对</th>' +
                 '    <th>做错</th>' +
-                '    <th>正确率</th>' +
+                '    <th>分值</th>' +
+                '    <th>得分</th>' +
                 '</tr>';
             if (rs.length > 0) {
                 $.each(rs, function (i, item) {
@@ -109,10 +109,11 @@
                             '    <td>' + transformType[parseInt(item.type)] + '</td>' +
                             '    <td>' + item.right + '</td>' +
                             '    <td>' + item.wrong + '</td>' +
-                            '    <td>' + item.ratioStr + '</td>' +
+                            '    <td>' + item.score + '</td>' +
+                            '    <td>' + item.myScore + '</td>' +
                             '</tr>';
                     } else {
-                        vv = item.ratioStr;
+                        vv = item.myScore ="值";
                     }
                 });
             }
