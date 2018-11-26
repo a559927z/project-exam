@@ -9,13 +9,16 @@ import com.ks.service.CommonService;
 import com.ks.vo.AnswerVo;
 import com.ks.vo.ScoreVo;
 import net.chinahrd.utils.CollectionKit;
+import net.chinahrd.utils.WebUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -184,6 +187,27 @@ public class AppRollController extends BaseController {
     }
 
 
+    /**
+     * 获到倒计时
+     *
+     * @param key userId+rollId
+     * @return
+     */
+    public String getTime(String key) {
+        HttpSession session = WebUtils.getRequest().getSession();
+        String time = (String) session.getAttribute(key);
+        String rs = "";
+        if (null == time) {
+            rs = new DateTime().toString("yyyy-MM-dd ");
+            session.setAttribute(key, rs);
+        } else {
+            rs = time;
+        }
+        return rs;
+    }
 
+
+    public static void main(String[] args) {
+    }
 
 }
