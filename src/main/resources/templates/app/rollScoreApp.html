@@ -103,6 +103,7 @@
                 '</tr>';
             if (rs.length > 0) {
                 $.each(rs, function (i, item) {
+
                     if (item.type != "9999") {
                         html +=
                             '<tr>' +
@@ -113,7 +114,7 @@
                             '    <td>' + item.myScore + '</td>' +
                             '</tr>';
                     } else {
-                        vv = item.myScore ="值";
+                        vv = item.myScore + "分";
                     }
                 });
             }

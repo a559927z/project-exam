@@ -369,7 +369,9 @@
             html +=
                 '<div class="questionZone">' +
                 '            <div class="hui-badge hui-danger hui-fl">' + transformType[type] + '</div>' +
-                '            <div class="hui-fr" data-question-no="' + no + '"><div id="countdown3"></div>' + no + '/' + total + '</div>' +
+                '            <div class="hui-fr" data-question-no="' + no + '">' +
+                '               <div id="countdown3"  class="hui-fl"></div><div  class="hui-fr">' + no + '/' + total + '</div>' +
+                '            </div>' +
                 '            <div style="clear: both"></div>' +
                 '            <div class="body">' + title +
                 '    </div>' +
@@ -394,8 +396,35 @@
 
             answerEvent(type, no);
             fooerEvent(questionList, no - 1, no, no + 1);
+            readerTime();
         }
 
+        var dater = new Date();
+        var begin = dater.getTime();
+        // var end = begin + 7200000; // 2小时
+        var end = begin + 5000; // 5秒
+
+        function readerTime() {
+            var huiTimer = dater.getFullYear() + '-' + (dater.getMonth() + 1) + '-' + dater.getDate() + ' ' + (dater.getHours() + 2) + ':' + dater.getMinutes() + ":" + dater.getSeconds();
+            hui.countdown(huiTimer, '#countdown3', 3);
+            clock();
+        }
+
+        function clock() {
+            var time = new Date().getTime();
+            console.log("到数：" + time + "结束：" + end);
+            if (time >= end) {
+                clearInterval(timer);
+                hui.confirm('时间到强行交卷', ['取消', '确定'],
+                    function () {
+                        paper(true);
+                    }, function () {
+                        paper(true);
+                    });
+            }
+        }
+
+        var timer = setInterval(clock, 1000);
 
         function getUserAnswer() {
             $.ajax({
@@ -412,29 +441,37 @@
         /*****************
          *    交卷       *
          *****************/
-        function paper() {
-            hui.confirm('您确认要交卷吗？', ['取消', '确定'], function () {
-                var no = $(".questionZone .hui-fr").data("questionNo");
-                saveSelectObj(no);
-                var selectAnswer = [];
-                if (selectObjList.length > 0) {
-                    $.each(selectObjList, function (i, item) {
-                        $.each(item.answer, function (j, jItem) {
-                            selectAnswer.push(jItem + "@" + item.questionId);
-                        });
+        function paper(time) {
+            var no = $(".questionZone .hui-fr").data("questionNo");
+            saveSelectObj(no);
+            var selectAnswer = [];
+            if (selectObjList.length > 0) {
+                $.each(selectObjList, function (i, item) {
+                    $.each(item.answer, function (j, jItem) {
+                        selectAnswer.push(jItem + "@" + item.questionId);
                     });
-                }
+                });
+            }
+            hui.confirm('您确认要交卷吗？', ['取消', '确定'], function () {
                 if (selectAnswer.length == 0) {
                     hui.confirm('您没有答题确认要交卷吗？', ['取消', '确定'],
                         function () {
                             paperSave(selectAnswer);
                         }, function () {
+                            // 强行交卷
+                            if (time) {
+                                paperSave(selectAnswer);
+                            }
                             console.log('取消后执行...');
                         });
                 } else {
                     paperSave(selectAnswer);
                 }
             }, function () {
+                // 强行交卷
+                if (time) {
+                    paperSave(selectAnswer);
+                }
                 console.log('取消后执行...');
             });
         }
@@ -457,10 +494,10 @@
 
         function paperEvent() {
             $(".paper").click(function () {
-                paper();
+                paper(false);
             });
             $(".toYa").click(function () {
-                paper();
+                paper(false);
             });
         }
 
