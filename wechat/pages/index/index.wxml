@@ -1,0 +1,27 @@
+<!--index.wxml-->
+<view class="" xmlns:wx="http://www.w3.org/1999/xhtml">
+    <view class="container">
+
+        <div class="tuBiaoZone">
+            <image src="../../assets/images/favicon.png"/>
+        </div>
+        <div id="form1">
+            <div class="inputZone">
+                <input id="enName" type="text" tabindex="1" placeholder="账号"/>
+                <input id="password" type="password" tabindex="3" placeholder="密码" autocomplete="off" checktype="string"
+                       checkdata="6,20" checkmsg="密码应为6-20个字符"/>
+            </div>
+            <div class="btnZone">
+                <button id="submit" class="weui-btn" id="submit" type="default">
+                    登录
+                </button>
+                <br/>
+                <button id="submit" class="weui-btn" id="submit" type="primary" bindtap='clickWxLogin'>
+                    <icon class="fa fa-wechat(alias) fa-lg"/>
+                    微信登录
+                </button>
+            </div>
+        </div>
+
+    </view>
+</view>

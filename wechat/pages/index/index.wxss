@@ -1,0 +1,70 @@
+@import '../../assets/css/fontAwesome.wxss';
+
+.allBackground {
+  background: #f1f1f1;
+}
+
+
+.tuBiaoZone {
+  /* height: 15%;
+    text-align: center;
+    color: #38f;
+    font-size: 22px;
+    margin: 15px;
+    padding: 30%; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 100px;
+  margin-bottom: 20px;
+}
+
+.tuBiaoZone image {
+  /* border-radius: 30px; */
+  width: 100px;
+  height: 100px;
+  margin: 20rpx;
+  border-radius: 30%;
+}
+
+.inputZone {
+  height: 25%;
+  /* margin: 0px 35px; */
+}
+
+.inputZone input {
+  border-top-style: none;
+  border-right-style: none;
+  border-left-style: none;
+  border-bottom-style: solid;
+  padding: 10px;
+  /* width: 100%; */
+  /* background: #f1f1f1; */
+  border-bottom-color: #39f;
+}
+
+.btnZone {
+  height: 15%;
+  margin: 0px 35px;
+}
+
+.userinfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userinfo-avatar {
+  width: 128rpx;
+  height: 128rpx;
+  margin: 20rpx;
+  border-radius: 50%;
+}
+
+.userinfo-nickname {
+  color: #aaa;
+}
+
+.usermotto {
+  margin-top: 200px;
+}
