@@ -13,6 +13,9 @@ Page({
         canIUse: wx.canIUse('button.open-type.getUserInfo'),
         // baiDu: {}
     },
+    clickLogin: function () {
+
+    },
     //事件处理函数
     clickWxLogin: function () {
         if (app.globalData.userInfo) {

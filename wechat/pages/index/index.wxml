@@ -12,11 +12,11 @@
                        checkdata="6,20" checkmsg="密码应为6-20个字符"/>
             </div>
             <div class="btnZone">
-                <button id="submit" class="weui-btn" id="submit" type="default">
+                <button class="weui-btn" type="default" bindtap="clickLogin">
                     登录
                 </button>
                 <br/>
-                <button id="submit" class="weui-btn" id="submit" type="primary" bindtap='clickWxLogin'>
+                <button class="weui-btn" type="primary" bindtap="clickWxLogin">
                     <icon class="fa fa-wechat(alias) fa-lg"/>
                     微信登录
                 </button>
