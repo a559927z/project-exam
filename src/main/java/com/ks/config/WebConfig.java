@@ -120,6 +120,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
             String requestURI = request.getRequestURI();
             if (StringUtils.startsWith(requestURI, ctxPath + "/app/login/")
+                    || StringUtils.startsWith(requestURI, ctxPath + "/wx/login/")
                     || StringUtils.startsWith(requestURI, ctxPath + "/admin/")) {
                 log.info("通过：都不做过认证");
                 return true;

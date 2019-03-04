@@ -17,12 +17,11 @@ Page({
 
     },
     //事件处理函数
-    clickWxLogin: function () {
+    clickWxLogin: function (e) {
         if (app.globalData.userInfo) {
             this.setData({
                 userInfo: app.globalData.userInfo,
                 hasUserInfo: true,
-                baiDu: app.globalData.baiDu
             })
         } else if (this.data.canIUse) {
             // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
@@ -45,6 +44,7 @@ Page({
                     })
                 }
             })
+            // console.log(app.globalData.userInfo);
         }
         wx.navigateTo({
             url: '../wxlogin/wxlogin'
@@ -65,7 +65,40 @@ Page({
     // 设置页面分享的信息
     onShareAppMessage() {
     },
-
+    wexiLogin() {
+        // 登录
+        wx.login({
+            success: res => {
+                // ------ 获取凭证 ------
+                var code = res.code;
+                console.log(res);
+                if (code) {
+                    console.log('获取用户登录凭证：' + code);
+                    // ------ 发送凭证 ------
+                    wx.request({
+                        url: app.globalData.localhost + '/wx/login/login',
+                        data: {code: code},
+                        method: 'POST',
+                        header: {
+                            'content-type': 'application/json'
+                        },
+                        success: function (res) {
+                            if (res.statusCode == 200) {
+                                console.log(rs);
+                                console.log("获取到的openid为：" + res.data)
+                                // that.globalData.openid = res.data
+                                wx.setStorageSync('openid', res.data)
+                            } else {
+                                console.log(res.errMsg)
+                            }
+                        },
+                    })
+                } else {
+                    console.log('获取用户登录失败：' + res.errMsg);
+                }
+            }
+        })
+    }
     // getUserInfo: function (e) {
     //     console.log(e)
     //     app.globalData.userInfo = e.detail.userInfo

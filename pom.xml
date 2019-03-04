@@ -25,6 +25,13 @@
     </properties>
 
     <dependencies>
+        <!--<dependency>-->
+            <!--<groupId>com.ks</groupId>-->
+            <!--<artifactId>dict-util</artifactId>-->
+            <!--<version>20180131</version>-->
+        <!--</dependency>-->
+
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>

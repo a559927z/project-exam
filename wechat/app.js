@@ -35,7 +35,7 @@ App({
     },
     globalData: {
         userInfo: null,
-        localhost: "http://127.0.0.1:8080",
+        localhost: "http://127.0.0.1:8080/exam",
         baiDu: "http://www.baidu.com"
     }
 })

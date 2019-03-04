@@ -11,7 +11,9 @@ import com.ks.utils.CookieUtils;
 import com.ks.utils.StringUtil;
 import com.ks.utils.cache.LoadingCacheUtil;
 import com.ks.vo.VisitorVo;
+import com.ks.vo.WxLoginVo;
 import lombok.extern.slf4j.Slf4j;
+import net.chinahrd.utils.HttpClientUtil;
 import net.chinahrd.utils.Identities;
 import net.chinahrd.utils.RemoteUtil;
 import net.chinahrd.utils.crypto.CryptUtils;
@@ -21,10 +23,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import sun.net.util.IPAddressUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,6 +51,7 @@ public class AppLoginController extends BaseController {
 
     @Autowired
     private ExamUserInfoMapper examUserInfoMapper;
+
 
     /**
      * 重定向
