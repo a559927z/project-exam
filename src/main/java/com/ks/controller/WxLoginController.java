@@ -48,7 +48,7 @@ public class WxLoginController extends BaseController {
 
 
     private String appId = "wx75e508d9c524a12d";
-    private String secret = "qqAdmin803123";
+    private String secret = "cec8da0e2174c27dab4ea96d66a5d6a7";
 
     @PostMapping
     @RequestMapping("/login")
@@ -61,7 +61,7 @@ public class WxLoginController extends BaseController {
         System.out.println("获得openId: " + openId);
         Map<String, Object> result = new HashMap<>();
         result.put("code", 0);
-        result.put("openId", openId);
+        result.put("data", data);
 
         return result;
     }

@@ -85,9 +85,9 @@ Page({
                         success: function (res) {
                             if (res.statusCode == 200) {
                                 console.log(rs);
-                                console.log("获取到的openid为：" + res.data)
+                                console.log("获取到为：" + res.data);
                                 // that.globalData.openid = res.data
-                                wx.setStorageSync('openid', res.data)
+                                wx.setStorageSync('openid', res.data.openId);
                             } else {
                                 console.log(res.errMsg)
                             }
