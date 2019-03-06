@@ -37,7 +37,15 @@ Page({
             wx.getUserInfo({
                 success: res => {
                     app.globalData.userInfo = res.userInfo;
-                    // console.log(res);
+                    // https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html
+                    var encryptedData = res.encryptedData;
+                    var iv = res.iv;
+
+                    // var pc = new WXBizDataCrypt(appId, sessionKey)
+                    // var data = pc.decryptData(encryptedData, iv)
+
+                    console.log('解密后 data: ', data);
+
                     this.setData({
                         userInfo: res.userInfo,
                         hasUserInfo: true
