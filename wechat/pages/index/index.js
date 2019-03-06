@@ -65,6 +65,7 @@ Page({
     // 设置页面分享的信息
     onShareAppMessage() {
     },
+
     wexiLogin() {
         // 登录
         wx.login({
