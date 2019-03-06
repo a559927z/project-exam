@@ -44,7 +44,6 @@ Page({
                     })
                 }
             })
-            // console.log(app.globalData.userInfo);
         }
         wx.navigateTo({
             url: '../wxlogin/wxlogin'
@@ -65,8 +64,10 @@ Page({
     // 设置页面分享的信息
     onShareAppMessage() {
     },
-
     wexiLogin() {
+        this.login();
+    },
+    login() {
         // 登录
         wx.login({
             success: res => {
@@ -85,7 +86,7 @@ Page({
                         },
                         success: function (res) {
                             if (res.statusCode == 200) {
-                                console.log(rs);
+                                console.log(res);
                                 console.log("获取到为：" + res.data);
                                 // that.globalData.openid = res.data
                                 wx.setStorageSync('openid', res.data.openId);
