@@ -20,7 +20,7 @@
                     <icon class="fa fa-wechat(alias) fa-lg"/>
                     微信登录
                 </button>
-                <button bindtap="wexiLogin">1</button>
+                <button bindtap="wxLogin">1</button>
             </div>
         </div>
 
